@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Business Registration</title>
+</head>
+<body>
+<h1>사업자 번호 조회하기</h1>
+<input type="text" id="businessNumberInput" placeholder="사업자 번호를 입력하세요">
+<button id="checkButton">조회하기</button>
+<div id="result"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0/jquery.min.js"></script>
+<script>
+  $(document).ready(function () {
+    $("#checkButton").click(function () {
+      let businessNumber = $("#businessNumberInput").val();
+      if (businessNumber.trim() === "") {
+        alert("사업자 번호를 입력해주세요.");
+        // b_no: ["8164700297"], // 실제 존재하는 사업자 번호
+        return;
+      }
+
+      let data = {
+        b_no: [businessNumber],
+      };
+
+      let serviceKey ="01YXTvKjVQ1r99jNht0Bp5chZlxitlpO9TQQ%2FGSVT2jl486Xp1oND5PYwmsWAT53WJcDrA5Z9BdVOkZHrMEQJg%3D%3D";
+      $.ajax({
+        url: //"/check-business",
+                "https://api.odcloud.kr/api/nts-businessman/v1/status?serviceKey=" +
+                serviceKey,
+        type: "POST",
+        data: JSON.stringify(data),
+        dataType: "JSON",
+        contentType: "application/json",
+        accept: "application/json",
+        success: function (result) {
+          console.log("결과:: ", result);
+        },
+        error: function (result) {
+          console.log("에러: ", result.responseText);
+        },
+      });
+    });
+  });
+</script>
+</body>
+</html>

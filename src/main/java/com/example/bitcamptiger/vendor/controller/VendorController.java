@@ -3,6 +3,8 @@ package com.example.bitcamptiger.vendor.controller;
 
 import com.example.bitcamptiger.dto.ResponseDTO;
 import com.example.bitcamptiger.vendor.dto.VendorDTO;
+import com.example.bitcamptiger.vendor.entity.Vendor;
+import com.example.bitcamptiger.vendor.repository.VendorRepository;
 import com.example.bitcamptiger.vendor.service.VendorService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,9 +20,12 @@ public class VendorController {
 
     public final VendorService vendorService;
 
+    public final VendorRepository vendorRepository;
+
     //현재 "OPEN" 가게 정보 리스트
     @GetMapping("/openInfo")
-    public ResponseEntity<?> getVendorOpenInfoList(@RequestBody VendorDTO vendorDTO) {
+    public ResponseEntity<?> getVendorOpenInfoList(VendorDTO vendorDTO) {
+
         ResponseDTO<VendorDTO> response = new ResponseDTO<>();
         try{
 
@@ -41,11 +46,11 @@ public class VendorController {
 
     //모든 가게 정보 리스트
     @GetMapping("/info")
-    public ResponseEntity<?> getVendorInfoList(@RequestBody VendorDTO vendorDTO){
+    public ResponseEntity<?> getVendorInfoList(VendorDTO vendorDTO){
         ResponseDTO<VendorDTO> response = new ResponseDTO<>();
         try{
 
-            List<VendorDTO> vendorDTOList = vendorService.getVendorList(vendorDTO.getVendorName());
+            List<VendorDTO> vendorDTOList = vendorService.getVendorList();
 
             response.setItems(vendorDTOList);
             response.setStatusCode(HttpStatus.OK.value());
@@ -58,6 +63,14 @@ public class VendorController {
         }
     }
 
+
+    //개별 상점 상세 정보 확인
+    @GetMapping("/infoDetail/{id}")
+    public Vendor getVendorInfoDetail(@PathVariable Long id){
+        return vendorService.getVendorDetail(id);
+    }
+
+
     //신규 가게 등록
     @PostMapping("/info")
     public ResponseEntity<?> insertVendorInfo(@RequestBody VendorDTO vendorDTO){
@@ -65,7 +78,7 @@ public class VendorController {
         try{
             vendorService.insertVendor(vendorDTO);
 
-            List<VendorDTO> vendorDTOList = vendorService.getVendorList(vendorDTO.getVendorName());
+            List<VendorDTO> vendorDTOList = vendorService.getVendorList();
 
             response.setItems(vendorDTOList);
             response.setStatusCode(HttpStatus.OK.value());
@@ -88,7 +101,7 @@ public class VendorController {
         try{
             vendorService.updateVendor(vendorDTO);
 
-            List<VendorDTO> vendorDTOList = vendorService.getVendorList(vendorDTO.getVendorName());
+            List<VendorDTO> vendorDTOList = vendorService.getVendorList();
 
 
             response.setItems(vendorDTOList);
@@ -112,7 +125,7 @@ public class VendorController {
         try{
             vendorService.deleteVendor(vendorDTO);
 
-            List<VendorDTO> vendorDTOList = vendorService.getVendorList(vendorDTO.getVendorName());
+            List<VendorDTO> vendorDTOList = vendorService.getVendorList();
 
 
             response.setItems(vendorDTOList);
@@ -125,6 +138,8 @@ public class VendorController {
             return ResponseEntity.badRequest().body(response);
         }
     }
+
+
 
 
 

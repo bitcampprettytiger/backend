@@ -34,8 +34,8 @@ class VendorServiceImplTest {
             vendor.setVendorName("이름 테스트" + i);
             vendor.setVendorOpenStatus(VendorOpenStatus.OPEN);
             vendor.setAddress("주소 테스트" + i);
-            vendor.setLat(i);
-            vendor.setLon(i);
+            vendor.setX("127.11"+i);
+            vendor.setY("98.333" + i);
             vendor.setTel("전화번호 테스트" + i);
             vendor.setBusinessDay(BusinessDay.FRI);
             vendor.setOpen(LocalTime.now());
@@ -44,7 +44,7 @@ class VendorServiceImplTest {
 
             Vendor savedVendor = vendorRepository.save(vendor);
 
-            System.out.println(savedVendor.toString());
+            assertEquals(vendorRepository.findByVendorName(savedVendor.getVendorName()).get(0), vendor);
 
         }
     }
@@ -57,8 +57,8 @@ class VendorServiceImplTest {
         vendor.setVendorName("붕어붕어");
         vendor.setVendorOpenStatus(VendorOpenStatus.OPEN);
         vendor.setAddress("서울특별시 강남구 강남대로 94길 20");
-        vendor.setLat(192.06565);
-        vendor.setLon(165.566555);
+        vendor.setX("192.06565");
+        vendor.setY("165.566555");
         vendor.setTel("01022226666");
         vendor.setBusinessDay(BusinessDay.FRI);
         vendor.setOpen(LocalTime.now());
@@ -67,7 +67,7 @@ class VendorServiceImplTest {
 
         Vendor savedVendor = vendorRepository.save(vendor);
 
-        System.out.println(savedVendor.toString());
+        assertEquals(vendorRepository.findByVendorName(savedVendor.getVendorName()).get(0), vendor);
     }
 
     @Test
@@ -78,8 +78,8 @@ class VendorServiceImplTest {
         vendor.setVendorName("붕어붕어");
         vendor.setVendorOpenStatus(VendorOpenStatus.OPEN);
         vendor.setAddress("서울특별시 강남구 강남대로 94길 20");
-        vendor.setLat(192.06565);
-        vendor.setLon(165.566555);
+        vendor.setX("192.06565");
+        vendor.setY("165.566555");
         vendor.setTel("01022226666");
         vendor.setBusinessDay(BusinessDay.FRI);
         vendor.setOpen(LocalTime.now());
@@ -108,8 +108,8 @@ class VendorServiceImplTest {
         vendor.setVendorName("붕어붕어");
         vendor.setVendorOpenStatus(VendorOpenStatus.OPEN);
         vendor.setAddress("서울특별시 강남구 강남대로 94길 20");
-        vendor.setLat(192.06565);
-        vendor.setLon(165.566555);
+        vendor.setX("192.06565");
+        vendor.setY("165.566555");
         vendor.setTel("01022226666");
         vendor.setBusinessDay(BusinessDay.FRI);
         vendor.setOpen(LocalTime.now());
@@ -124,6 +124,7 @@ class VendorServiceImplTest {
         Optional<Vendor> optionalDeletedVendor = vendorRepository.findById(savedVendor.getId());
 
         assertFalse(optionalDeletedVendor.isPresent(), "Vendor not deleted.");
+        assertTrue(optionalDeletedVendor.isEmpty(),"Vendor deleted");
         System.out.println(optionalDeletedVendor.toString());
     }
 

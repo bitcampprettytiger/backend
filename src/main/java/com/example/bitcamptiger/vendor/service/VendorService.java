@@ -1,12 +1,12 @@
 package com.example.bitcamptiger.vendor.service;
 
 import com.example.bitcamptiger.vendor.dto.VendorDTO;
-import com.example.bitcamptiger.vendor.entity.VendorOpenStatus;
+import com.example.bitcamptiger.vendor.entity.Vendor;
 
 import java.util.List;
 
 public interface VendorService {
-    List<VendorDTO> getVendorList(String vendorName);
+    List<VendorDTO> getVendorList();
 
     List<VendorDTO> getOpenList(String vendorOpenStatus);
 
@@ -15,4 +15,7 @@ public interface VendorService {
     void updateVendor(VendorDTO vendorDTO);
 
     void deleteVendor(VendorDTO vendorDTO);
+
+    Vendor getVendorDetail(Long id);
+
 }

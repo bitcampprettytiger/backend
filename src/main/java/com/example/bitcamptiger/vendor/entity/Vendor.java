@@ -37,11 +37,11 @@ public class Vendor {
 
     //좌표(위도)
     @Column
-    private double lat;
+    private String x;
 
     //좌표(경도)
     @Column
-    private double lon;
+    private String y;
 
     @Column
     private String tel;

@@ -23,7 +23,7 @@ public class Member {
 
     @Id
     @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
+            strategy = GenerationType.AUTO,
             generator = "MemberSeqGenerator"
     )
     private Long id;

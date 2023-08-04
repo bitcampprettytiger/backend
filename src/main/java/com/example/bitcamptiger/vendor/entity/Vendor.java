@@ -47,8 +47,7 @@ public class Vendor {
     private String tel;
 
     @Column
-    @Enumerated(EnumType.STRING)
-    private BusinessDay businessDay;
+    private String businessDay;
 
     @Column
     private LocalTime open;
@@ -59,6 +58,16 @@ public class Vendor {
     @Column
     private String menu;
 
+    //사업자 번호
+    @Column
+    private  String b_no;
 
+    //도로 점유 허가번호
+    @Column
+    private String perNo;
+
+    //실제 신청자명
+    @Column
+    private String rlAppiNm;
 
 }

@@ -1,9 +1,9 @@
-package com.example.bitcamptiger.board.service.impl;
+package com.example.bitcamptiger.vendor.service.Impl;
 
 
-import com.example.bitcamptiger.board.dto.BusinessDataDto;
-import com.example.bitcamptiger.board.dto.BusinessResponseDto;
-import com.example.bitcamptiger.board.service.VendorAPIService;
+import com.example.bitcamptiger.vendor.dto.BusinessDataDto;
+import com.example.bitcamptiger.vendor.dto.BusinessResponseDto;
+import com.example.bitcamptiger.vendor.service.VendorAPIService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,10 +31,10 @@ public class VendorAPIServiceImpl implements VendorAPIService {
         // API 호출을 위한 URL 생성
 //        String url = "https://api.odcloud.kr/api/nts-businessman/v1/status?serviceKey=" + key;
         String url = statusUrl + "?serviceKey=" + key;
-
+        System.out.println("=========================url======" + url);
         // ObjectMapper 객체 생성
         ObjectMapper objectMapper = new ObjectMapper();
-
+        System.out.println("=========================url======" + businessNumber);
         // 보낼 데이터를 Map 형식으로 생성
         Map<String, List<String>> data = new HashMap<>();
         data.put("b_no", Collections.singletonList(businessNumber));

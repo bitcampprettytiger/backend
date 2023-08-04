@@ -6,44 +6,61 @@
 </head>
 <body>
 <h1>사업자 번호 조회하기</h1>
-<input type="text" id="businessNumberInput" placeholder="사업자 번호를 입력하세요">
-<button id="checkButton">조회하기</button>
-<div id="result"></div>
+<!-- 입력 필드 -->
+<input type="text" id="reg1" />
+<input type="text" id="reg2" />
+<input type="text" id="reg3" />
+
+<!-- 버튼 -->
+<button id="submit-btn">확인</button>
+
+<!-- 결과 표시 -->
+<div id="bs_result"></div>
+
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0/jquery.min.js"></script>
 <script>
-  $(document).ready(function () {
-    $("#checkButton").click(function () {
-      let businessNumber = $("#businessNumberInput").val();
-      if (businessNumber.trim() === "") {
-        alert("사업자 번호를 입력해주세요.");
-        // b_no: ["8164700297"], // 실제 존재하는 사업자 번호
-        return;
+  $(document).ready(function() {
+    // 확인 버튼 클릭 시
+    $('#submit-btn').click(function() {
+      let reg1 = $("#reg1").val();
+      let reg2 = $("#reg2").val();
+      let reg3 = $("#reg3").val();
+
+      var bs_num = reg1 + "" + reg2 + "" + reg3;
+
+      if (bs_num.length === 10) {
+        // 백엔드에 사업자 번호 전송
+        $.ajax({
+          url: "/check-business",
+          type: "POST",
+          contentType: "application/json",
+          data: JSON.stringify({ "b_no": [bs_num] }),
+          success: function(result) {
+            // 백엔드로부터 결과를 받아와서 처리
+            if (result === "등록되지 않은 사업자번호입니다.") {
+              $("#bs_result").text("등록되지 않은 사업자번호입니다.");
+              $("#bs_result").css("color", "red");
+            } else if (result === "휴/폐업한 사업자번호입니다.") {
+              $("#bs_result").text("휴/폐업한 사업자번호입니다.");
+              $("#bs_result").css("color", "red");
+            } else if (result === "정상적인 사업자번호입니다.") {
+              $("#bs_result").text("정상적인 사업자번호입니다.");
+              $("#bs_result").css("color", "green");
+            } else {
+              $("#bs_result").text("사업자번호 검증에 실패했습니다.");
+              $("#bs_result").css("color", "red");
+            }
+          },
+          error: function() {
+            $("#bs_result").text("사업자번호 검증에 실패했습니다.");
+            $("#bs_result").css("color", "red");
+          }
+        });
       }
-
-      let data = {
-        b_no: [businessNumber],
-      };
-
-      let serviceKey ="01YXTvKjVQ1r99jNht0Bp5chZlxitlpO9TQQ%2FGSVT2jl486Xp1oND5PYwmsWAT53WJcDrA5Z9BdVOkZHrMEQJg%3D%3D";
-      $.ajax({
-        url: //"/check-business",
-                "https://api.odcloud.kr/api/nts-businessman/v1/status?serviceKey=" +
-                serviceKey,
-        type: "POST",
-        data: JSON.stringify(data),
-        dataType: "JSON",
-        contentType: "application/json",
-        accept: "application/json",
-        success: function (result) {
-          console.log("결과:: ", result);
-        },
-        error: function (result) {
-          console.log("에러: ", result.responseText);
-        },
-      });
     });
   });
+
 </script>
 </body>
 </html>

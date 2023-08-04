@@ -64,6 +64,15 @@ dependencies {
 
     // https://mvnrepository.com/artifact/org.modelmapper/modelmapper
     implementation 'org.modelmapper:modelmapper:3.1.1'
+
+    //구글맵 API(주소를 위도경도로 변환)
+      implementation 'com.google.code.geocoder-java:geocoder-java:0.16'
+      implementation 'com.google.maps:google-maps-services:2.2.0'
+      implementation 'com.google.code.gson:gson:2.10.1'
+      implementation 'com.googlecode.json-simple:json-simple:1.1.1'
+
+
+
 }
 
 tasks.named('test') {

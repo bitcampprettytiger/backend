@@ -1,16 +1,12 @@
 package com.example.bitcamptiger.vendor.service.Impl;
 
-import com.example.bitcamptiger.vendor.dto.BusinessDataDto;
-import com.example.bitcamptiger.vendor.dto.BusinessResponseDto;
-import com.example.bitcamptiger.vendor.dto.RoadOcuuCertiData;
 import com.example.bitcamptiger.vendor.dto.VendorDTO;
+import com.example.bitcamptiger.vendor.entity.BusinessDay;
 import com.example.bitcamptiger.vendor.entity.Vendor;
 import com.example.bitcamptiger.vendor.entity.VendorOpenStatus;
 import com.example.bitcamptiger.vendor.repository.VendorRepository;
 import com.example.bitcamptiger.vendor.service.GeoService;
-import com.example.bitcamptiger.vendor.service.VendorAPIService;
 import com.example.bitcamptiger.vendor.service.VendorService;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.JSONObject;
@@ -28,7 +24,6 @@ public class VendorServiceImpl implements VendorService {
 
     private final VendorRepository vendorRepository;
     private final GeoService geoService;
-    private final VendorAPIService vendorAPIService;
 
     @Override
     public List<VendorDTO> getVendorList() {
@@ -64,7 +59,7 @@ public class VendorServiceImpl implements VendorService {
     }
 
     @Override
-    public void insertVendor(VendorDTO vendorDTO) throws JsonProcessingException {
+    public void insertVendor(VendorDTO vendorDTO) {
 
         //주소를 api를 사용해서 주소를 경도와 위도로 변환
         JSONObject point = geoService.geocoding(vendorDTO.getAddress());
@@ -72,10 +67,6 @@ public class VendorServiceImpl implements VendorService {
         //경도와 위도 데이터를 VendorDTO에 설정
         vendorDTO.setX(point.get("x").toString());
         vendorDTO.setY(point.get("y").toString());
-        BusinessResponseDto businessResponseDto = vendorAPIService.checkBusiness(vendorDTO.getB_no());
-        System.out.println(businessResponseDto);
-        vendorDTO.setB_no(businessResponseDto.getData()[0].getB_no());
-
 
         //VendorDTO를 Vendor 엔티티로 변환하여 저장
         Vendor vendor = vendorDTO.createVendor();
@@ -98,7 +89,7 @@ public class VendorServiceImpl implements VendorService {
         vendor.setVendorOpenStatus(VendorOpenStatus.valueOf(vendorDTO.getVendorOpenStatus()));
         vendor.setAddress(vendorDTO.getAddress());
         vendor.setTel(vendorDTO.getTel());
-        vendor.setBusinessDay(vendorDTO.getBusinessDay());
+        vendor.setBusinessDay(BusinessDay.valueOf(vendorDTO.getBusinessDay()));
         vendor.setOpen(vendorDTO.getOpen());
         vendor.setClose(vendorDTO.getClose());
 

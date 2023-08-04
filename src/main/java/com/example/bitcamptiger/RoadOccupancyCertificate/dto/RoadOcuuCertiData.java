@@ -1,4 +1,4 @@
-package com.example.bitcamptiger.vendor.dto;
+package com.example.bitcamptiger.RoadOccupancyCertificate.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -1,4 +1,4 @@
-package com.example.bitcamptiger.vendor;
+package com.example.bitcamptiger.board.service;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;

@@ -1,10 +1,10 @@
-package com.example.bitcamptiger.vendor.controller;
+package com.example.bitcamptiger.board.controller;
 
-import com.example.bitcamptiger.vendor.dto.BusinessResponseDto;
-import com.example.bitcamptiger.vendor.dto.ValidationResponseDto;
-import com.example.bitcamptiger.vendor.dto.VendorValidationDto;
-import com.example.bitcamptiger.vendor.service.VendorAPIService;
-import com.example.bitcamptiger.vendor.service.VendorValidationService;
+import com.example.bitcamptiger.board.dto.BusinessResponseDto;
+import com.example.bitcamptiger.board.dto.ValidationResponseDto;
+import com.example.bitcamptiger.board.dto.VendorValidationDto;
+import com.example.bitcamptiger.board.service.VendorAPIService;
+import com.example.bitcamptiger.board.service.VendorValidationService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONException;

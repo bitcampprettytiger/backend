@@ -1,10 +1,10 @@
-package com.example.bitcamptiger.vendor.dto;
+package com.example.bitcamptiger.board.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 @Data
-public class ValidationResponseDto {
+public class BusinessResponseDto {
     @JsonProperty("request_cnt")
     private int request_cnt;
 
@@ -15,5 +15,6 @@ public class ValidationResponseDto {
     private String status_code;
 
     @JsonProperty("data")
-    private VendorValidationDto[] data;
+    private BusinessDataDto[] data;
 }
+

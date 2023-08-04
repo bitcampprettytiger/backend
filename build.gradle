@@ -2,8 +2,7 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.1.2'
     id 'io.spring.dependency-management' version '1.1.2'
-    id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
-
+//    id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
 }
 
 group = 'com.example'
@@ -28,6 +27,9 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+
+
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     runtimeOnly 'com.mysql:mysql-connector-j'
@@ -37,9 +39,10 @@ dependencies {
 
     // querydsl-jpa
     implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
-    annotationProcessor "com.querydsl:querydsl-apt:5.0.0:jakarta"
+    annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jakarta"
     annotationProcessor "jakarta.annotation:jakarta.annotation-api"
     annotationProcessor "jakarta.persistence:jakarta.persistence-api"
+
     implementation 'org.springframework.boot:spring-boot-starter-validation:3.1.0'
 
 
@@ -55,24 +58,34 @@ dependencies {
 
     // https://mvnrepository.com/artifact/org.modelmapper/modelmapper
     implementation 'org.modelmapper:modelmapper:3.1.1'
+
+//    // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-log4j2
+//    implementation 'org.springframework.boot:spring-boot-starter-log4j2:3.1.2'
+
+
 }
 
 tasks.named('test') {
     useJUnitPlatform()
 }
-// queryDSL 추가 : QueryDSL 빌드 옵션
-def querydslDir = 'src/main/generated'
-
-querydsl {
-    jpa = true
-    querydslSourcesDir = querydslDir
+bootJar {
+    duplicatesStrategy = 'exclude'
+    mainClass = "com.example.bitcamptiger.BitcamptigerApplication"
+//    java.util.jar.Attributes.Name.MAIN_CLASS
 }
-sourceSets {
-    main.java.srcDir querydslDir
-}
-configurations {
-    querydsl.extendsFrom compileClasspath
-}
-compileQuerydsl {
-    options.annotationProcessorPath = configurations.querydsl
-}
+//// queryDSL 추가 : QueryDSL 빌드 옵션
+//def querydslDir = 'src/main/generated'
+//
+//querydsl {
+//    jpa = true
+//    querydslSourcesDir = querydslDir
+//}
+//sourceSets {
+//    main.java.srcDir querydslDir
+//}
+//configurations {
+//    querydsl.extendsFrom compileClasspath
+//}
+//compileQuerydsl {
+//    options.annotationProcessorPath = configurations.querydsl
+//}

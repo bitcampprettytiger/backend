@@ -54,6 +54,7 @@ public class SecurityConfiguration {
         authorizeHttpRequests((authorizaRequests)->{
 //                    /요청은 모든 사용자가 이용가능
     authorizaRequests.requestMatchers("/","/member/**","/board/**").permitAll();
+    authorizaRequests.requestMatchers("/","/member/**","/board/**","/api/**").permitAll();
     authorizaRequests.anyRequest().authenticated();
 })
 //                로그인 로그아웃 설정

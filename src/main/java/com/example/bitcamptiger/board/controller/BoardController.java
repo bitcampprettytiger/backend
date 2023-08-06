@@ -5,6 +5,11 @@ import com.example.bitcamptiger.board.dto.BoardDto;
 import com.example.bitcamptiger.board.service.BoardService;
 import com.example.bitcamptiger.dto.ResponseDTO;
 import com.example.bitcamptiger.member.entity.CustomUserDetails;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -20,6 +25,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BoardController {
         private final BoardService boardService;
+
+
 
     @GetMapping("/board/search/{boardid}")
     public ResponseEntity<?> searchList(//security에 있는 authentication에 접근
@@ -45,7 +52,7 @@ public class BoardController {
 
     @GetMapping({"/board","/board/{page}"})
     public ResponseEntity<?> getTodoList(//security에 있는 authentication에 접근
-                                         @AuthenticationPrincipal CustomUserDetails customUserDetails,@RequestParam(value = "page", required = false) Integer page) {
+                                         @AuthenticationPrincipal CustomUserDetails customUserDetails,@PathVariable(value = "page", required = false) Integer page) {
         System.out.println(page);
         System.out.println(customUserDetails);
 

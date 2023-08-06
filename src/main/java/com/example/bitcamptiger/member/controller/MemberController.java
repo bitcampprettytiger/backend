@@ -5,6 +5,9 @@ import com.example.bitcamptiger.jwt.JwtTokenProvider;
 import com.example.bitcamptiger.member.dto.MemberDTO;
 import com.example.bitcamptiger.member.entity.Member;
 import com.example.bitcamptiger.member.service.MemberService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -13,14 +16,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/member")
+//@RequestMapping("/member")
 public class MemberController {
 
     private final JwtTokenProvider jwtTokenProvider;
@@ -31,7 +33,12 @@ public class MemberController {
 
 
 
-    @PostMapping("/join")
+    @Operation(summary = "Add member",description = "멤버 회원가입")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200",description = "통과"),
+            @ApiResponse(responseCode = "400",description = "실패")
+    })
+    @PostMapping("/member/join")
     public ResponseEntity<?> join(
 //    RequestBody 안에있는 Member을 가져온다.
             @RequestBody @Valid MemberDTO member , BindingResult bindingResult
@@ -65,8 +72,15 @@ public class MemberController {
         }
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody @Valid MemberDTO member){
+
+
+    @Operation(summary = "Add member",description = "멤버 로그인")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200",description = "통과"),
+            @ApiResponse(responseCode = "400",description = "실패")
+    })
+    @PostMapping("/member/login")
+    public ResponseEntity<?> login( @RequestBody @Valid MemberDTO member){
         ResponseDTO<MemberDTO> response = new ResponseDTO<>();
         Member loginmember =  member.toMemberEntity();
         try {

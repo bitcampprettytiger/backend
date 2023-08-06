@@ -49,8 +49,30 @@ public class JwtTokenProvider {
 //               토큰발행
                 .compact();
     }
+    public String accessToken(Member member){
+//        토큰 만료일 설정. 현재로부터 1일뒤로 설정
+        Date expireDate = Date.from(Instant.now().plus(1, ChronoUnit.DAYS));
 
-//   JWT Token의 유효성 확인하느 메소드
+//       JWT Token 생성하여 반환
+        return Jwts.builder()
+//                시그니쳐(서명) 부분에 들어갈 key값 지정
+                .signWith(key, SignatureAlgorithm.HS256)
+//               페이로드에 들어갈 내용
+//                토큰의 주인(sub)
+                .setSubject(member.getUsername())
+//                토큰 발행주체(iss)
+//                임의로 지정
+                .setIssuer("todo boot app")
+//                토큰 발행일자(isa)
+                .setIssuedAt(new Date())
+//                토큰 만료일자
+                .setExpiration(expireDate)
+//               토큰발행
+                .compact();
+    }
+
+
+    //   JWT Token의 유효성 확인하느 메소드
 //    subject에 담겨있는 username을 리턴한다.
     public String validateAndGetUsername(String token){
 //        받아온 토큰 값을 파싱해서 유효성 검사
@@ -64,6 +86,8 @@ public class JwtTokenProvider {
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
+        System.out.println(claims);
+
 //     subject에 담겨있는 username을 리턴
         return claims.getSubject();
 

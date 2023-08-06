@@ -38,7 +38,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     //   filter로 등록하면 자동으로 실행될 메소드
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException,IOException {
 
 
         try {
@@ -51,7 +51,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             if(token != null && !token.equalsIgnoreCase("null")){
 //           유효성 검사 및 username가져오기
                 String username = jwtTokenProvider.validateAndGetUsername(token);
-
+//                System.out.println(username);
 
                 UserDetails userDetails =
                         userDetailsServiceImpl.loadUserByUsername(username);

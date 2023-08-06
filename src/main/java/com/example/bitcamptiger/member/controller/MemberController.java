@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -33,7 +34,7 @@ public class MemberController {
     @PostMapping("/join")
     public ResponseEntity<?> join(
 //    RequestBody 안에있는 Member을 가져온다.
-            @Valid MemberDTO member , BindingResult bindingResult
+            @RequestBody @Valid MemberDTO member , BindingResult bindingResult
             ){
 
 
@@ -65,7 +66,7 @@ public class MemberController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login( MemberDTO member){
+    public ResponseEntity<?> login(@RequestBody @Valid MemberDTO member){
         ResponseDTO<MemberDTO> response = new ResponseDTO<>();
         Member loginmember =  member.toMemberEntity();
         try {
@@ -78,12 +79,15 @@ public class MemberController {
             if(!loginUser.isEmpty()){
                 System.out.println("!loginUser.isEmpty()");
 //                로그인한 유저에 대한 토큰 발행
-                String token = jwtTokenProvider.create(loginUser.get());
-                System.out.println("token"+token);
+                String accessToken   = jwtTokenProvider.create(loginUser.get());
+                String Refresh = jwtTokenProvider.accessToken(loginUser.get());
+                System.out.println("Refresh "+accessToken);
 //              DTO로 변환
                 MemberDTO memberDTO = loginUser.get().toMemberDTO();
 //               발행된 토큰 DTO에 담기
-                memberDTO.setToken(token);
+                memberDTO.setAccessToken(accessToken);
+                memberDTO.setRefreshToken(Refresh);
+
 //                ResponseDTO에 MemberDTO 담아서 ResponseEntity의 body로 리턴
                 response.setItem(memberDTO);
                 response.setStatusCode(HttpStatus.OK.value());

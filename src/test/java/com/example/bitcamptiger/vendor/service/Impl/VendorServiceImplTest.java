@@ -1,5 +1,6 @@
 package com.example.bitcamptiger.vendor.service.Impl;
 
+import com.example.bitcamptiger.vendor.entity.BusinessDay;
 import com.example.bitcamptiger.vendor.entity.Vendor;
 import com.example.bitcamptiger.vendor.entity.VendorOpenStatus;
 import com.example.bitcamptiger.vendor.repository.VendorRepository;

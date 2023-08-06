@@ -1,7 +1,7 @@
-package com.example.bitcamptiger.vendor.service;
+package com.example.bitcamptiger.RoadOccupancyCertificate.service;
 
-import com.example.bitcamptiger.vendor.controller.JsonParserUtil;
-import com.example.bitcamptiger.vendor.dto.RoadOcuuCertiData;
+import com.example.bitcamptiger.RoadOccupancyCertificate.controller.JsonParserUtil;
+import com.example.bitcamptiger.RoadOccupancyCertificate.dto.RoadOcuuCertiData;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.parser.ParseException;
 import org.springframework.stereotype.Service;

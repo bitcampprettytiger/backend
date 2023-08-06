@@ -1,8 +1,8 @@
-package com.example.bitcamptiger.vendor.service;
+package com.example.bitcamptiger.board.service;
 
 
-import com.example.bitcamptiger.vendor.dto.ValidationResponseDto;
-import com.example.bitcamptiger.vendor.dto.VendorValidationDto;
+import com.example.bitcamptiger.board.dto.ValidationResponseDto;
+import com.example.bitcamptiger.board.dto.VendorValidationDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 

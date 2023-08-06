@@ -102,7 +102,7 @@ public class MemberController {
 //               발행된 토큰 DTO에 담기
                 memberDTO.setAccessToken(accessToken);
                 memberDTO.setRefreshToken(Refresh);
-
+                jwtService.login(memberDTO);
 //                ResponseDTO에 MemberDTO 담아서 ResponseEntity의 body로 리턴
                 response.setItem(memberDTO);
                 response.setStatusCode(HttpStatus.OK.value());

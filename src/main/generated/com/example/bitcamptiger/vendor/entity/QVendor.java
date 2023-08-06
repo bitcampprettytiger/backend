@@ -21,7 +21,7 @@ public class QVendor extends EntityPathBase<Vendor> {
 
     public final StringPath address = createString("address");
 
-    public final StringPath businessDay = createString("businessDay");
+    public final EnumPath<BusinessDay> businessDay = createEnum("businessDay", BusinessDay.class);
 
     public final TimePath<java.time.LocalTime> close = createTime("close", java.time.LocalTime.class);
 

@@ -14,19 +14,11 @@ import java.time.LocalTime;
 @NoArgsConstructor
 @Entity
 @Builder
-@SequenceGenerator(
-        name = "VendorSeqGenerator",
-        sequenceName = "VENDOR_SEQ", // 시퀀스 이름을 대문자로 지정
-        initialValue = 1,
-        allocationSize = 1
-)
 public class Vendor {
 
 
     @Id
-    @GeneratedValue(
-            strategy = GenerationType.AUTO,
-            generator = "VendorSeqGenerator")
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column
     private Long id;
 
@@ -55,7 +47,8 @@ public class Vendor {
     private String tel;
 
     @Column
-    private String businessDay;
+    @Enumerated(EnumType.STRING)
+    private BusinessDay businessDay;
 
     @Column
     private LocalTime open;

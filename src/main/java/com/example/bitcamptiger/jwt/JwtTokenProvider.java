@@ -1,6 +1,7 @@
 package com.example.bitcamptiger.jwt;
 
 import com.example.bitcamptiger.member.entity.Member;
+import com.nimbusds.oauth2.sdk.token.RefreshToken;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -86,10 +87,65 @@ public class JwtTokenProvider {
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
+
         System.out.println(claims);
 
 //     subject에 담겨있는 username을 리턴
         return claims.getSubject();
 
     }
+    public String validateRefreshToken(String refreshToken){
+
+
+//        // refresh 객체에서 refreshToken 추출
+//        String refreshToken = refreshTokenObj;
+
+        Claims claims
+                =Jwts.parserBuilder()
+                .setSigningKey(SECRET_KEY.getBytes())
+                .build()
+                .parseClaimsJws(refreshToken)
+                .getBody();
+
+        try {
+            // 검증
+            //refresh 토큰의 만료시간이 지나지 않았을 경우, 새로운 access 토큰을 생성합니다.
+            if (!claims.getExpiration().before(new Date())) {
+                return recreationAccessToken(claims.getSubject().toString());
+            }
+        }catch (Exception e) {
+
+            //refresh 토큰이 만료되었을 경우, 로그인이 필요합니다.
+            return null;
+
+        }
+
+        return null;
+    }
+//  리플레시 토큰이 만료되지않을때 에센스 토큰 다시만들기1
+    public String recreationAccessToken(String membername){
+
+//        Claims claims = Jwts.claims().setSubject(userEmail); // JWT payload 에 저장되는 정보단위
+//        Date now = new Date();
+        Date expireDate = Date.from(Instant.now().plus(1, ChronoUnit.DAYS));
+        //Access Token
+        String accessToken = Jwts.builder()
+//                시그니쳐(서명) 부분에 들어갈 key값 지정
+                .signWith(key, SignatureAlgorithm.HS256)
+//               페이로드에 들어갈 내용
+//                토큰의 주인(sub)
+                .setSubject(membername)
+//                토큰 발행주체(iss)
+//                임의로 지정
+                .setIssuer("todo boot app")
+//                토큰 발행일자(isa)
+                .setIssuedAt(new Date())
+//                토큰 만료일자
+                .setExpiration(expireDate)
+//               토큰발행
+                .compact();
+
+        return accessToken;
+    }
+
 }

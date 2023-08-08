@@ -21,15 +21,10 @@ public class Vendor {
 
 
     @Id
-<<<<<<< HEAD
     @GeneratedValue(
-            strategy = GenerationType.AUTO,
+            strategy = GenerationType.IDENTITY,
             generator = "VendorSeqGenerator")
     @Column(name = "vendor_id")
-=======
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column
->>>>>>> 4b4a551369b574f3bf3219f602b51bb007d02c9a
     private Long id;
 
     @Column
@@ -57,8 +52,7 @@ public class Vendor {
     private String tel;
 
     @Column
-    @Enumerated(EnumType.STRING)
-    private BusinessDay businessDay;
+    private String businessDay;
 
     @Column
     private LocalTime open;

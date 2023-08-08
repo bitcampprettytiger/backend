@@ -22,7 +22,7 @@ public class Menu {
 
     @Id
     @GeneratedValue(
-            strategy = GenerationType.AUTO,
+            strategy = GenerationType.IDENTITY,
             generator = "MenuSeqGenerator")
     @Column(name = "menu_id")
     private Long id;
@@ -43,7 +43,7 @@ public class Menu {
     @Column
     private String MenuType;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "vendor_id")
     private Vendor vendor;
 

@@ -109,15 +109,7 @@ public class VendorServiceImpl implements VendorService {
         vendor.setVendorOpenStatus(VendorOpenStatus.valueOf(vendorDTO.getVendorOpenStatus()));
         vendor.setAddress(vendorDTO.getAddress());
         vendor.setTel(vendorDTO.getTel());
-<<<<<<< HEAD
         vendor.setBusinessDay(vendorDTO.getBusinessDay());
-<<<<<<< HEAD
-=======
-        vendor.setBusinessDay(BusinessDay.valueOf(vendorDTO.getBusinessDay()));
->>>>>>> 4b4a551369b574f3bf3219f602b51bb007d02c9a
-        vendor.setOpen(vendorDTO.getOpen());
-        vendor.setClose(vendorDTO.getClose());
-=======
         vendor.setOpen(LocalTime.parse(vendorDTO.getOpen()));
         vendor.setClose(LocalTime.parse(vendorDTO.getClose()));
         vendor.setMenu(vendorDTO.getMenu());
@@ -133,7 +125,6 @@ public class VendorServiceImpl implements VendorService {
         }
         vendorRepository.save(vendor);
 
->>>>>>> 8fad26b2edd55a3abc95e73c6b26f7996886e569
 
     }
 

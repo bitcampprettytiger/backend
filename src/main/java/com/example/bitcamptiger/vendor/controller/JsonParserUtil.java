@@ -1,6 +1,6 @@
-package com.example.bitcamptiger.RoadOccupancyCertificate.controller;
+package com.example.bitcamptiger.vendor.controller;
 
-import com.example.bitcamptiger.RoadOccupancyCertificate.dto.RoadOcuuCertiData;
+import com.example.bitcamptiger.vendor.dto.RoadOcuuCertiData;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;

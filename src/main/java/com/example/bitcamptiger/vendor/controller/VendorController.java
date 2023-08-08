@@ -74,6 +74,7 @@ public class VendorController {
     //신규 가게 등록
     @PostMapping("/info")
     public ResponseEntity<?> insertVendorInfo(@RequestBody VendorDTO vendorDTO){
+        System.out.println(vendorDTO);
         ResponseDTO<VendorDTO> response = new ResponseDTO<>();
         try{
             vendorService.insertVendor(vendorDTO);

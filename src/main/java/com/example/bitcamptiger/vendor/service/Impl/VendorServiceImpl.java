@@ -1,8 +1,8 @@
 package com.example.bitcamptiger.vendor.service.Impl;
 
-import com.example.bitcamptiger.RoadOccupancyCertificate.service.RoadOccuCertiService;
-import com.example.bitcamptiger.board.dto.BusinessResponseDto;
-import com.example.bitcamptiger.board.service.VendorAPIService;
+import com.example.bitcamptiger.vendor.service.RoadOccuCertiService;
+import com.example.bitcamptiger.vendor.dto.BusinessResponseDto;
+import com.example.bitcamptiger.vendor.service.VendorAPIService;
 import com.example.bitcamptiger.vendor.dto.VendorDTO;
 import com.example.bitcamptiger.vendor.entity.BusinessDay;
 import com.example.bitcamptiger.vendor.entity.Vendor;
@@ -86,9 +86,9 @@ public class VendorServiceImpl implements VendorService {
 //                vendorDTO.setPerNo(roadOcuuCertiDataList.get(0).getPerNo());
 //                vendorDTO.setRlAppiNm(roadOcuuCertiDataList.get(0).getRlAppiNm());
 
-            //VendorDTO를 Vendor 엔티티로 변환하여 저장
-            Vendor vendor = vendorDTO.createVendor();
-            vendorRepository.save(vendor);
+                //VendorDTO를 Vendor 엔티티로 변환하여 저장
+                Vendor vendor = vendorDTO.createVendor();
+                vendorRepository.save(vendor);
 //            }else{
 //                throw  new RuntimeException("도로 점유증 유효성 검사에 실패하였습니다.");
 //            }

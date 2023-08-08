@@ -17,20 +17,19 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 @Builder
-@SequenceGenerator(
-        name = "VendorSeqGenerator",
-        sequenceName = "VENDOR_SEQ", // 시퀀스 이름을 대문자로 지정
-        initialValue = 1,
-        allocationSize = 1
-)
 public class Vendor {
 
 
     @Id
+<<<<<<< HEAD
     @GeneratedValue(
             strategy = GenerationType.AUTO,
             generator = "VendorSeqGenerator")
     @Column(name = "vendor_id")
+=======
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column
+>>>>>>> 4b4a551369b574f3bf3219f602b51bb007d02c9a
     private Long id;
 
     @Column
@@ -58,7 +57,8 @@ public class Vendor {
     private String tel;
 
     @Column
-    private String businessDay;
+    @Enumerated(EnumType.STRING)
+    private BusinessDay businessDay;
 
     @Column
     private LocalTime open;

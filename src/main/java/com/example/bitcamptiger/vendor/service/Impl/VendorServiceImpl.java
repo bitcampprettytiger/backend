@@ -4,6 +4,7 @@ import com.example.bitcamptiger.vendor.service.RoadOccuCertiService;
 import com.example.bitcamptiger.vendor.dto.BusinessResponseDto;
 import com.example.bitcamptiger.vendor.service.VendorAPIService;
 import com.example.bitcamptiger.vendor.dto.VendorDTO;
+import com.example.bitcamptiger.vendor.entity.BusinessDay;
 import com.example.bitcamptiger.vendor.entity.Vendor;
 import com.example.bitcamptiger.vendor.entity.VendorOpenStatus;
 import com.example.bitcamptiger.vendor.repository.VendorRepository;
@@ -108,8 +109,12 @@ public class VendorServiceImpl implements VendorService {
         vendor.setVendorOpenStatus(VendorOpenStatus.valueOf(vendorDTO.getVendorOpenStatus()));
         vendor.setAddress(vendorDTO.getAddress());
         vendor.setTel(vendorDTO.getTel());
+<<<<<<< HEAD
         vendor.setBusinessDay(vendorDTO.getBusinessDay());
 <<<<<<< HEAD
+=======
+        vendor.setBusinessDay(BusinessDay.valueOf(vendorDTO.getBusinessDay()));
+>>>>>>> 4b4a551369b574f3bf3219f602b51bb007d02c9a
         vendor.setOpen(vendorDTO.getOpen());
         vendor.setClose(vendorDTO.getClose());
 =======

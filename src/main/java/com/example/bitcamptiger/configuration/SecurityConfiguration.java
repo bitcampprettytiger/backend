@@ -27,7 +27,7 @@ public class SecurityConfiguration {
 
 
     @Bean
-    public static PasswordEncoder passwordEncoder(){
+    public static PasswordEncoder passwordEncoder() {
 
 
         return new BCryptPasswordEncoder();
@@ -36,9 +36,7 @@ public class SecurityConfiguration {
 
     //    필터 체인 구현(HttpSecurity 객체 사용)
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http)throws Exception{
-
-
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
 
         return http
@@ -51,10 +49,9 @@ public class SecurityConfiguration {
                     httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
                 }).
 //                토큰방식을 사용하기 때문에 세션방식 사용하지 않도록 설정
-        authorizeHttpRequests((authorizaRequests)->{
+        authorizeHttpRequests((authorizaRequests) -> {
 //                    /요청은 모든 사용자가 이용가능
-    authorizaRequests.requestMatchers("/","/member/**","/board/**").permitAll();
-    authorizaRequests.requestMatchers("/","/member/**","/board/**","/api/**").permitAll();
+    authorizaRequests.requestMatchers("/","/member/**","/board/**","/api/**", "vendor/**", "menu/**").permitAll();
     authorizaRequests.anyRequest().authenticated();
 })
 //                로그인 로그아웃 설정
@@ -68,7 +65,6 @@ public class SecurityConfiguration {
 
 
     }
-
 
 
 }

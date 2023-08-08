@@ -1,5 +1,6 @@
 package com.example.bitcamptiger.vendor.entity;
 
+import com.example.bitcamptiger.menu.entity.Menu;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,6 +8,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Data
@@ -14,12 +17,20 @@ import java.time.LocalTime;
 @NoArgsConstructor
 @Entity
 @Builder
+@SequenceGenerator(
+        name = "VendorSeqGenerator",
+        sequenceName = "VENDOR_SEQ", // 시퀀스 이름을 대문자로 지정
+        initialValue = 1,
+        allocationSize = 1
+)
 public class Vendor {
 
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column
+    @GeneratedValue(
+            strategy = GenerationType.AUTO,
+            generator = "VendorSeqGenerator")
+    @Column(name = "vendor_id")
     private Long id;
 
     @Column
@@ -47,8 +58,7 @@ public class Vendor {
     private String tel;
 
     @Column
-    @Enumerated(EnumType.STRING)
-    private BusinessDay businessDay;
+    private String businessDay;
 
     @Column
     private LocalTime open;
@@ -59,6 +69,17 @@ public class Vendor {
     @Column
     private String menu;
 
+    @Column
+    private String b_no;        //사업자 번호
+
+    @Column
+    private String perNo;       //도로 점유증 허가 번호
+
+    @Column
+    private String rlAppiNm;        //신청인명
+
+    @OneToMany(mappedBy = "vendor", cascade = CascadeType.ALL)
+    private List<Menu> menulist;
 
 
 }

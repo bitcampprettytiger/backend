@@ -1,6 +1,7 @@
 package com.example.bitcamptiger.vendor.dto;
 
 
+import com.example.bitcamptiger.menu.dto.MenuDTO;
 import com.example.bitcamptiger.vendor.entity.Vendor;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,6 +10,7 @@ import lombok.NoArgsConstructor;
 import org.modelmapper.ModelMapper;
 
 import java.time.LocalTime;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -22,11 +24,16 @@ public class VendorDTO {
     private String address;
     private String tel;
     private String businessDay;  //String 타입으로 받기
-    private LocalTime open;  //String 타입으로 받기
-    private LocalTime close;  //String 타입으로 받기
+    private String open;  //String 타입으로 받기
+    private String close;  //String 타입으로 받기
     private String menu;
     private String x;
     private String y;
+    private String b_no;        //사업자 번호
+    private String perNo;       //도로 점유증 허가 번호
+    private String rlAppiNm;        //신청인명
+
+
 
     private static ModelMapper modelMapper = new ModelMapper();
 

@@ -7,6 +7,7 @@ import com.querydsl.core.types.dsl.*;
 import com.querydsl.core.types.PathMetadata;
 import javax.annotation.processing.Generated;
 import com.querydsl.core.types.Path;
+import com.querydsl.core.types.dsl.PathInits;
 
 
 /**
@@ -21,7 +22,9 @@ public class QVendor extends EntityPathBase<Vendor> {
 
     public final StringPath address = createString("address");
 
-    public final EnumPath<BusinessDay> businessDay = createEnum("businessDay", BusinessDay.class);
+    public final StringPath b_no = createString("b_no");
+
+    public final StringPath businessDay = createString("businessDay");
 
     public final TimePath<java.time.LocalTime> close = createTime("close", java.time.LocalTime.class);
 
@@ -29,7 +32,13 @@ public class QVendor extends EntityPathBase<Vendor> {
 
     public final StringPath menu = createString("menu");
 
+    public final ListPath<com.example.bitcamptiger.menu.entity.Menu, com.example.bitcamptiger.menu.entity.QMenu> menulist = this.<com.example.bitcamptiger.menu.entity.Menu, com.example.bitcamptiger.menu.entity.QMenu>createList("menulist", com.example.bitcamptiger.menu.entity.Menu.class, com.example.bitcamptiger.menu.entity.QMenu.class, PathInits.DIRECT2);
+
     public final TimePath<java.time.LocalTime> open = createTime("open", java.time.LocalTime.class);
+
+    public final StringPath perNo = createString("perNo");
+
+    public final StringPath rlAppiNm = createString("rlAppiNm");
 
     public final StringPath tel = createString("tel");
 

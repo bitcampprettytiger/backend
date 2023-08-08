@@ -1,4 +1,4 @@
-package com.example.bitcamptiger.board.dto;
+package com.example.bitcamptiger.vendor.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;

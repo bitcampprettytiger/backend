@@ -1,6 +1,6 @@
-package com.example.bitcamptiger.vendor.service;
+package com.example.bitcamptiger.board.service;
 
-import com.example.bitcamptiger.vendor.dto.BusinessResponseDto;
+import com.example.bitcamptiger.board.dto.BusinessResponseDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 

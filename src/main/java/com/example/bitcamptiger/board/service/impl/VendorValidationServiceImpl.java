@@ -1,9 +1,9 @@
-package com.example.bitcamptiger.vendor.service.Impl;
+package com.example.bitcamptiger.board.service.impl;
 
 
-import com.example.bitcamptiger.vendor.dto.ValidationResponseDto;
-import com.example.bitcamptiger.vendor.dto.VendorValidationDto;
-import com.example.bitcamptiger.vendor.service.VendorValidationService;
+import com.example.bitcamptiger.board.dto.ValidationResponseDto;
+import com.example.bitcamptiger.board.dto.VendorValidationDto;
+import com.example.bitcamptiger.board.service.VendorValidationService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;

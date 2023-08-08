@@ -1,6 +1,7 @@
 package com.example.bitcamptiger.menu.dto;
 
 import com.example.bitcamptiger.menu.entity.Menu;
+import com.example.bitcamptiger.vendor.entity.Vendor;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,11 +13,14 @@ import org.modelmapper.ModelMapper;
 @AllArgsConstructor
 @Builder
 public class MenuDTO {
+    private Long id;
     private String menuName;
     private int price;
     private String menuContent;
     private String menuSellStatus;
     private String MenuType;
+
+    private Vendor vendor;
 
     private static ModelMapper modelMapper = new ModelMapper();
 

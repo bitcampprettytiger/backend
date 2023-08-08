@@ -1,5 +1,6 @@
 package com.example.bitcamptiger.menu.entity;
 
+import com.example.bitcamptiger.vendor.entity.Vendor;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,7 +24,7 @@ public class Menu {
     @GeneratedValue(
             strategy = GenerationType.AUTO,
             generator = "MenuSeqGenerator")
-    @Column
+    @Column(name = "menu_id")
     private Long id;
 
     @Column
@@ -41,5 +42,9 @@ public class Menu {
 
     @Column
     private String MenuType;
+
+    @ManyToOne
+    @JoinColumn(name = "vendor_id")
+    private Vendor vendor;
 
 }

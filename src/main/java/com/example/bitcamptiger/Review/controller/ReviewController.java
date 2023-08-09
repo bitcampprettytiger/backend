@@ -24,15 +24,8 @@ public class ReviewController {
     }
 
     @PostMapping
-    public Review createReview(@RequestBody ReviewDto reviewDto, MultipartFile file, @AuthenticationPrincipal user) throws IOException {
-        if(file.isEmpty()) {
-            String img = "/img/none.gif";
-            //리뷰이미지 구현
-        } else {
-            long userId = user.getUser().getId();
-            reviewDto.setUserId(userId);
-            //리뷰작성 구현
-        }
+    public Review createReview(@RequestBody ReviewDto reviewDto, MultipartFile file) throws IOException {
+
         return reviewService.createReview(reviewDto);
     }
 

@@ -4,6 +4,7 @@ import com.example.bitcamptiger.RoadOccupancyCertificate.controller.JsonParserUt
 import com.example.bitcamptiger.RoadOccupancyCertificate.dto.RoadOcuuCertiData;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.parser.ParseException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
@@ -22,11 +23,14 @@ public class RoadOccuCertiService {
 
     private final JsonParserUtil jsonParserUtil;
 
+    @Value(value = "${APIKEY}")
+    private String APIKEY;
+
     public List<RoadOcuuCertiData> fetchDataFromExternalApi() {
         try {
             // 외부 API 호출
             StringBuilder urlbuilder = new StringBuilder("https://www.calspia.go.kr/io/openapi/pm/selectIoPmPermitList.do");
-            urlbuilder.append("?" + URLEncoder.encode("serviceKey", "UTF-8") + "=7775A10E-FF6D-4731-8D16-5640D301C3CF");
+            urlbuilder.append("?" + URLEncoder.encode("serviceKey", "UTF-8") + "=" + APIKEY);
             urlbuilder.append("&" + URLEncoder.encode("searchEdBgDt", "UTF-8") + "=" + URLEncoder.encode("20230702", "UTF-8"));
             urlbuilder.append("&" + URLEncoder.encode("searchEdEdDt", "UTF-8") + "=" + URLEncoder.encode("20230802", "UTF-8"));
             urlbuilder.append("&" + URLEncoder.encode("pageNo", "UTF-8") + "=" + URLEncoder.encode("1", "UTF-8"));

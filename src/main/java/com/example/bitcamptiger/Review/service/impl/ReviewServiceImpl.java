@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -26,9 +27,9 @@ public class ReviewServiceImpl implements ReviewService {
         Review review = Review.builder()
                 .orderNum(reviewDto.getOrderNum())
                 .storeId(reviewDto.getStoreId())
-                .userId(reviewDto.getUserId())
                 .reviewContent(reviewDto.getReviewContent())
                 .score(reviewDto.getScore())
+                .regDate(LocalDateTime.now())
                 .build();
 
         return reviewRepository.save(review);

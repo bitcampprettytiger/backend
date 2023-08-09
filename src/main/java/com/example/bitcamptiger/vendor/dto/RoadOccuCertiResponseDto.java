@@ -1,4 +1,4 @@
-package com.example.bitcamptiger.RoadOccupancyCertificate.dto;
+package com.example.bitcamptiger.vendor.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;

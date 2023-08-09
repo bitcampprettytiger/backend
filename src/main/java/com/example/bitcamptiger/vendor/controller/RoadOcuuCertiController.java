@@ -1,7 +1,7 @@
-package com.example.bitcamptiger.RoadOccupancyCertificate.controller;
+package com.example.bitcamptiger.vendor.controller;
 
-import com.example.bitcamptiger.RoadOccupancyCertificate.dto.RoadOcuuCertiData;
-import com.example.bitcamptiger.RoadOccupancyCertificate.service.RoadOccuCertiService;
+import com.example.bitcamptiger.vendor.dto.RoadOcuuCertiData;
+import com.example.bitcamptiger.vendor.service.RoadOccuCertiService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

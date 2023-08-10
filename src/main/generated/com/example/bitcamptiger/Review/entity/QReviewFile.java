@@ -22,13 +22,9 @@ public class QReviewFile extends EntityPathBase<ReviewFile> {
 
     public static final QReviewFile reviewFile = new QReviewFile("reviewFile");
 
-<<<<<<< HEAD
     public final StringPath filePath = createString("filePath");
 
     public final NumberPath<Long> fileSize = createNumber("fileSize", Long.class);
-=======
-    public final DateTimePath<java.time.LocalDateTime> createDate = createDateTime("createDate", java.time.LocalDateTime.class);
->>>>>>> eea8acc3377211c712ecefd7dd3a7e769b9257b4
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
@@ -36,13 +32,7 @@ public class QReviewFile extends EntityPathBase<ReviewFile> {
 
     public final QReview review;
 
-<<<<<<< HEAD
     public final StringPath savedName = createString("savedName");
-=======
-    public final StringPath saveName = createString("saveName");
-
-    public final NumberPath<Long> size = createNumber("size", Long.class);
->>>>>>> eea8acc3377211c712ecefd7dd3a7e769b9257b4
 
     public QReviewFile(String variable) {
         this(ReviewFile.class, forVariable(variable), INITS);
@@ -62,11 +52,7 @@ public class QReviewFile extends EntityPathBase<ReviewFile> {
 
     public QReviewFile(Class<? extends ReviewFile> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-<<<<<<< HEAD
         this.review = inits.isInitialized("review") ? new QReview(forProperty("review"), inits.get("review")) : null;
-=======
-        this.review = inits.isInitialized("review") ? new QReview(forProperty("review")) : null;
->>>>>>> eea8acc3377211c712ecefd7dd3a7e769b9257b4
     }
 
 }

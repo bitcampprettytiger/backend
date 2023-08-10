@@ -22,7 +22,7 @@ public class Vendor {
 
     @Id
     @GeneratedValue(
-            strategy = GenerationType.IDENTITY,
+            strategy = GenerationType.AUTO,
             generator = "VendorSeqGenerator")
     @Column(name = "vendor_id")
     private Long id;

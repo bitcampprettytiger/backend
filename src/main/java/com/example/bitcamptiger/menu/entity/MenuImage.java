@@ -1,5 +1,6 @@
 package com.example.bitcamptiger.menu.entity;
 
+import com.example.bitcamptiger.vendor.entity.Vendor;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,13 +22,16 @@ public class MenuImage {
 
     @Id
     @GeneratedValue(
-            strategy = GenerationType.IDENTITY,
+            strategy = GenerationType.AUTO,
             generator = "MenuImageSeqGenerator")
     @Column(name = "menu_img_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "menu_id")
+    @JoinColumns({
+            @JoinColumn(name = "menu_id"),
+            @JoinColumn(name = "vendor_id")
+    })
     private Menu menu;
 
     @Column
@@ -38,6 +42,9 @@ public class MenuImage {
 
     @Column
     private String originName;
+
+    @Column
+    private String fileCate;
 
 
 }

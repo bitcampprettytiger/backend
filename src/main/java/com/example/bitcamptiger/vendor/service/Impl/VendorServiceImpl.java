@@ -1,14 +1,14 @@
 package com.example.bitcamptiger.vendor.service.Impl;
 
-import com.example.bitcamptiger.vendor.service.RoadOccuCertiService;
 import com.example.bitcamptiger.vendor.dto.BusinessResponseDto;
-import com.example.bitcamptiger.vendor.service.VendorAPIService;
+import com.example.bitcamptiger.vendor.dto.RoadOcuuCertiData;
 import com.example.bitcamptiger.vendor.dto.VendorDTO;
-import com.example.bitcamptiger.vendor.entity.BusinessDay;
 import com.example.bitcamptiger.vendor.entity.Vendor;
 import com.example.bitcamptiger.vendor.entity.VendorOpenStatus;
 import com.example.bitcamptiger.vendor.repository.VendorRepository;
 import com.example.bitcamptiger.vendor.service.GeoService;
+import com.example.bitcamptiger.vendor.service.RoadOccuCertiService;
+import com.example.bitcamptiger.vendor.service.VendorAPIService;
 import com.example.bitcamptiger.vendor.service.VendorService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.persistence.EntityNotFoundException;
@@ -86,12 +86,21 @@ public class VendorServiceImpl implements VendorService {
 //                vendorDTO.setPerNo(roadOcuuCertiDataList.get(0).getPerNo());
 //                vendorDTO.setRlAppiNm(roadOcuuCertiDataList.get(0).getRlAppiNm());
 
+            //도로 점유증 유효성 검사 인증 완료 후, 도로 점유증 허가 번호/신청인명 꺼내오기
+            RoadOcuuCertiData roadOcuuCertiData = roadOccuCertiService.authenticateAndReturnMessage(vendorDTO.getPerNo(), vendorDTO.getRlAppiNm());
+            if (roadOcuuCertiData != null) {
+                vendorDTO.setPerNo(roadOcuuCertiData.getPerNo());
+                vendorDTO.setRlAppiNm(roadOcuuCertiData.getRlAppiNm());
+
+
                 //VendorDTO를 Vendor 엔티티로 변환하여 저장
                 Vendor vendor = vendorDTO.createVendor();
                 vendorRepository.save(vendor);
-//            }else{
-//                throw  new RuntimeException("도로 점유증 유효성 검사에 실패하였습니다.");
-//            }
+
+
+            }else{
+                throw  new RuntimeException("도로 점유증 유효성 검사에 실패하였습니다.");
+            }
 
         }else{
             throw  new RuntimeException("사업자 유효성 검사에 실패하였습니다.");

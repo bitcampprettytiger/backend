@@ -19,6 +19,7 @@ public class MenuDTO {
     private String menuContent;
     private String menuSellStatus;
     private String MenuType;
+    private int menuViews; // 조회수
 
     private Vendor vendor;
 

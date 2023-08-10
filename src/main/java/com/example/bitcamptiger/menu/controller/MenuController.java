@@ -100,4 +100,12 @@ public class MenuController {
         }
     }
 
+
+    //추천메뉴 (조회수 기준 탑 5만 표출하기)
+    @GetMapping("/recommendedMenus")
+    public ResponseEntity<List<MenuDTO>> getRecommendedMenus() {
+        List<MenuDTO> recommendedMenus = menuService.Recommend5Menu();
+        return ResponseEntity.ok(recommendedMenus);
+    }
+
 }

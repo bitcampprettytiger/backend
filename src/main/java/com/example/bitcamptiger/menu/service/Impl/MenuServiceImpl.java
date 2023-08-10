@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -82,5 +83,23 @@ public class MenuServiceImpl implements MenuService {
         menuRepository.delete(menu);
     }
 
+
+    //추천메뉴 : 조회수 탑 5 만 표출 하는 기능
+    public List<MenuDTO> Recommend5Menu() {
+        // 조회수가 높은 순서대로 상위 5개 메뉴를 가져옴
+        List<Menu> top5Menus = menuRepository.findTop5ByOrderByMenuViewsDesc();
+        // 변환된 DTO를 저장할 리스트 초기화
+        List<MenuDTO> recommendedMenuDTOList = new ArrayList<>();
+        for (Menu menu : top5Menus) {
+            // 메뉴 엔티티를 DTO로 변환하여 리스트에 추가
+            recommendedMenuDTOList.add(MenuDTO.of(menu));
+        }
+        // 조회수(menuViews)를 기준으로 정렬 (내림차순)
+        // -> 조회수가 높은 순서대로 정렬
+        recommendedMenuDTOList.sort(Comparator.comparingInt(MenuDTO::getMenuViews).reversed());
+
+        // 정렬된 DTO 리스트 반환
+        return recommendedMenuDTOList;
+    }
 
 }

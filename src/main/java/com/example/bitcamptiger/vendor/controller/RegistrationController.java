@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 public class RegistrationController {
 
     //사업자번호 조회 관련 컨트롤러
-
     private final VendorAPIService vendorAPIService;
     private final VendorValidationService vendorValidationService;
 
@@ -34,7 +33,6 @@ public class RegistrationController {
         // API 호출 결과를 반환
         return ResponseEntity.ok(responseDto);
     }
-
 
     //사업자번호와 진위확인 여부 (사업자이름, 상호명, 주소 등등)
     @PostMapping("/isValidBusinessInfo")

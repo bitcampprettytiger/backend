@@ -14,4 +14,6 @@ public interface MenuService {
     void updateMenu(MenuDTO menuDTO);
 
     void deleteMenu(MenuDTO menuDTO);
+
+    List<MenuDTO> Recommend5Menu();
 }

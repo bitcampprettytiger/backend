@@ -32,6 +32,8 @@ public class QMenu extends EntityPathBase<Menu> {
 
     public final StringPath MenuType = createString("MenuType");
 
+    public final NumberPath<Integer> menuViews = createNumber("menuViews", Integer.class);
+
     public final NumberPath<Integer> price = createNumber("price", Integer.class);
 
     public final com.example.bitcamptiger.vendor.entity.QVendor vendor;

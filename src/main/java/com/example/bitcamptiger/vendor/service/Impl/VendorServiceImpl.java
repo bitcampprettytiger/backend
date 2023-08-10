@@ -1,5 +1,6 @@
 package com.example.bitcamptiger.vendor.service.Impl;
 
+import com.example.bitcamptiger.vendor.dto.RoadOcuuCertiData;
 import com.example.bitcamptiger.vendor.service.RoadOccuCertiService;
 import com.example.bitcamptiger.vendor.dto.BusinessResponseDto;
 import com.example.bitcamptiger.vendor.service.VendorAPIService;
@@ -81,17 +82,18 @@ public class VendorServiceImpl implements VendorService {
             vendorDTO.setB_no(responseDto.getData()[0].getB_no()) ;
 
             //도로 점유증 유효성 검사 인증 완료 후, 도로 점유증 허가 번호/신청인명 꺼내오기
-//            List<RoadOcuuCertiData> roadOcuuCertiDataList = roadOccuCertiService.findByPerNo(vendorDTO.getPerNo());
-//            if(!roadOcuuCertiDataList.isEmpty()){
-//                vendorDTO.setPerNo(roadOcuuCertiDataList.get(0).getPerNo());
-//                vendorDTO.setRlAppiNm(roadOcuuCertiDataList.get(0).getRlAppiNm());
+            RoadOcuuCertiData roadOcuuCertiData = roadOccuCertiService.authenticateAndReturnMessage(vendorDTO.getPerNo(), vendorDTO.getRlAppiNm());
+            if (roadOcuuCertiData != null) {
+                vendorDTO.setPerNo(roadOcuuCertiData.getPerNo());
+                vendorDTO.setRlAppiNm(roadOcuuCertiData.getRlAppiNm());
 
-                //VendorDTO를 Vendor 엔티티로 변환하여 저장
+                // VendorDTO를 Vendor 엔티티로 변환하여 저장
                 Vendor vendor = vendorDTO.createVendor();
                 vendorRepository.save(vendor);
-//            }else{
-//                throw  new RuntimeException("도로 점유증 유효성 검사에 실패하였습니다.");
-//            }
+            } else {
+                throw new RuntimeException("도로 점유증 유효성 검사에 실패하였습니다.");
+            }
+
 
         }else{
             throw  new RuntimeException("사업자 유효성 검사에 실패하였습니다.");
@@ -99,6 +101,7 @@ public class VendorServiceImpl implements VendorService {
 
 
     }
+
 
 
     @Override

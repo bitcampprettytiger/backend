@@ -80,11 +80,6 @@ public class VendorServiceImpl implements VendorService {
         if(responseDto != null && responseDto.getData().length > 0){
             vendorDTO.setB_no(responseDto.getData()[0].getB_no()) ;
 
-            //도로 점유증 유효성 검사 인증 완료 후, 도로 점유증 허가 번호/신청인명 꺼내오기
-//            List<RoadOcuuCertiData> roadOcuuCertiDataList = roadOccuCertiService.findByPerNo(vendorDTO.getPerNo());
-//            if(!roadOcuuCertiDataList.isEmpty()){
-//                vendorDTO.setPerNo(roadOcuuCertiDataList.get(0).getPerNo());
-//                vendorDTO.setRlAppiNm(roadOcuuCertiDataList.get(0).getRlAppiNm());
 
             //도로 점유증 유효성 검사 인증 완료 후, 도로 점유증 허가 번호/신청인명 꺼내오기
             RoadOcuuCertiData roadOcuuCertiData = roadOccuCertiService.authenticateAndReturnMessage(vendorDTO.getPerNo(), vendorDTO.getRlAppiNm());

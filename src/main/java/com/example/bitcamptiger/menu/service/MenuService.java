@@ -10,9 +10,9 @@ import java.util.List;
 public interface MenuService {
     List<MenuDTO> getMenuList(Long vendorId);
 
-    void insertMenu(Menu menu, MultipartFile[] uploadFiles) throws IOException;
+    void insertMenu(MenuDTO menuDTO, MultipartFile[] uploadFiles) throws IOException;
 
-    void updateMenu(MenuDTO menuDTO);
+    void updateMenu(MenuDTO menuDTO, MultipartFile[] uploadFiles) throws IOException;
 
     void deleteMenu(MenuDTO menuDTO);
 }

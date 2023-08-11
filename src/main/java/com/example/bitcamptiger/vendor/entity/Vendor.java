@@ -22,7 +22,7 @@ public class Vendor {
 
     @Id
     @GeneratedValue(
-            strategy = GenerationType.AUTO,
+            strategy = GenerationType.IDENTITY,
             generator = "VendorSeqGenerator")
     @Column(name = "vendor_id")
     private Long id;
@@ -71,9 +71,6 @@ public class Vendor {
 
     @Column
     private String rlAppiNm;        //신청인명
-
-    @OneToMany(mappedBy = "vendor", cascade = CascadeType.ALL)
-    private List<Menu> menulist;
 
 
 }

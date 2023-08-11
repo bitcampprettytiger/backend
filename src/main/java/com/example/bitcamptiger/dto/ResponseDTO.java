@@ -10,7 +10,6 @@ public class ResponseDTO<T> {
 
     private List<T> items;
 
-    private List<MenuDTO> menuDTOList;
     private T item;
 
     private String errorMessage;

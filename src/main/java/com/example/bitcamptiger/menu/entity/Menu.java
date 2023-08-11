@@ -9,7 +9,6 @@ import java.util.List;
 
 @Getter
 @Setter
-@ToString
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -25,7 +24,7 @@ public class Menu {
 
     @Id
     @GeneratedValue(
-            strategy = GenerationType.AUTO,
+            strategy = GenerationType.IDENTITY,
             generator = "MenuSeqGenerator")
     @Column(name = "menu_id")
     private Long id;
@@ -47,11 +46,11 @@ public class Menu {
     private String menuType;
 
     @Id
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "vendor_id")
     private Vendor vendor;
 
     @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL)
-    private List<MenuImage> images = new ArrayList<>();
+    private List<MenuImage> images;
 
 }

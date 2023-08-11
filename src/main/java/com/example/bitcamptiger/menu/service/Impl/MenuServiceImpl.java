@@ -51,52 +51,24 @@ public class MenuServiceImpl implements MenuService {
         return menuDTOList;
     }
 
-    //메뉴 등록
-    @Override
-    public void insertMenu(Menu menu, MultipartFile[] uploadFiles) throws IOException {
-        menuRepository.flush();
-        menuRepository.save(menu);
-        //변경사항 커밋 후 저징
-        menuRepository.flush();
-
-        File directory = new File(attachPath);
-
-        if(!directory.exists()){
-            directory.mkdir();
-        }
-
-        List<MenuImage> uploadFileList = new ArrayList<>();
-
-        //파일 처리
-        for(MultipartFile file : uploadFiles){
-
-            if(file.getOriginalFilename() != null && !file.getOriginalFilename().isEmpty()){
-                MenuImage menuImage = FileUtils.parseFileInfo(file, attachPath);
-
-                menuImage.setMenu(menu);
-
-                uploadFileList.add(menuImage);
-            }
-
-        }
-
-        for(MenuImage menuImage : uploadFileList){
-            menuImageRepository.save(menuImage);
-        }
-
-    }
 
     @Value("${file.path}")
     String attachPath;
 
 
-    //메뉴 이미지 파일 등록
-    public void saveMenuImage(Menu menu, MultipartFile[] uploadFiles) throws IOException {
+
+    //메뉴 등록
+    @Override
+    public void insertMenu(Menu menu, MultipartFile[] uploadFiles) throws IOException {
+
+        menuRepository.save(menu);
+        //변경사항 커밋 후 저장
+//        menuRepository.flush();
 
         File directory = new File(attachPath);
 
         if(!directory.exists()){
-            directory.mkdir();
+            directory.mkdirs();
         }
 
         List<MenuImage> uploadFileList = new ArrayList<>();
@@ -118,12 +90,15 @@ public class MenuServiceImpl implements MenuService {
             menuImageRepository.save(menuImage);
             menuImageRepository.flush();
         }
+
+        menuRepository.flush();
     }
+
 
 
     //메뉴 수정
     @Override
-    public void updateMenu(MenuDTO menuDTO) {
+    public void updateMenu(MenuDTO menuDTO, MultipartFile[] uploadFiles) throws IOException {
         MenuId menuId = new MenuId();
         menuId.setId(menuDTO.getId());
         menuId.setVendor(menuDTO.getVendor().getId());
@@ -142,10 +117,24 @@ public class MenuServiceImpl implements MenuService {
         menu.setMenuType(menuDTO.getMenuType());
         menu.setVendor(vendor);
 
+        //기존 이미지 삭제
+//        menu.getImages().clear();
+
+        //이미지 리스트 업데이트
+        List<MenuImage> uploadFileList = new ArrayList<>();
+        for(MultipartFile file : uploadFiles){
+            if(file.getOriginalFilename() != null && !file.getOriginalFilename().isEmpty()){
+                MenuImage menuImage = FileUtils.parseFileInfo(file, attachPath);
+                menuImage.setMenu(menu);
+                uploadFileList.add(menuImage);
+            }
+        }
+//        menu.getImages().addAll(uploadFileList);
 
         menuRepository.save(menu);
 
     }
+
 
     //메뉴 삭제
     @Override
@@ -155,6 +144,11 @@ public class MenuServiceImpl implements MenuService {
         menuId.setId(menuDTO.getId());
 
         Menu menu = menuRepository.findById(menuId).orElseThrow(EntityNotFoundException::new);
+
+        //메뉴에 연결된 이미지도 함께 삭제
+//        for(MenuImage menuImage : menu.getImages()){
+//            menuImageRepository.delete(menuImage);
+//        }
 
         menuRepository.delete(menu);
     }

@@ -12,7 +12,7 @@ public interface MenuService {
 
     void insertMenu(Menu menu, MultipartFile[] uploadFiles) throws IOException;
 
-    void updateMenu(MenuDTO menuDTO);
+    void updateMenu(MenuDTO menuDTO, MultipartFile[] uploadFiles) throws IOException;
 
     void deleteMenu(MenuDTO menuDTO);
 }

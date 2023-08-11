@@ -6,12 +6,10 @@ import lombok.*;
 import org.modelmapper.ModelMapper;
 
 
-@Setter
-@Getter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@ToString
 public class MenuDTO {
     private Long id;
     private String menuName;
@@ -24,6 +22,7 @@ public class MenuDTO {
 
     private static ModelMapper modelMapper = new ModelMapper();
 
+    //MenuDTO에서 Menu 엔티티로의 변환을 위해 ModelMapper 라이브러리 활용.
     public Menu createMenu(){
         return modelMapper.map(this, Menu.class);
     }

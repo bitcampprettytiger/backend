@@ -1,13 +1,10 @@
 package com.example.bitcamptiger.menu.entity;
 
-import com.example.bitcamptiger.vendor.entity.Vendor;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -22,12 +19,14 @@ public class MenuImage {
 
     @Id
     @GeneratedValue(
-            strategy = GenerationType.AUTO,
+            strategy = GenerationType.IDENTITY,
             generator = "MenuImageSeqGenerator")
     @Column(name = "menu_img_id")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    //fetchlazy 게으른 로딩. 실제로 해당 객체가 필요한 시점까지 데이터베이스에서 로딩을 지연시킨다는 것을 의미.
+    //cascade = CascadeType.PERSIST는 MenuImage 엔티티가 저장될 때 연관된 Menu 엔티티도 함께 저장되어야 함을 의미.
+    @ManyToOne
     @JoinColumns({
             @JoinColumn(name = "menu_id"),
             @JoinColumn(name = "vendor_id")

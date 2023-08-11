@@ -2,7 +2,6 @@ package com.example.bitcamptiger.menu.controller;
 
 import com.example.bitcamptiger.dto.ResponseDTO;
 import com.example.bitcamptiger.menu.dto.MenuDTO;
-import com.example.bitcamptiger.menu.dto.TestDto;
 import com.example.bitcamptiger.menu.entity.Menu;
 import com.example.bitcamptiger.menu.repository.MenuRepository;
 import com.example.bitcamptiger.menu.service.MenuService;
@@ -12,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -55,19 +53,13 @@ public class MenuController {
             menuService.insertMenu(menu, uploadFiles);
             System.out.println(menuDTO.getVendor().getId());
             List<MenuDTO> menuDTOList = menuService.getMenuList(menuDTO.getVendor().getId());
-//            List<TestDto> testDtoList = new ArrayList<>();
-//            for(MenuDTO menuDTO1 : menuDTOList){
-//                testDto.setMenuName(menuDTO1.getMenuName());
-//                testDto.setMenuContent(menuDTO1.getMenuContent());
-//                testDto.setMenuType(menuDTO1.getMenuType());
-//                testDtoList.add(testDto);
-//            }
-//            System.out.println(testDtoList);
+
             System.out.println("==============menuDTOList==============");
             System.out.println(menuDTOList);
             response.setItems(menuDTOList);
             response.setStatusCode(HttpStatus.OK.value());
-///////////////////////////////////////////////여기다여기///////////////////////////
+
+///////////////////////////////////////////////여기다여기/////////////////////////////////////////////////
             return ResponseEntity.ok().body(response);
         }catch(Exception e) {
             System.out.println(e.getMessage());
@@ -79,10 +71,10 @@ public class MenuController {
 
     // 메뉴 수정
     @PutMapping("/info")
-    public ResponseEntity<?> updateMenu(@RequestBody MenuDTO menuDTO){
+    public ResponseEntity<?> updateMenu(@RequestBody MenuDTO menuDTO, @RequestParam(required = false, value = "file") MultipartFile[] uploadFiles){
         ResponseDTO<MenuDTO> response = new ResponseDTO<>();
         try{
-            menuService.updateMenu(menuDTO);
+            menuService.updateMenu(menuDTO, uploadFiles);
 
             List<MenuDTO> menuDTOList = menuService.getMenuList(menuDTO.getVendor().getId());
 

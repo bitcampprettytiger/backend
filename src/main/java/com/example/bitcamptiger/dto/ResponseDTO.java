@@ -10,9 +10,14 @@ public class ResponseDTO<T> {
 
     private Page<T> items;
 
+    private List<T> itemlist;
+
     private T item;
 
     private String errorMessage;
 
     private int statusCode;
+
+
+
 }

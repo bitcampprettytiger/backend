@@ -1,5 +1,6 @@
 package com.example.bitcamptiger.dto;
 
+import com.example.bitcamptiger.menu.dto.MenuDTO;
 import lombok.Data;
 
 import java.util.List;

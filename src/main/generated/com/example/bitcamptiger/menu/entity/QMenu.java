@@ -30,7 +30,7 @@ public class QMenu extends EntityPathBase<Menu> {
 
     public final EnumPath<MenuSellStatus> menuSellStatus = createEnum("menuSellStatus", MenuSellStatus.class);
 
-    public final StringPath MenuType = createString("MenuType");
+    public final StringPath menuType = createString("menuType");
 
     public final NumberPath<Integer> price = createNumber("price", Integer.class);
 

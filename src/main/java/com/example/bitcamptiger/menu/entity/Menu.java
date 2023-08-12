@@ -17,13 +17,12 @@ public class Menu {
 
     @Id
     @GeneratedValue(
-            strategy = GenerationType.IDENTITY,
-            generator = "MenuSeqGenerator")
+            strategy = GenerationType.IDENTITY)
     @Column(name = "menu_id")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "vendor_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "vendor_id", referencedColumnName = "vendor_id")
     private Vendor vendor;
 
     @Column

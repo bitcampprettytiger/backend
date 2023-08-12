@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -36,8 +37,10 @@ public class MenuServiceImpl implements MenuService {
     //메뉴 리스트
     @Override
     public List<MenuDTO> getMenuList(Long vendorId) {
+        //vendor id 찾아오기
+        Optional<Vendor> byId = vendorRepository.findById(vendorId);
 
-        List<Menu> menuList = menuRepository.findByVendorId(vendorId);
+        List<Menu> menuList = menuRepository.findByVendor(byId.get());
 
         List<MenuDTO> menuDTOList = new ArrayList<>();
         //menuList의 각 요소에 대해 반복하며, 각각의 Menu 객체를 반복 변수인 "menu"에 할당
@@ -60,16 +63,11 @@ public class MenuServiceImpl implements MenuService {
 
     public void insertMenu(MenuDTO menuDTO, MultipartFile[] uploadFiles) throws IOException {
 
+
+        //Menu 엔티티 생성 후 저장.
         Menu save = menuRepository.save(menuDTO.createMenu());
-        //변경사항 커밋 후 저장
-        menuRepository.flush();
 
-
-        MenuImageId id = new MenuImageId();
-        id.setMenu(save);
-        id.setId(1L);
-
-
+        //attachPath 경로로 File 객체 생성
         File directory = new File(attachPath);
 
         if(!directory.exists()){
@@ -78,26 +76,29 @@ public class MenuServiceImpl implements MenuService {
 
         List<MenuImage> uploadFileList = new ArrayList<>();
 
-        Long imageid = 1L;
+        //메뉴 이미지 아이디 저장할 변수를 초기화
+        Long imageId = 1L;
+
         //파일 처리
         for(MultipartFile file : uploadFiles){
 
             if(file.getOriginalFilename() != null && !file.getOriginalFilename().isEmpty()){
                 MenuImage menuImage = FileUtils.parseFileInfo(file, attachPath);
 
-                //여기여기여기여기==============================================================
+                //이전에 저장된 메뉴 정보를 설정.
                 menuImage.setMenu(save);
-                menuImage.setId(imageid);
+                //menuImage 객체에 imageId 설정.
+                menuImage.setId(imageId);
 
                 uploadFileList.add(menuImage);
-               imageid = imageid + 1L;
+                //다음 이미지에 사용될 id값 증가.
+                imageId = imageId + 1L;
             }
 
         }
 
         for(MenuImage menuImage : uploadFileList){
             menuImageRepository.save(menuImage);
-//            menuImageRepository.flush();
         }
 
     }

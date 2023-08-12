@@ -24,56 +24,41 @@ public class MenuController {
 
 
     //모든 메뉴 정보 리스트
-//    @GetMapping("/info/{vendorId}")
-//    public ResponseEntity<?> getMenuInfoList(@PathVariable Long vendorId){
-//        ResponseDTO<MenuDTO> response = new ResponseDTO<>();
-//        try{
-//            List<MenuDTO> menuDTOList = menuService.getMenuList(vendorId);
-//
-//            response.setItems(menuDTOList);
-//            response.setStatusCode(HttpStatus.OK.value());
-//
-//            return ResponseEntity.ok().body(response);
-//        }catch(Exception e) {
-//            response.setErrorMessage(e.getMessage());
-//            response.setStatusCode(HttpStatus.BAD_REQUEST.value());
-//            return ResponseEntity.badRequest().body(response);
-//        }
-//    }
+    @GetMapping("/info/{vendorId}")
+    public ResponseEntity<?> getMenuInfoList(@PathVariable Long vendorId){
+        ResponseDTO<MenuDTO> response = new ResponseDTO<>();
+        try{
+            List<MenuDTO> menuDTOList = menuService.getMenuList(vendorId);
+
+            response.setItems(menuDTOList);
+            response.setStatusCode(HttpStatus.OK.value());
+
+            return ResponseEntity.ok().body(response);
+        }catch(Exception e) {
+            response.setErrorMessage(e.getMessage());
+            response.setStatusCode(HttpStatus.BAD_REQUEST.value());
+            return ResponseEntity.badRequest().body(response);
+        }
+    }
 
 
     //메뉴 등록
     @PostMapping("/info")
     public ResponseEntity<?> insertMenu(MenuDTO menuDTO, @RequestParam(required = false, value = "file") MultipartFile[] uploadFiles){
         ResponseDTO<MenuDTO> response = new ResponseDTO<>();
-        System.out.println(menuDTO + "========================menuDTO=================");
-        System.out.println(uploadFiles.length + "==================uploadFiles===============");
+
         try{
 
             Menu menu = menuDTO.createMenu();
             menuService.insertMenu(menuDTO, uploadFiles);
-            System.out.println(menuDTO.getVendor().getId());
+
             List<MenuDTO> menuDTOList = menuService.getMenuList(menuDTO.getVendor().getId());
 
-
-            System.out.println("==============menuDTOList==============");
-
-//            List<MenuDTO> menuDTOList = new ArrayList<>();
-//
-//            //menuList의 각 요소에 대해 반복하며, 각각의 Menu 객체를 반복 변수인 "menu"에 할당
-//            for(Menu menu : menuList){
-//
-//                menuDTOList.add(MenuDTO.of(menu));
-//            }
-
-            /////////////////////////////여기다진짜 여기
             response.setItems(menuDTOList);
             response.setStatusCode(HttpStatus.OK.value());
 
-///////////////////////////////////////////////여기다여기/////////////////////////////////////////////////
             return ResponseEntity.ok().body(response);
         }catch(Exception e) {
-            System.out.println(e.getMessage());
             response.setErrorMessage(e.getMessage());
             response.setStatusCode(HttpStatus.BAD_REQUEST.value());
             return ResponseEntity.badRequest().body(response);
@@ -103,23 +88,23 @@ public class MenuController {
 
 
     // 메뉴 삭제
-//    @DeleteMapping("/info")
-//    public ResponseEntity<?> deleteMenu(@RequestBody MenuDTO menuDTO){
-//        ResponseDTO<MenuDTO> response = new ResponseDTO<>();
-//        try{
-//            menuService.deleteMenu(menuDTO);
-//
-//            List<MenuDTO> menuDTOList = menuService.getMenuList(menuDTO.getVendor().getId());
-//
-//            response.setItems(menuDTOList);
-//            response.setStatusCode(HttpStatus.OK.value());
-//
-//            return ResponseEntity.ok().body(response);
-//        }catch(Exception e) {
-//            response.setErrorMessage(e.getMessage());
-//            response.setStatusCode(HttpStatus.BAD_REQUEST.value());
-//            return ResponseEntity.badRequest().body(response);
-//        }
-//    }
+    @DeleteMapping("/info")
+    public ResponseEntity<?> deleteMenu(@RequestBody MenuDTO menuDTO){
+        ResponseDTO<MenuDTO> response = new ResponseDTO<>();
+        try{
+            menuService.deleteMenu(menuDTO);
+
+            List<MenuDTO> menuDTOList = menuService.getMenuList(menuDTO.getVendor().getId());
+
+            response.setItems(menuDTOList);
+            response.setStatusCode(HttpStatus.OK.value());
+
+            return ResponseEntity.ok().body(response);
+        }catch(Exception e) {
+            response.setErrorMessage(e.getMessage());
+            response.setStatusCode(HttpStatus.BAD_REQUEST.value());
+            return ResponseEntity.badRequest().body(response);
+        }
+    }
 
 }

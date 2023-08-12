@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
+
 @Transactional
 public interface MenuImageRepository extends JpaRepository<MenuImage, MenuImageId> {
 

@@ -57,6 +57,7 @@ public class MenuServiceImpl implements MenuService {
 
     //메뉴 등록
     @Override
+
     public void insertMenu(MenuDTO menuDTO, MultipartFile[] uploadFiles) throws IOException {
 
         Menu save = menuRepository.save(menuDTO.createMenu());
@@ -99,7 +100,6 @@ public class MenuServiceImpl implements MenuService {
 //            menuImageRepository.flush();
         }
 
-//        menuRepository.flush();
     }
 
 
@@ -107,10 +107,7 @@ public class MenuServiceImpl implements MenuService {
     //메뉴 수정
     @Override
     public void updateMenu(MenuDTO menuDTO, MultipartFile[] uploadFiles) throws IOException {
-//        MenuId menuId = new MenuId();
-//        Menu menu = new Menu();
-//        menu.setId(menuDTO.getId());
-//        menu.setVendor(menuDTO.getVendor().getId());
+
 
         // MenuDTO에서 id로 기존의 Menu 엔티티를 찾음
         Menu menu = menuRepository.findById(menuDTO.getId()).orElseThrow(EntityNotFoundException::new);
@@ -152,6 +149,11 @@ public class MenuServiceImpl implements MenuService {
 //        menuId.setVendor(menuDTO.getVendor().getId());
 
         Menu menu = menuRepository.findById(menuDTO.getId()).orElseThrow(EntityNotFoundException::new);
+
+        //메뉴에 연결된 이미지도 함께 삭제
+//        for(MenuImage menuImage : menu.getImages()){
+//            menuImageRepository.delete(menuImage);
+//        }
 
         //메뉴에 연결된 이미지도 함께 삭제
 //        for(MenuImage menuImage : menu.getImages()){

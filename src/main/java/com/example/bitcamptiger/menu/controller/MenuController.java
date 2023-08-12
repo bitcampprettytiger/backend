@@ -11,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -51,10 +50,11 @@ public class MenuController {
         System.out.println(uploadFiles.length + "==================uploadFiles===============");
         try{
 
+            Menu menu = menuDTO.createMenu();
             menuService.insertMenu(menuDTO, uploadFiles);
+            System.out.println(menuDTO.getVendor().getId());
+            List<MenuDTO> menuDTOList = menuService.getMenuList(menuDTO.getVendor().getId());
 
-            System.out.println(menuDTO.getVendor().getId()+"-----------------------------");
-            List<MenuDTO> menuList = menuService.getMenuList(menuDTO.getVendor().getId());
 
             System.out.println("==============menuDTOList==============");
 
@@ -67,7 +67,7 @@ public class MenuController {
 //            }
 
             /////////////////////////////여기다진짜 여기
-            response.setItems(menuList);
+            response.setItems(menuDTOList);
             response.setStatusCode(HttpStatus.OK.value());
 
 ///////////////////////////////////////////////여기다여기/////////////////////////////////////////////////
@@ -81,24 +81,25 @@ public class MenuController {
     }
 
     // 메뉴 수정
-//    @PutMapping("/info")
-//    public ResponseEntity<?> updateMenu(@RequestBody MenuDTO menuDTO, @RequestParam(required = false, value = "file") MultipartFile[] uploadFiles){
-//        ResponseDTO<MenuDTO> response = new ResponseDTO<>();
-//        try{
-//            menuService.updateMenu(menuDTO, uploadFiles);
-//
-//            List<MenuDTO> menuDTOList = menuService.getMenuList(menuDTO.getVendor().getId());
-//
-//            response.setItems(menuDTOList);
-//            response.setStatusCode(HttpStatus.OK.value());
-//
-//            return ResponseEntity.ok().body(response);
-//        }catch(Exception e) {
-//            response.setErrorMessage(e.getMessage());
-//            response.setStatusCode(HttpStatus.BAD_REQUEST.value());
-//            return ResponseEntity.badRequest().body(response);
-//        }
-//    }
+    @PutMapping("/info")
+    public ResponseEntity<?> updateMenu(@RequestBody MenuDTO menuDTO, @RequestParam(required = false, value = "file") MultipartFile[] uploadFiles){
+        ResponseDTO<MenuDTO> response = new ResponseDTO<>();
+        try{
+            menuService.updateMenu(menuDTO, uploadFiles);
+
+            List<MenuDTO> menuDTOList = menuService.getMenuList(menuDTO.getVendor().getId());
+
+            response.setItems(menuDTOList);
+            response.setStatusCode(HttpStatus.OK.value());
+
+            return ResponseEntity.ok().body(response);
+        }catch(Exception e) {
+            response.setErrorMessage(e.getMessage());
+            response.setStatusCode(HttpStatus.BAD_REQUEST.value());
+            return ResponseEntity.badRequest().body(response);
+        }
+    }
+
 
 
     // 메뉴 삭제

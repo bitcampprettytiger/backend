@@ -29,13 +29,13 @@ public class Review {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id")
-    Member member;
+    private Member member;
 
     private String reviewContent; //리뷰내용
     private LocalDateTime regDate = LocalDateTime.now(); //리뷰작성일자
     private Integer score; //별점
 
-    @OneToMany(mappedBy = "review", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "review")
     private List<ReviewFile> images = new ArrayList<>();
 
     public void setMember(Member member) { this.member = member;}

@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "ReviewFile")
+@Table
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

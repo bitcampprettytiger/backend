@@ -24,7 +24,9 @@ public class MemberDTO {
 
     private String role;
 
-    private String token;
+    private String accessToken;
+
+    private String refreshToken;
     public Member toMemberEntity(){
         return Member.builder()
                 .id(this.id)

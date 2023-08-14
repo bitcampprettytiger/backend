@@ -22,10 +22,7 @@ import lombok.*;
 public class Member {
 
     @Id
-    @GeneratedValue(
-            strategy = GenerationType.AUTO,
-            generator = "MemberSeqGenerator"
-    )
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)

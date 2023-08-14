@@ -2,6 +2,7 @@ package com.example.bitcamptiger.dto;
 
 import com.example.bitcamptiger.menu.dto.MenuDTO;
 import lombok.Data;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -9,7 +10,9 @@ import java.util.List;
 
 public class ResponseDTO<T> {
 
-    private List<T> items;
+    private Page<T> items;
+
+    private List<T> itemlist;
 
     private T item;
 

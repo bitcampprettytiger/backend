@@ -1,5 +1,6 @@
 package com.example.bitcamptiger.vendor.entity;
 
+import com.example.bitcamptiger.menu.entity.Menu;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,6 +8,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Data
@@ -19,8 +22,7 @@ public class Vendor {
 
     @Id
     @GeneratedValue(
-            strategy = GenerationType.IDENTITY,
-            generator = "VendorSeqGenerator")
+            strategy = GenerationType.IDENTITY)
     @Column(name = "vendor_id")
     private Long id;
 
@@ -69,5 +71,7 @@ public class Vendor {
     @Column
     private String rlAppiNm;        //신청인명
 
+    @OneToMany(mappedBy = "vendor", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Menu> menuList = new ArrayList<>();
 
 }

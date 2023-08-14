@@ -32,7 +32,7 @@ public class MenuServiceImpl implements MenuService {
     private final MenuRepository menuRepository;
     private final MenuImageRepository menuImageRepository;
     private final VendorRepository vendorRepository;
-
+    private final FileUtils fileUtils;
 
     //메뉴 리스트
     @Override
@@ -83,7 +83,7 @@ public class MenuServiceImpl implements MenuService {
         for(MultipartFile file : uploadFiles){
 
             if(file.getOriginalFilename() != null && !file.getOriginalFilename().isEmpty()){
-                MenuImage menuImage = FileUtils.parseFileInfo(file, attachPath);
+                MenuImage menuImage = fileUtils.parseFileInfo(file, attachPath);
 
                 //이전에 저장된 메뉴 정보를 설정.
                 menuImage.setMenu(save);
@@ -130,7 +130,7 @@ public class MenuServiceImpl implements MenuService {
         List<MenuImage> uploadFileList = new ArrayList<>();
         for(MultipartFile file : uploadFiles){
             if(file.getOriginalFilename() != null && !file.getOriginalFilename().isEmpty()){
-                MenuImage menuImage = FileUtils.parseFileInfo(file, attachPath);
+                MenuImage menuImage = fileUtils.parseFileInfo(file, attachPath);
                 menuImage.setMenu(menu);
                 uploadFileList.add(menuImage);
             }

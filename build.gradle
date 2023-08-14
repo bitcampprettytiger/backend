@@ -93,6 +93,8 @@ bootJar {
 //    java.util.jar.Attributes.Name.MAIN_CLASS
 }
 
+//
+//    java.util.jar.Attributes.Name.MAIN_CLASS
 //// queryDSL 추가 : QueryDSL 빌드 옵션
 //def querydslDir = 'src/main/generated'
 //

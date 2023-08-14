@@ -30,7 +30,7 @@ public class MenuController {
         try{
             List<MenuDTO> menuDTOList = menuService.getMenuList(vendorId);
 
-            response.setItems(menuDTOList);
+            response.setItemlist(menuDTOList);
             response.setStatusCode(HttpStatus.OK.value());
 
             return ResponseEntity.ok().body(response);
@@ -54,7 +54,7 @@ public class MenuController {
 
             List<MenuDTO> menuDTOList = menuService.getMenuList(menuDTO.getVendor().getId());
 
-            response.setItems(menuDTOList);
+            response.setItemlist(menuDTOList);
             response.setStatusCode(HttpStatus.OK.value());
 
             return ResponseEntity.ok().body(response);
@@ -74,7 +74,7 @@ public class MenuController {
 
             List<MenuDTO> menuDTOList = menuService.getMenuList(menuDTO.getVendor().getId());
 
-            response.setItems(menuDTOList);
+            response.setItemlist(menuDTOList);
             response.setStatusCode(HttpStatus.OK.value());
 
             return ResponseEntity.ok().body(response);
@@ -96,7 +96,7 @@ public class MenuController {
 
             List<MenuDTO> menuDTOList = menuService.getMenuList(menuDTO.getVendor().getId());
 
-            response.setItems(menuDTOList);
+            response.setItemlist(menuDTOList);
             response.setStatusCode(HttpStatus.OK.value());
 
             return ResponseEntity.ok().body(response);

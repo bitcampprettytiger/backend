@@ -4,7 +4,6 @@ import com.example.bitcamptiger.common.FileUtils;
 import com.example.bitcamptiger.menu.dto.MenuDTO;
 import com.example.bitcamptiger.menu.entity.Menu;
 import com.example.bitcamptiger.menu.entity.MenuImage;
-import com.example.bitcamptiger.menu.entity.MenuImageId;
 import com.example.bitcamptiger.menu.entity.MenuSellStatus;
 import com.example.bitcamptiger.menu.repository.MenuImageRepository;
 import com.example.bitcamptiger.menu.repository.MenuRepository;
@@ -109,12 +108,8 @@ public class MenuServiceImpl implements MenuService {
     @Override
     public void updateMenu(MenuDTO menuDTO, MultipartFile[] uploadFiles) throws IOException {
 
-
         // MenuDTO에서 id로 기존의 Menu 엔티티를 찾음
         Menu menu = menuRepository.findById(menuDTO.getId()).orElseThrow(EntityNotFoundException::new);
-
-        // VendorDTO에서 Vendor 엔티티로 변환
-        Vendor vendor = vendorRepository.findById(menuDTO.getVendor().getId()).orElseThrow(EntityNotFoundException::new);
 
         //수정 가능한 필드만 업데이트
         menu.setMenuName(menuDTO.getMenuName());
@@ -124,20 +119,41 @@ public class MenuServiceImpl implements MenuService {
         menu.setMenuType(menuDTO.getMenuType());
 
         //기존 이미지 삭제
-//        menu.getImages().clear();
+        List<MenuImage> existingImages = menu.getImages();
+        Long lastImageId = 1L;
+        if(existingImages != null && !existingImages.isEmpty()){
+            for(MenuImage menuImage : existingImages){
+                //가장 큰 menu_img_id 값을 찾는다.
+                if(menuImage.getId() > lastImageId){
+                    lastImageId = menuImage.getId();
+                }
+                //db에서 이미지 삭제
+                menuImageRepository.delete(menuImage);
+            }
+            //메뉴 객체에서 이미지 목록 삭제
+            menu.getImages().clear();
+        }
 
-        //이미지 리스트 업데이트
+
+        //새로운 이미지 리스트 업데이트
         List<MenuImage> uploadFileList = new ArrayList<>();
         for(MultipartFile file : uploadFiles){
             if(file.getOriginalFilename() != null && !file.getOriginalFilename().isEmpty()){
                 MenuImage menuImage = FileUtils.parseFileInfo(file, attachPath);
                 menuImage.setMenu(menu);
+
+                //새로운 menuImage 객체에 imageId 설정
+                lastImageId = lastImageId + 1L;
+                menuImage.setId(lastImageId);
                 uploadFileList.add(menuImage);
             }
         }
-//        menu.getImages().addAll(uploadFileList);
 
-        menuRepository.save(menu);
+
+        //새로운 이미지 객체들을 메뉴이미지 데이터베이스에 저장
+        for(MenuImage menuImage : uploadFileList){
+            menuImageRepository.save(menuImage);
+        }
 
     }
 
@@ -145,21 +161,20 @@ public class MenuServiceImpl implements MenuService {
     //메뉴 삭제
     @Override
     public void deleteMenu(MenuDTO menuDTO) {
-//        MenuId menuId = new MenuId();
-//        menuId.setId(menuDTO.getId());
-//        menuId.setVendor(menuDTO.getVendor().getId());
 
+        // MenuDTO에서 id로 기존의 Menu 엔티티를 찾음
         Menu menu = menuRepository.findById(menuDTO.getId()).orElseThrow(EntityNotFoundException::new);
 
         //메뉴에 연결된 이미지도 함께 삭제
-//        for(MenuImage menuImage : menu.getImages()){
-//            menuImageRepository.delete(menuImage);
-//        }
+        for(MenuImage menuImage : menu.getImages()){
+            menuImageRepository.delete(menuImage);
 
-        //메뉴에 연결된 이미지도 함께 삭제
-//        for(MenuImage menuImage : menu.getImages()){
-//            menuImageRepository.delete(menuImage);
-//        }
+            //로컬에 저장된 이미지 파일 삭제 메서드
+            File file = new File(attachPath);
+            if(file.exists()){
+                file.delete();
+            }
+        }
 
         menuRepository.delete(menu);
     }

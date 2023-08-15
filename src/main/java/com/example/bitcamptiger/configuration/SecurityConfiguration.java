@@ -51,8 +51,10 @@ public class SecurityConfiguration {
 //                토큰방식을 사용하기 때문에 세션방식 사용하지 않도록 설정
         authorizeHttpRequests((authorizaRequests) -> {
 //                    /요청은 모든 사용자가 이용가능
-    authorizaRequests.requestMatchers("/**","/member/**","/board/**","/api/**", "/vendor/**", "/menu/**").permitAll();
-    authorizaRequests.anyRequest().authenticated();
+    authorizaRequests.requestMatchers("/member/**","/board/**","/api/**", "/menu/**").permitAll();
+     authorizaRequests.requestMatchers("/vendor/**").hasAuthority("ROLE_VENDOR");
+     authorizaRequests.requestMatchers("/**").hasAuthority("ROLE_VENDOR");
+     authorizaRequests.anyRequest().authenticated();
 })
 //                로그인 로그아웃 설정
 //                AuthenticationProvider에게 전달할

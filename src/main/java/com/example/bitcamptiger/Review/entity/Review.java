@@ -24,7 +24,7 @@ public class Review {
     @Column(name = "REVIEW_NUM")
     private Long reviewNum; //리뷰번호
 
-    private Long orderNum; //주문번호
+    private Long orderNum; //포장번호
     private Long storeId; //상점번호
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -38,19 +38,26 @@ public class Review {
     @OneToMany(mappedBy = "review", cascade = CascadeType.ALL)
     private List<ReviewFile> images = new ArrayList<>();
 
-    public void setMember(Member member) { this.member = member;}
-
-    private ReviewDto EntitiyToDto() {
-        ReviewDto reviewDto = ReviewDto.builder()
-                .reviewNum(this.reviewNum)
-                .orderNum(this.orderNum)
-                .storeId(this.storeId)
-                .reviewContent(this.reviewContent)
-                .regDate(this.regDate)
-                .score(this.score)
-                .build();
-        return reviewDto;
+    public void setMember(Member member) {
+        this.member = member;
     }
 
+    public void updateReview(String reviewContent, Integer score) {
+        this.reviewContent = reviewContent;
+        this.score = score;
+    }
+
+
+    public static ReviewDto fromEntity(Review review) {
+        return ReviewDto.builder()
+                .reviewNum(review.getReviewNum())
+                .orderNum(review.getOrderNum())
+                .storeId(review.getStoreId())
+                .userId(review.getMember().getId())
+                .reviewContent(review.getReviewContent())
+                .regDate(review.getRegDate())
+                .score(review.getScore())
+                .build();
+    }
 
 }

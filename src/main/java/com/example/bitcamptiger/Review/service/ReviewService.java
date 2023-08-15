@@ -13,5 +13,5 @@ public interface ReviewService {
 
     void deleteReview(Long reviewNum);
 
-    List<Review> getReviews();
+    List<ReviewDto> getAllReviews();
 }

@@ -21,17 +21,16 @@ public class ReviewDto {
     private LocalDateTime regDate;
     private Integer score;
 
-    public Review DtoToEntity() {
-        Review review = Review.builder()
+    public Review toEntity() {
+        return Review.builder()
                 .reviewNum(this.reviewNum)
                 .orderNum(this.orderNum)
                 .storeId(this.storeId)
-                .member(Member.builder().id(this.userId).build())
                 .reviewContent(this.reviewContent)
-                .regDate(this.regDate)
                 .score(this.score)
+                .member(Member.builder().id(this.userId).build())
                 .build();
-
-        return review;
     }
 }
+
+

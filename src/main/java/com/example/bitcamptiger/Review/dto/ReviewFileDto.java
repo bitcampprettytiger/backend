@@ -7,13 +7,11 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ReviewFIleDto {
+public class ReviewFileDto {
 
     private Long id;
     private String originName;
@@ -37,4 +35,5 @@ public class ReviewFIleDto {
     public void setReviewNum(Long reviewNum) {
         this.reviewNum =reviewNum;
     }
+
 }

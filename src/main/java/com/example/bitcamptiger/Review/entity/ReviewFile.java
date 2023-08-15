@@ -1,12 +1,11 @@
 package com.example.bitcamptiger.Review.entity;
 
+import com.example.bitcamptiger.Review.dto.ReviewFileDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "ReviewFile")
@@ -35,6 +34,18 @@ public class ReviewFile {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "REVIEW_NUM")
     private Review review;
+
+    public ReviewFileDto EntitytoDto() {
+        ReviewFileDto reviewFIleDto = ReviewFileDto.builder()
+                .id(this.id)
+                .reviewNum(this.review.getReviewNum()) // Review 참조
+                .savedName(this.savedName)
+                .filePath(this.filePath)
+                .originName(this.originName)
+                .fileSize(this.fileSize)
+                .build();
+        return reviewFIleDto;
+    }
 
 
 }

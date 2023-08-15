@@ -25,7 +25,7 @@ public enum BaseResponseStatus {
     POST_TEST_EXISTS_MEMO(false,HttpStatus.BAD_REQUEST.value(),"중복된 메모입니다."),
     POST_PRIVARY(false,HttpStatus.BAD_REQUEST.value(),"개인정보보호법동의를 해주세요."),
     POST_INACTIVE(false,HttpStatus.BAD_REQUEST.value(),"활성화 되지 않는 아이디입니다.."),
-
+    VENDORDTO_NUTNULL(false,HttpStatus.BAD_REQUEST.value(),"활성화 되지 않는 아이디입니다.."),
 
     RESPONSE_ERROR(false, HttpStatus.NOT_FOUND.value(), "값을 불러오는데 실패하였습니다."),
 

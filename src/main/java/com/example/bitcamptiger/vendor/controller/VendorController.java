@@ -2,6 +2,8 @@ package com.example.bitcamptiger.vendor.controller;
 
 
 import com.example.bitcamptiger.dto.ResponseDTO;
+import com.example.bitcamptiger.response.BaseResponse;
+import com.example.bitcamptiger.response.BaseResponseStatus;
 import com.example.bitcamptiger.vendor.dto.VendorDTO;
 import com.example.bitcamptiger.vendor.entity.Vendor;
 import com.example.bitcamptiger.vendor.repository.VendorRepository;
@@ -12,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
+import static com.example.bitcamptiger.response.BaseResponseStatus.VENDORDTO_NUTNULL;
 
 @RestController
 @RequestMapping("/vendor")
@@ -75,6 +79,10 @@ public class VendorController {
     @PostMapping("/info")
     public ResponseEntity<?> insertVendorInfo(@RequestBody VendorDTO vendorDTO){
         System.out.println(vendorDTO);
+//        vendorDTO null 일때 vaildation
+        if(vendorDTO.equals(null)){
+            new BaseResponse<>(VENDORDTO_NUTNULL);
+        }
         ResponseDTO<VendorDTO> response = new ResponseDTO<>();
         try{
             vendorService.insertVendor(vendorDTO);

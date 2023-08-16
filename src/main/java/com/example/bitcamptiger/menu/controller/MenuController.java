@@ -2,9 +2,6 @@ package com.example.bitcamptiger.menu.controller;
 
 import com.example.bitcamptiger.dto.ResponseDTO;
 import com.example.bitcamptiger.menu.dto.MenuDTO;
-import com.example.bitcamptiger.menu.dto.MenuImageDTO;
-import com.example.bitcamptiger.menu.entity.Menu;
-import com.example.bitcamptiger.menu.entity.MenuImageId;
 import com.example.bitcamptiger.menu.repository.MenuRepository;
 import com.example.bitcamptiger.menu.service.MenuService;
 import lombok.RequiredArgsConstructor;

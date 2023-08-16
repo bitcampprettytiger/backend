@@ -1,5 +1,11 @@
 package com.example.bitcamptiger.vendor.service.Impl;
 
+import com.example.bitcamptiger.menu.dto.MenuDTO;
+import com.example.bitcamptiger.menu.dto.MenuImageDTO;
+import com.example.bitcamptiger.menu.entity.Menu;
+import com.example.bitcamptiger.menu.entity.MenuImage;
+import com.example.bitcamptiger.menu.repository.MenuImageRepository;
+import com.example.bitcamptiger.menu.repository.MenuRepository;
 import com.example.bitcamptiger.vendor.dto.BusinessResponseDto;
 import com.example.bitcamptiger.vendor.dto.RoadOcuuCertiData;
 import com.example.bitcamptiger.vendor.dto.VendorDTO;
@@ -30,6 +36,8 @@ public class VendorServiceImpl implements VendorService {
     private final GeoService geoService;
     private final VendorAPIService vendorAPIService;
     private final RoadOccuCertiService roadOccuCertiService;
+    private final MenuRepository menuRepository;
+    private final MenuImageRepository menuImageRepository;
 
 
     //모든 가게 조회
@@ -45,6 +53,28 @@ public class VendorServiceImpl implements VendorService {
             //Vendor 객체를 VendorDTO 객체로 변환
             VendorDTO vendorDTO = VendorDTO.of(vendor);
 
+            List<Menu> menuList = menuRepository.findByVendor(vendor);
+
+            //vendor 조회시 등록된 menu 정보도 조회
+            List<MenuDTO> menuDTOList = new ArrayList<>();
+            for(Menu menu : menuList){
+                MenuDTO menuDTO = MenuDTO.of(menu);
+
+                //해당 메뉴 이미지 조회
+                List<MenuImage> menuImageList = menuImageRepository.findByMenu(menu);
+
+                List<MenuImageDTO> menuImageDTOList = new ArrayList<>();
+                for (MenuImage  menuImage: menuImageList){
+                    //MenuImage 객체를 MenuImageDTO 객체로 변환
+                    MenuImageDTO menuImageDTO = MenuImageDTO.of(menuImage);
+                    menuImageDTOList.add(menuImageDTO);
+                }
+                // MenuDTO 객체에 메뉴 이미지 리스트를 설정
+                menuDTO.setMenuImageList(menuImageDTOList);
+                menuDTOList.add(menuDTO);
+            }
+
+            vendorDTO.setMenuDTOList(menuDTOList);
             vendorDTOList.add(vendorDTO);
         }
 
@@ -137,7 +167,6 @@ public class VendorServiceImpl implements VendorService {
         vendor.setBusinessDay(vendorDTO.getBusinessDay());
         vendor.setOpen(LocalTime.parse(vendorDTO.getOpen()));
         vendor.setClose(LocalTime.parse(vendorDTO.getClose()));
-        vendor.setMenu(vendorDTO.getMenu());
 
         //주소가 변경된 경우에만 경도와 위도를 업데이트
         if(!vendor.getAddress().equals(vendorDTO.getAddress())){

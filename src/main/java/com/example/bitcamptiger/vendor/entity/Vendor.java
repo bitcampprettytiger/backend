@@ -60,9 +60,6 @@ public class Vendor {
     private LocalTime close;
 
     @Column
-    private String menu;
-
-    @Column
     private String b_no;        //사업자 번호
 
     @Column

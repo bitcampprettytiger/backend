@@ -2,6 +2,7 @@ package com.example.bitcamptiger.menu.service.Impl;
 
 import com.example.bitcamptiger.common.FileUtils;
 import com.example.bitcamptiger.menu.dto.MenuDTO;
+import com.example.bitcamptiger.menu.dto.MenuImageDTO;
 import com.example.bitcamptiger.menu.entity.Menu;
 import com.example.bitcamptiger.menu.entity.MenuImage;
 import com.example.bitcamptiger.menu.entity.MenuSellStatus;
@@ -33,10 +34,11 @@ public class MenuServiceImpl implements MenuService {
     private final VendorRepository vendorRepository;
     private final FileUtils fileUtils;
 
+
     //메뉴 리스트
     @Override
     public List<MenuDTO> getMenuList(Long vendorId) {
-        //vendor id 찾아오기
+        //1. vendor id 찾아오기
         Optional<Vendor> byId = vendorRepository.findById(vendorId);
 
         List<Menu> menuList = menuRepository.findByVendor(byId.get());
@@ -46,7 +48,22 @@ public class MenuServiceImpl implements MenuService {
         for(Menu menu : menuList){
             //Menu 객체를 MenuDTO 객체로 변환
             MenuDTO menuDTO = MenuDTO.of(menu);
+
+
+            //2. 해당 메뉴에 대한 모든 메뉴 이미지를 검색
+            List<MenuImage> menuImageList = menuImageRepository.findByMenu(menu);
+
+            List<MenuImageDTO> menuImageDTOList = new ArrayList<>();
+            for (MenuImage  menuImage: menuImageList){
+                //MenuImage 객체를 MenuImageDTO 객체로 변환
+                MenuImageDTO menuImageDTO = MenuImageDTO.of(menuImage);
+                menuImageDTOList.add(menuImageDTO);
+            }
+
+            // MenuDTO 객체에 메뉴 이미지 리스트를 설정
+            menuDTO.setMenuImageList(menuImageDTOList);
             menuDTOList.add(menuDTO);
+
         }
         return menuDTOList;
     }
@@ -127,6 +144,9 @@ public class MenuServiceImpl implements MenuService {
                 if(menuImage.getId() > lastImageId){
                     lastImageId = menuImage.getId();
                 }
+                //s3에서 이미지 삭제
+                fileUtils.deleteImage("springboot", menuImage.getUrl() + menuImage.getFileName());
+
                 //db에서 이미지 삭제
                 menuImageRepository.delete(menuImage);
             }
@@ -166,13 +186,12 @@ public class MenuServiceImpl implements MenuService {
 
         //메뉴에 연결된 이미지도 함께 삭제
         for(MenuImage menuImage : menu.getImages()){
+
+            //s3에서 이미지 삭제
+            fileUtils.deleteImage("springboot", menuImage.getUrl() + menuImage.getFileName());
+            //db에서 이미지 삭제
             menuImageRepository.delete(menuImage);
 
-            //로컬에 저장된 이미지 파일 삭제 메서드
-            File file = new File(attachPath);
-            if(file.exists()){
-                file.delete();
-            }
         }
 
         menuRepository.delete(menu);

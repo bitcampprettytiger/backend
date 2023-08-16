@@ -6,13 +6,10 @@ import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
-import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.example.bitcamptiger.Review.entity.ReviewFile;
 import com.example.bitcamptiger.configuration.NaverConfiguration;
-import com.example.bitcamptiger.menu.entity.MenuImage;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -23,13 +20,12 @@ import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
-
 @Component
-public class FileUtils {
+public class reviewFileUtils {
 
     private final AmazonS3 s3;
 
-    public FileUtils(NaverConfiguration naverConfiguration) {
+    public reviewFileUtils(NaverConfiguration naverConfiguration) {
         s3 = AmazonS3ClientBuilder.standard()
                 .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(
                         naverConfiguration.getEndPoint(), naverConfiguration.getRegionName()
@@ -42,14 +38,16 @@ public class FileUtils {
                 .build();
     }
 
-    //MultipartFile 객체를 받아서 DTO형태로 변경 후 리턴
-    public MenuImage parseFileInfo(MultipartFile file, String directoryPath) throws IOException {
+
+
+    public ReviewFile parseFileInfo(MultipartFile file, String directoryPath) throws IOException {
+
         String bucketName = "springboot";
 
-        //리턴할 BoardDTO 객체 생성
-        MenuImage menuImage = new MenuImage();
+        //리턴할 ReviewDto 객체 생성
+        ReviewFile reviewFile = new ReviewFile();
 
-        String boardFileOrigin = file.getOriginalFilename();
+        String reviewFileOrigin = file.getOriginalFilename();
 
         //같은 파일명 파일이 올라오면 나중에 업로드 된 파일로 덮어써지기 때문에
         //파일명을 날짜_랜덤_...
@@ -61,30 +59,32 @@ public class FileUtils {
         UUID uuid = UUID.randomUUID();
 
         //실제 db에 저장될 파일명
-        String boardFileName = nowDateStr + "_" + uuid.toString()
-                + "_" + boardFileOrigin;
+        String reviewFileName = nowDateStr + "_" + uuid.toString()
+                + "_" + reviewFileOrigin;
 
-        String boardFilePath = directoryPath;
+        String reviewFilePath = directoryPath;
 
         //이미지인지 아닌지 검사
-        File checkFile = new File(boardFileOrigin);
+        File checkFile = new File(reviewFileOrigin);
         //파일의 형식 가져오기
         String type = Files.probeContentType(checkFile.toPath());
 
         if(type != null) {
             if(type.startsWith("image")) {
-                menuImage.setFileCate("image");
+                reviewFile.setReviewFileCate("image");
             } else {
-                menuImage.setFileCate("etc");
+                reviewFile.setReviewFileCate("etc");
             }
         } else {
-            menuImage.setFileCate("etc");
+            reviewFile.setReviewFileCate("etc");
         }
 
-        //리턴될 DTO 셋팅
-        menuImage.setFileName(boardFileName);
-        menuImage.setOriginName(boardFileOrigin);
-        menuImage.setUrl(boardFilePath);
+
+        //리턴될 Dto 셋팅
+        reviewFile.setReviewFileName(reviewFileName);
+        reviewFile.setReviewFileOrigin(reviewFileOrigin);
+        reviewFile.setReviewFilePath(reviewFilePath);
+
 
         //try 구문안에서만 사용할 객체나 변수를 선언할 수 있다.
         //주로 사용후에 close 해줘야되는 객체들을 선언한다.
@@ -94,28 +94,16 @@ public class FileUtils {
 
             PutObjectRequest putObjectRequest = new PutObjectRequest(
                     bucketName,
-                    directoryPath + boardFileName,
+                    directoryPath + reviewFileName,
                     fileInputStream,
                     objectMetadata
             ).withCannedAcl(CannedAccessControlList.PublicRead);
 
             s3.putObject(putObjectRequest);
         } catch (Exception e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
-        return menuImage;
+        return reviewFile;
     }
-
-
-    public void deleteImage(String bucketName, String key){
-
-        try{
-            s3.deleteObject(new DeleteObjectRequest(bucketName, key));
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-    }
-
 }

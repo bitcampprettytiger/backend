@@ -25,6 +25,7 @@ public class MenuController {
     public final MenuRepository menuRepository;
 
 
+
     //해당 가게의 모든 메뉴 정보 리스트
     @GetMapping("/info/{vendorId}")
     public ResponseEntity<?> getMenuInfoList(@PathVariable Long vendorId){

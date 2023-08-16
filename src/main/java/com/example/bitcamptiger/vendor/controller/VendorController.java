@@ -64,6 +64,28 @@ public class VendorController {
     }
 
 
+    //open상태, 지역별로 카테고리화 조회
+    @GetMapping("/category/{address}")
+    public ResponseEntity<?> getVendorByAddressCategory(
+            @PathVariable String address){
+        ResponseDTO<VendorDTO> response = new ResponseDTO<>();
+
+        try{
+            List<VendorDTO> vendorDTOList = vendorService.getVendorByAddressCategory(address);
+
+            response.setItemlist(vendorDTOList);
+            response.setStatusCode(HttpStatus.OK.value());
+
+            return ResponseEntity.ok().body(response);
+        }catch(Exception e) {
+            response.setErrorMessage(e.getMessage());
+            response.setStatusCode(HttpStatus.BAD_REQUEST.value());
+            return ResponseEntity.badRequest().body(response);
+        }
+
+    }
+
+
     //개별 상점 상세 정보 확인
     @GetMapping("/infoDetail/{id}")
     public Vendor getVendorInfoDetail(@PathVariable Long id){

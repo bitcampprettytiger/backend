@@ -33,8 +33,8 @@ public class Vendor {
     private String vendorName;
 
     @Column
-    @Enumerated(EnumType.STRING)
-    private VendorOpenStatus vendorOpenStatus;
+//    @Enumerated(EnumType.STRING)
+    private String vendorOpenStatus;
 
     @Column
     private String address;

@@ -127,6 +127,9 @@ public class MenuServiceImpl implements MenuService {
                 if(menuImage.getId() > lastImageId){
                     lastImageId = menuImage.getId();
                 }
+                //s3에서 이미지 삭제
+                fileUtils.deleteImage("springboot", menuImage.getUrl() + menuImage.getFileName());
+
                 //db에서 이미지 삭제
                 menuImageRepository.delete(menuImage);
             }
@@ -166,13 +169,12 @@ public class MenuServiceImpl implements MenuService {
 
         //메뉴에 연결된 이미지도 함께 삭제
         for(MenuImage menuImage : menu.getImages()){
+
+            //s3에서 이미지 삭제
+            fileUtils.deleteImage("springboot", menuImage.getUrl() + menuImage.getFileName());
+            //db에서 이미지 삭제
             menuImageRepository.delete(menuImage);
 
-            //로컬에 저장된 이미지 파일 삭제 메서드
-            File file = new File(attachPath);
-            if(file.exists()){
-                file.delete();
-            }
         }
 
         menuRepository.delete(menu);

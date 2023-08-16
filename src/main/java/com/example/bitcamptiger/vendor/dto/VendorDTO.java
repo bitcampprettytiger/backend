@@ -20,13 +20,12 @@ public class VendorDTO {
     private Long id;
     private String vendorType;
     private String vendorName;
-    private String vendorOpenStatus;  //String 타입으로 받기
+    private String vendorOpenStatus;
     private String address;
     private String tel;
-    private String businessDay;  //String 타입으로 받기
-    private String open;  //String 타입으로 받기
-    private String close;  //String 타입으로 받기
-    private String menu;
+    private String businessDay;
+    private String open;
+    private String close;
     private String x;
     private String y;
     private String b_no;        //사업자 번호
@@ -34,6 +33,7 @@ public class VendorDTO {
     private String rlAppiNm;        //신청인명
 
 
+    private List<MenuDTO> menuDTOList;
 
 
     private static ModelMapper modelMapper = new ModelMapper();

@@ -46,7 +46,7 @@ public class VendorController {
 
     //모든 가게 정보 리스트
     @GetMapping("/info")
-    public ResponseEntity<?> getVendorInfoList(VendorDTO vendorDTO){
+    public ResponseEntity<?> getVendorInfoList(){
         ResponseDTO<VendorDTO> response = new ResponseDTO<>();
         try{
 

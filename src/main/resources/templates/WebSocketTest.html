@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Waiting List</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        // 웹 소켓 연결 설정
+        let socket = new WebSocket("ws://localhost:8080/lineup");
+
+        // 웹 소켓 연결 이벤트
+        socket.onopen = function(event) {
+            console.log("WebSocket connected");
+        };
+
+        // 대기 순번 및 대기 인원 수 업데이트 처리
+        socket.onmessage = function(event) {
+            let data = JSON.parse(event.data);
+
+            if (data.type === "waitingCount") {
+                // 대기 인원 수 업데이트
+                $("#waitingCount").text("현재 대기 중인 인원: " + data.waitingCount);
+            } else if (data.type === "queueNumber") {
+                // 대기 순번 업데이트
+                $("#queueNumber").text("대기 순번: " + data.queueNumber);
+            } else if (data.type === "positionNotification") {
+                // 대기 순번에 따른 알림 메시지 처리
+                alert(data.message);
+            } else if (data.type === "waitingList") {
+                // 대기자 명단 업데이트
+                $("#waitingList").empty();
+                data.waitingList.forEach(function(waitingUser) {
+                    $("#waitingList").append("<li>" + waitingUser.name + "</li>");
+                });
+            }
+        };
+
+        // 줄서기 완료 버튼 클릭 이벤트
+        $("#joinQueueButton").click(function() {
+            // 서버로 줄서기 요청 메시지 전송
+            socket.send(JSON.stringify({ type: "joinQueue" }));
+        });
+
+        // 줄서기 취소 버튼 클릭 이벤트
+        $("#cancelQueueButton").click(function() {
+            // 서버로 줄서기 취소 요청 메시지 전송
+            socket.send(JSON.stringify({ type: "cancelQueue" }));
+        });
+    </script>
+</head>
+<body>
+<h1>Waiting List</h1>
+<p id="waitingCount">현재 대기 중인 인원: 0</p>
+<p id="queueNumber">대기 순번: 0</p>
+<button id="joinQueueButton">줄서기</button>
+<button id="cancelQueueButton">줄서기 취소</button>
+<h2>대기자 명단</h2>
+<ul id="waitingList"></ul>
+</body>
+</html>

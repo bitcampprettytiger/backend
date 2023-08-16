@@ -107,13 +107,23 @@ public class VendorServiceImpl implements VendorService {
 
         List<VendorDTO> vendorDTOList = new ArrayList<>();
 
-        // Page 인터페이스는 직접 Iterable 인터페이스를 구현하지 않음.
-        // 따라서 .getContent() 메서드를 사용하여 List를 가져와야 함.
-        for(Vendor vendor : vendorList){
+        //vendorList의 각 요소에 대해 반복하며, 각각의 Vendor 객체를 반복 변수인 "vendor"에 할당
+        for(Vendor vendor : vendorList) {
+            //Vendor 객체를 VendorDTO 객체로 변환
             VendorDTO vendorDTO = VendorDTO.of(vendor);
+
+            List<Menu> menuList = menuRepository.findByVendor(vendor);
+
+            //vendor 조회시 등록된 menu 정보도 조회
+            List<MenuDTO> menuDTOList = new ArrayList<>();
+            for (Menu menu : menuList) {
+                MenuDTO menuDTO = MenuDTO.of(menu);
+                menuDTOList.add(menuDTO);
+            }
+            vendorDTO.setMenuDTOList(menuDTOList);
             vendorDTOList.add(vendorDTO);
         }
-        return vendorDTOList;
+            return vendorDTOList;
     }
 
 

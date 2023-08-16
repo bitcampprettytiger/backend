@@ -8,41 +8,38 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "ReviewFile")
+@Table(name = "REVIEW_FILE")
 @Data
+@IdClass(ReviewFileId.class)
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class ReviewFile {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "FILE_ID")
-    private Long id; //파일번호
+    private Long reviewFileNo; //파일번호
+    private String reviewFileOrigin;// 원본 파일명
+    private String reviewFileName; // 저장된 파일 명
+    private String reviewFilePath;// 파일 저장 경로
+    private String reviewFileCate;
+    @Transient
+    private String reviewFileStatus;
+    @Transient
+    private String newFileName;
 
-    @Column(nullable = false)
-    private String originName;// 원본 파일명
-
-    @Column(nullable = false)
-    private String savedName; // 저장된 파일 명
-
-    @Column(name = "FILE_FATH")
-    private String filePath;// 파일 저장 경로
-
-    @Column(name = "FILE_SIZE")
-    private Long fileSize; // 파일사이즈
-
+    @Id
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "REVIEW_NUM")
+    @JoinColumn(name = "reviewNum", referencedColumnName = "reviewNum")
     private Review review;
 
     public ReviewFileDto EntitytoDto() {
         ReviewFileDto reviewFIleDto = ReviewFileDto.builder()
-                .id(this.id)
                 .reviewNum(this.review.getReviewNum()) // Review 참조
-                .savedName(this.savedName)
-                .filePath(this.filePath)
-                .originName(this.originName)
-                .fileSize(this.fileSize)
+                .reviewFileNo(this.reviewFileNo)
+                .reviewFileName(this.reviewFileName)
+                .reviewFilePath(this.reviewFilePath)
+                .reviewFileOrigin(this.reviewFileOrigin)
+                .reviewFileCate(this.reviewFileCate)
                 .build();
         return reviewFIleDto;
     }

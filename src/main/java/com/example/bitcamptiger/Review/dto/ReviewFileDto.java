@@ -13,27 +13,29 @@ import lombok.NoArgsConstructor;
 @Builder
 public class ReviewFileDto {
 
-    private Long id;
-    private String originName;
-    private String savedName;
-    private String filePath;
-    private Long fileSize;
     private Long reviewNum; // 리뷰 번호(Review 참조)
+    private Long reviewFileNo;
+    private String reviewFileOrigin;
+    private String reviewFileName;
+    private String reviewFilePath;
+    private String reviewFileCate;
+    private String reviewFileStatus;
+    private String newFileName;
 
     public ReviewFile DtoToEntity() {
+        Review review = Review.builder()
+                .reviewNum(this.reviewNum)
+                .build();
+
         ReviewFile reviewFile = ReviewFile.builder()
-                .id(this.id)
-                .review(Review.builder().reviewNum(this.reviewNum).build())
-                .originName(this.originName)
-                .savedName(this.savedName)
-                .filePath(this.filePath)
-                .fileSize(this.fileSize)
+                .review(review)
+                .reviewFileNo(this.reviewFileNo)
+                .reviewFileOrigin(this.reviewFileOrigin)
+                .reviewFileName(this.reviewFileName)
+                .reviewFilePath(this.reviewFilePath)
+                .reviewFileCate(this.reviewFileCate)
                 .build();
         return reviewFile;
-    }
-
-    public void setReviewNum(Long reviewNum) {
-        this.reviewNum =reviewNum;
     }
 
 }

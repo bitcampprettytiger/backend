@@ -2,6 +2,7 @@ package com.example.bitcamptiger.Review.dto;
 
 import com.example.bitcamptiger.Review.entity.Review;
 import com.example.bitcamptiger.member.entity.Member;
+import com.example.bitcamptiger.vendor.entity.Vendor;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,20 +16,21 @@ import java.time.LocalDateTime;
 public class ReviewDto {
     private Long reviewNum;
     private Long orderNum;
-    private Long storeId;
-    private Long userId;
+    private Long vendorId;
+    private String username;
     private String reviewContent;
-    private LocalDateTime regDate;
-    private Integer score;
+    private LocalDateTime reviewRegDate;
+    private int reviewScore;
 
-    public Review toEntity() {
+    public Review DtoToEntity() {
         return Review.builder()
                 .reviewNum(this.reviewNum)
                 .orderNum(this.orderNum)
-                .storeId(this.storeId)
+                .vendor(Vendor.builder().id(this.vendorId).build())
                 .reviewContent(this.reviewContent)
-                .score(this.score)
-                .member(Member.builder().id(this.userId).build())
+                .reviewScore(this.reviewScore)
+                .reviewRegDate(this.reviewRegDate)
+                .member(Member.builder().username(this.username).build())
                 .build();
     }
 }

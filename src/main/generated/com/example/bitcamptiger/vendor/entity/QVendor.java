@@ -44,7 +44,7 @@ public class QVendor extends EntityPathBase<Vendor> {
 
     public final StringPath vendorName = createString("vendorName");
 
-    public final EnumPath<VendorOpenStatus> vendorOpenStatus = createEnum("vendorOpenStatus", VendorOpenStatus.class);
+    public final StringPath vendorOpenStatus = createString("vendorOpenStatus");
 
     public final StringPath vendorType = createString("vendorType");
 

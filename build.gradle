@@ -41,7 +41,8 @@ dependencies {
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.5'
-
+    //직렬화
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-hibernate5:2.12.5'
 
 
     // querydsl-jpa
@@ -49,6 +50,7 @@ dependencies {
     annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jakarta"
     annotationProcessor "jakarta.annotation:jakarta.annotation-api"
     annotationProcessor "jakarta.persistence:jakarta.persistence-api"
+    implementation 'javax.persistence:javax.persistence-api:2.2'
 
     implementation 'org.springframework.boot:spring-boot-starter-validation:3.1.0'
 

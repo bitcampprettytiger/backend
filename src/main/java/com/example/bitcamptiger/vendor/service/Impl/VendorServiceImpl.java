@@ -1,12 +1,9 @@
 package com.example.bitcamptiger.vendor.service.Impl;
 
-import com.example.bitcamptiger.vendor.dto.RoadOcuuCertiData;
-import com.example.bitcamptiger.vendor.service.RoadOccuCertiService;
 import com.example.bitcamptiger.vendor.dto.BusinessResponseDto;
 import com.example.bitcamptiger.vendor.dto.RoadOcuuCertiData;
 import com.example.bitcamptiger.vendor.dto.VendorDTO;
 import com.example.bitcamptiger.vendor.entity.Vendor;
-import com.example.bitcamptiger.vendor.entity.VendorOpenStatus;
 import com.example.bitcamptiger.vendor.repository.VendorRepository;
 import com.example.bitcamptiger.vendor.service.GeoService;
 import com.example.bitcamptiger.vendor.service.RoadOccuCertiService;
@@ -55,7 +52,7 @@ public class VendorServiceImpl implements VendorService {
     @Override
     public List<VendorDTO> getOpenList(String vendorOpenStatus) {
 
-        List<Vendor> openList = vendorRepository.findByVendorOpenStatus(VendorOpenStatus.OPEN);
+        List<Vendor> openList = vendorRepository.findByVendorOpenStatus(vendorOpenStatus);
 
         List<VendorDTO> openDTOList = new ArrayList<>();
 
@@ -65,6 +62,22 @@ public class VendorServiceImpl implements VendorService {
             openDTOList.add(vendorDTO);
         }
         return openDTOList;
+    }
+
+
+    @Override
+    public List<VendorDTO> getVendorByAddressCategory(String address){
+        List<Vendor> vendorList = vendorRepository.findVendorByAddressCategory(address);
+
+        List<VendorDTO> vendorDTOList = new ArrayList<>();
+
+        // Page 인터페이스는 직접 Iterable 인터페이스를 구현하지 않음.
+        // 따라서 .getContent() 메서드를 사용하여 List를 가져와야 함.
+        for(Vendor vendor : vendorList){
+            VendorDTO vendorDTO = VendorDTO.of(vendor);
+            vendorDTOList.add(vendorDTO);
+        }
+        return vendorDTOList;
     }
 
     @Override
@@ -110,7 +123,7 @@ public class VendorServiceImpl implements VendorService {
 
         Vendor vendor  =  vendorRepository.findById(vendorDTO.getId()).orElseThrow(EntityNotFoundException::new);
         //수정 가능한 필드만 업데이트
-        vendor.setVendorOpenStatus(VendorOpenStatus.valueOf(vendorDTO.getVendorOpenStatus()));
+        vendor.setVendorOpenStatus(vendorDTO.getVendorOpenStatus());
         vendor.setAddress(vendorDTO.getAddress());
         vendor.setTel(vendorDTO.getTel());
         vendor.setBusinessDay(vendorDTO.getBusinessDay());

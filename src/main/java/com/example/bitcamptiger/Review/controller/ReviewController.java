@@ -55,7 +55,7 @@ public class ReviewController {
         return ResponseEntity.status(HttpStatus.OK).body(reviewDtoList);
     }
 
-    //mutipart form 데이터 형
+    //multipart form 데이터 형식을 받기 위해 consumes 속성 지정
     @PostMapping(value = "/review", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> createReview(ReviewDto reviewDto,
                                           MultipartHttpServletRequest mphsRequest) {
@@ -76,6 +76,7 @@ public class ReviewController {
                     .reviewScore(reviewDto.getReviewScore())
                     .reviewRegDate(LocalDateTime.now())
                     .build();
+            System.out.println("=================" + review.getReviewRegDate());
 
             Iterator<String> iterator = mphsRequest.getFileNames();
 
@@ -111,14 +112,6 @@ public class ReviewController {
 
             return ResponseEntity.badRequest().body(responseDTO);
         }
-//        try {
-//            Review createdReview = reviewService.createReview(reviewDto);
-//            return new ResponseEntity<>(createdReview, HttpStatus.CREATED);
-//        } catch (IllegalArgumentException e) {
-//            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-//        } catch (Exception e) {
-//            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
     }
 
     @PutMapping("/review")
@@ -218,23 +211,6 @@ public class ReviewController {
             responseDTO.setItem(returnMap);
 
             return ResponseEntity.ok().body(responseDTO);
-
-
-//            Review review = Review.builder()
-//                    .reviewNum(reviewDto.getReviewNum())
-//                    .reviewContent(reviewDto.getReviewContent())
-//                    .reviewScore(reviewDto.getReviewScore())
-//                    .reviewRegDate(reviewDto.getReviewRegDate())
-//                    .build();
-//        }
-//        try {
-//            Review updatedReview = reviewService.updateReview(reviewNum, reviewDto);
-//            return new ResponseEntity<>(updatedReview, HttpStatus.OK);
-//        } catch (EntityNotFoundException e) {
-//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-//        } catch (Exception e) {
-//            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
         } catch (Exception e) {
             System.out.println(e.getMessage());
             responseDTO.setStatusCode(HttpStatus.BAD_REQUEST.value());
@@ -243,24 +219,21 @@ public class ReviewController {
         }
     }
 
-        @DeleteMapping("/review/{reviewNum}")
-        public ResponseEntity<?> deleteReview (@PathVariable Long reviewNum){
-            ResponseDTO<Map<String, String>> responseDTO =
-                    new ResponseDTO<>();
+        @DeleteMapping("/review")
+        public ResponseEntity<?> deleteReview (ReviewDto reviewDto){
+            ResponseDTO<ReviewDto> responseDTO = new ResponseDTO<>();
 
             try {
-                reviewService.deleteReview(reviewNum);
+                reviewService.deleteReview(reviewDto);
 
-                Map<String, String> returnMap = new HashMap<>();
-
-                returnMap.put("msg", "정상적으로 삭제되었습니다");
-
-                responseDTO.setItem(returnMap);
+                responseDTO.setStatusCode(HttpStatus.OK.value());
+                responseDTO.setMessage("정상적으로 삭제되었습니다.");
 
                 return ResponseEntity.ok().body(responseDTO);
             } catch (Exception e) {
                 responseDTO.setStatusCode(HttpStatus.BAD_REQUEST.value());
                 responseDTO.setErrorMessage(e.getMessage());
+
                 return ResponseEntity.badRequest().body(responseDTO);
             }
         }

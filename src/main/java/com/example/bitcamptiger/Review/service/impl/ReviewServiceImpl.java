@@ -6,6 +6,8 @@ import com.example.bitcamptiger.Review.entity.ReviewFile;
 import com.example.bitcamptiger.Review.repository.ReviewFileRepository;
 import com.example.bitcamptiger.Review.repository.ReviewRepository;
 import com.example.bitcamptiger.Review.service.ReviewService;
+import com.example.bitcamptiger.common.FileUtils;
+import com.example.bitcamptiger.common.reviewFileUtils;
 import com.example.bitcamptiger.member.entity.Member;
 import com.example.bitcamptiger.member.reposiitory.MemberRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -24,6 +26,7 @@ public class ReviewServiceImpl implements ReviewService {
     private final ReviewRepository reviewRepository;
     private final MemberRepository memberRepository;
     private final ReviewFileRepository reviewFileRepository;
+    private final FileUtils fileUtils;
 
     @Override
     public List<Review> getReviewList() {
@@ -83,8 +86,18 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     @Transactional
-    public void deleteReview(Long reviewNum) {
-       reviewRepository.deleteById(reviewNum);
+    public void deleteReview(ReviewDto reviewDto) {
+        // ReviewDto에서 id로 기존의 Review 엔티티를 찾음
+        Review review = reviewRepository.findById(reviewDto.getReviewNum()).orElseThrow(EntityNotFoundException::new);
+
+        //리뷰애 연결된 이미지도 함께 삭제
+        for (ReviewFile reviewFile : review.getImages()) {
+            //s3에서 이미지 삭제
+            fileUtils.deleteImage("springboot",reviewFile.getReviewFilePath() + reviewFile.getReviewFileName());
+            //db에서 이미지 삭제
+            reviewFileRepository.delete(reviewFile);
+        }
+        reviewRepository.delete(review);
     }
 
     @Override

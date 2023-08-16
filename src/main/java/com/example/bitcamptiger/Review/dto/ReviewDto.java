@@ -9,6 +9,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -16,22 +18,22 @@ import java.time.LocalDateTime;
 public class ReviewDto {
     private Long reviewNum;
     private Long orderNum;
-    private Long vendorId;
-    private String username;
+    private Vendor vendor;
+    private Member member;
     private String reviewContent;
     private LocalDateTime reviewRegDate;
     private int reviewScore;
+    private List<ReviewFileDto> reviewFileList;
 
     public Review DtoToEntity() {
         return Review.builder()
                 .reviewNum(this.reviewNum)
                 .orderNum(this.orderNum)
-                .vendor(Vendor.builder().id(this.vendorId).build())
-                .member(Member.builder().username(this.username).build())
+                .vendor(this.vendor)
+                .member(this.member)
                 .reviewContent(this.reviewContent)
                 .reviewScore(this.reviewScore)
                 .reviewRegDate(this.reviewRegDate)
-                .member(Member.builder().username(this.username).build())
                 .build();
     }
 }

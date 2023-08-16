@@ -14,7 +14,7 @@ public interface ReviewService {
 
     void updateReview(Review review, List<ReviewFile> ufileList);
 
-    void deleteReview(Long reviewNum);
+    void deleteReview(ReviewDto reviewDto);
 
     List<ReviewFile> getReviewFileList(Long reviewNum);
 

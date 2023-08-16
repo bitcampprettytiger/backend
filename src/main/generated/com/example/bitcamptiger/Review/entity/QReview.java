@@ -22,6 +22,8 @@ public class QReview extends EntityPathBase<Review> {
 
     public static final QReview review = new QReview("review");
 
+    public final ListPath<ReviewFile, QReviewFile> images = this.<ReviewFile, QReviewFile>createList("images", ReviewFile.class, QReviewFile.class, PathInits.DIRECT2);
+
     public final com.example.bitcamptiger.member.entity.QMember member;
 
     public final NumberPath<Long> orderNum = createNumber("orderNum", Long.class);

@@ -16,12 +16,9 @@ public class MenuDTO {
     private int price;
     private String menuContent;
     private String menuSellStatus;
-<<<<<<< HEAD
     private String MenuType;
     private int menuViews; // 조회수
-=======
     private String menuType;
->>>>>>> 423b68f63cca168bf55915eace240daa828404b2
 
     private Vendor vendor;
 

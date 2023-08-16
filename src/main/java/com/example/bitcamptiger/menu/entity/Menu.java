@@ -42,14 +42,8 @@ public class Menu {
     private String menuType;
 
 
-<<<<<<< HEAD
     @Column
     private int menuViews = 0; //메뉴 조회수, 초깃값 0으로 설정
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "vendor_id")
-    private Vendor vendor;
-=======
->>>>>>> 423b68f63cca168bf55915eace240daa828404b2
 
 }

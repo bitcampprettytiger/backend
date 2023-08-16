@@ -31,7 +31,7 @@ public class VendorController {
 
             List<VendorDTO> VendorDTOList = vendorService.getOpenList(vendorDTO.getVendorOpenStatus());
 
-            response.setItems(VendorDTOList);
+            response.setItemlist(VendorDTOList);
             response.setStatusCode(HttpStatus.OK.value());
 
             return ResponseEntity.ok().body(response);
@@ -52,7 +52,7 @@ public class VendorController {
 
             List<VendorDTO> vendorDTOList = vendorService.getVendorList();
 
-            response.setItems(vendorDTOList);
+            response.setItemlist(vendorDTOList);
             response.setStatusCode(HttpStatus.OK.value());
 
             return ResponseEntity.ok().body(response);
@@ -81,7 +81,7 @@ public class VendorController {
 
             List<VendorDTO> vendorDTOList = vendorService.getVendorList();
 
-            response.setItems(vendorDTOList);
+            response.setItemlist(vendorDTOList);
             response.setStatusCode(HttpStatus.OK.value());
 
             return ResponseEntity.ok().body(response);
@@ -105,7 +105,7 @@ public class VendorController {
             List<VendorDTO> vendorDTOList = vendorService.getVendorList();
 
 
-            response.setItems(vendorDTOList);
+            response.setItemlist(vendorDTOList);
             response.setStatusCode(HttpStatus.OK.value());
 
             return ResponseEntity.ok().body(response);
@@ -129,7 +129,7 @@ public class VendorController {
             List<VendorDTO> vendorDTOList = vendorService.getVendorList();
 
 
-            response.setItems(vendorDTOList);
+            response.setItemlist(vendorDTOList);
             response.setStatusCode(HttpStatus.OK.value());
 
             return ResponseEntity.ok().body(response);

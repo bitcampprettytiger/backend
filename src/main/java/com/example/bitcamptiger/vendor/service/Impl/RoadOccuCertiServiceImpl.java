@@ -1,6 +1,6 @@
 package com.example.bitcamptiger.vendor.service.Impl;
 
-import com.example.bitcamptiger.vendor.controller.JsonParserUtil;
+
 import com.example.bitcamptiger.vendor.dto.RoadOcuuCertiData;
 import com.example.bitcamptiger.vendor.service.RoadOccuCertiService;
 import lombok.RequiredArgsConstructor;

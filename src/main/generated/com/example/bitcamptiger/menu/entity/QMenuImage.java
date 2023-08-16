@@ -22,6 +22,8 @@ public class QMenuImage extends EntityPathBase<MenuImage> {
 
     public static final QMenuImage menuImage = new QMenuImage("menuImage");
 
+    public final StringPath fileCate = createString("fileCate");
+
     public final StringPath fileName = createString("fileName");
 
     public final NumberPath<Long> id = createNumber("id", Long.class);

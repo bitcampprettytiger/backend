@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+
 @Transactional
 public interface MenuRepository extends JpaRepository<Menu, Long> {
 

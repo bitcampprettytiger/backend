@@ -4,8 +4,6 @@ import com.example.bitcamptiger.vendor.entity.Vendor;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @Setter
@@ -40,7 +38,6 @@ public class Menu {
 
     @Column
     private String menuType;
-
 
     @Column
     private int menuViews = 0; //메뉴 조회수, 초깃값 0으로 설정

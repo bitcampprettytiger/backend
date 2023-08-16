@@ -31,6 +31,8 @@ public class VendorServiceImpl implements VendorService {
     private final VendorAPIService vendorAPIService;
     private final RoadOccuCertiService roadOccuCertiService;
 
+
+    //모든 가게 조회
     @Override
     public List<VendorDTO> getVendorList() {
 
@@ -49,6 +51,8 @@ public class VendorServiceImpl implements VendorService {
         return vendorDTOList;
     }
 
+
+    //영업중인 가게만 조회
     @Override
     public List<VendorDTO> getOpenList(String vendorOpenStatus) {
 
@@ -65,9 +69,11 @@ public class VendorServiceImpl implements VendorService {
     }
 
 
+    // 해당 검색어를 포함한 모든 가게 조회.
+    // 주소, 메뉴명, 가게명
     @Override
-    public List<VendorDTO> getVendorByAddressCategory(String address){
-        List<Vendor> vendorList = vendorRepository.findVendorByAddressCategory(address);
+    public List<VendorDTO> getVendorByCategory(String address, String menuName, String vendorName){
+        List<Vendor> vendorList = vendorRepository.findVendorByCategory(address, menuName, vendorName);
 
         List<VendorDTO> vendorDTOList = new ArrayList<>();
 
@@ -79,6 +85,8 @@ public class VendorServiceImpl implements VendorService {
         }
         return vendorDTOList;
     }
+
+
 
     @Override
     public void insertVendor(VendorDTO vendorDTO) throws JsonProcessingException {

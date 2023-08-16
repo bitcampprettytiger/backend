@@ -11,7 +11,7 @@ public interface VendorService {
 
     List<VendorDTO> getOpenList(String vendorOpenStatus);
 
-    List<VendorDTO> getVendorByAddressCategory(String address);
+    List<VendorDTO> getVendorByCategory(String address, String menuName, String vendorName);
 
     void insertVendor(VendorDTO vendorDTO) throws JsonProcessingException;
 

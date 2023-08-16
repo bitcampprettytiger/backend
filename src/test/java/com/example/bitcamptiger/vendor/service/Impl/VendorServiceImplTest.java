@@ -1,7 +1,6 @@
 package com.example.bitcamptiger.vendor.service.Impl;
 
 import com.example.bitcamptiger.vendor.entity.Vendor;
-import com.example.bitcamptiger.vendor.entity.VendorOpenStatus;
 import com.example.bitcamptiger.vendor.repository.VendorRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +30,7 @@ class VendorServiceImplTest {
             Vendor vendor = new Vendor();
             vendor.setVendorType("타입 테스트" + i);
             vendor.setVendorName("이름 테스트" + i);
-            vendor.setVendorOpenStatus(VendorOpenStatus.OPEN);
+            vendor.setVendorOpenStatus("OPEN");
             vendor.setAddress("주소 테스트" + i);
             vendor.setX("127.11"+i);
             vendor.setY("98.333" + i);
@@ -54,7 +53,7 @@ class VendorServiceImplTest {
         Vendor vendor = new Vendor();
         vendor.setVendorType("노점");
         vendor.setVendorName("붕어붕어");
-        vendor.setVendorOpenStatus(VendorOpenStatus.OPEN);
+        vendor.setVendorOpenStatus("open");
         vendor.setAddress("서울특별시 강남구 강남대로 94길 20");
         vendor.setX("192.06565");
         vendor.setY("165.566555");
@@ -75,7 +74,7 @@ class VendorServiceImplTest {
         Vendor vendor = new Vendor();
         vendor.setVendorType("노점");
         vendor.setVendorName("붕어붕어");
-        vendor.setVendorOpenStatus(VendorOpenStatus.OPEN);
+        vendor.setVendorOpenStatus("OPEN");
         vendor.setAddress("서울특별시 강남구 강남대로 94길 20");
         vendor.setX("192.06565");
         vendor.setY("165.566555");
@@ -105,7 +104,7 @@ class VendorServiceImplTest {
         Vendor vendor = new Vendor();
         vendor.setVendorType("노점");
         vendor.setVendorName("붕어붕어");
-        vendor.setVendorOpenStatus(VendorOpenStatus.OPEN);
+        vendor.setVendorOpenStatus("OPEN");
         vendor.setAddress("서울특별시 강남구 강남대로 94길 20");
         vendor.setX("192.06565");
         vendor.setY("165.566555");

@@ -64,14 +64,18 @@ public class VendorController {
     }
 
 
-    //open상태, 지역별로 카테고리화 조회
-    @GetMapping("/category/{address}")
-    public ResponseEntity<?> getVendorByAddressCategory(
-            @PathVariable String address){
+    //지역명으로 검색
+    //메뉴명으로 검색
+    //가게명으로 검색
+    @GetMapping("/category")
+    public ResponseEntity<?> getVendorByCategory(
+            @RequestParam(required = false) String address,
+            @RequestParam(required = false) String menuName,
+            @RequestParam(required = false) String vendorName){
         ResponseDTO<VendorDTO> response = new ResponseDTO<>();
 
         try{
-            List<VendorDTO> vendorDTOList = vendorService.getVendorByAddressCategory(address);
+            List<VendorDTO> vendorDTOList = vendorService.getVendorByCategory(address, menuName, vendorName);
 
             response.setItemlist(vendorDTOList);
             response.setStatusCode(HttpStatus.OK.value());
@@ -84,6 +88,8 @@ public class VendorController {
         }
 
     }
+
+
 
 
     //개별 상점 상세 정보 확인

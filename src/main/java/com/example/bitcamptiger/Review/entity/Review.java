@@ -10,8 +10,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "Review")
@@ -46,21 +44,23 @@ public class Review {
     private LocalDateTime reviewRegDate = LocalDateTime.now(); //리뷰작성일자
     private Integer reviewScore; //별점
 
+
     public void setMember(Member member) {
         this.member = member;
+
     }
 
 
-    public ReviewDto EntityToDto() {
-        return ReviewDto.builder()
-                .reviewNum(this.reviewNum)
-                .orderNum(this.orderNum)
-                .vendorId(this.getVendor().getId())
-                .username(this.getMember().getUsername())
-                .reviewContent(this.reviewContent)
-                .reviewRegDate(this.reviewRegDate)
-                .reviewScore(this.reviewScore)
-                .build();
-    }
+        public ReviewDto EntityToDto() {
+            return ReviewDto.builder()
+                    .reviewNum(this.reviewNum)
+                    .orderNum(this.orderNum)
+                    .vendorId(this.getVendor().getId())
+                    .username(this.getMember().getUsername())
+                    .reviewContent(this.reviewContent)
+                    .reviewRegDate(this.reviewRegDate)
+                    .reviewScore(this.reviewScore)
+                    .build();
+        }
 
 }

@@ -1,9 +1,15 @@
-package com.example.bitcamptiger.Review.common;
+package com.example.bitcamptiger.common;
 
+import com.amazonaws.auth.AWSStaticCredentialsProvider;
+import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.client.builder.AwsClientBuilder;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.example.bitcamptiger.Review.entity.ReviewFile;
+import com.example.bitcamptiger.configuration.NaverConfiguration;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -15,26 +21,26 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
 @Component
-public class FileUtils {
+public class reviewFileUtils {
 
-//    private final AmazonS3 s3;
-//
-//    public FileUtils(NaverConfiguration naverConfiguration) {
-//        s3 = AmazonS3ClientBuilder.standard()
-//                .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(
-//                        naverConfiguration.getEndPoint(), naverConfiguration.getRegionName()
-//                ))
-//                .withCredentials(new AWSStaticCredentialsProvider(
-//                        new BasicAWSCredentials(
-//                                naverConfiguration.getAccessKey(), naverConfiguration.getSecretKey()
-//                        )
-//                ))
-//                .build();
-//    }
+    private final AmazonS3 s3;
+
+    public reviewFileUtils(NaverConfiguration naverConfiguration) {
+        s3 = AmazonS3ClientBuilder.standard()
+                .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(
+                        naverConfiguration.getEndPoint(), naverConfiguration.getRegionName()
+                ))
+                .withCredentials(new AWSStaticCredentialsProvider(
+                        new BasicAWSCredentials(
+                                naverConfiguration.getAccessKey(), naverConfiguration.getSecretKey()
+                        )
+                ))
+                .build();
+    }
 
 
 
-    public  ReviewFile parseFileInfo(MultipartFile file, String directoryPath) throws IOException {
+    public ReviewFile parseFileInfo(MultipartFile file, String directoryPath) throws IOException {
 
         String bucketName = "springboot";
 
@@ -93,7 +99,7 @@ public class FileUtils {
                     objectMetadata
             ).withCannedAcl(CannedAccessControlList.PublicRead);
 
-           // s3.putObject(putObjectRequest);
+            s3.putObject(putObjectRequest);
         } catch (Exception e) {
             e.printStackTrace();
         }

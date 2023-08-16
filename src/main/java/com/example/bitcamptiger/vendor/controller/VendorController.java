@@ -31,7 +31,7 @@ public class VendorController {
 
             List<VendorDTO> VendorDTOList = vendorService.getOpenList(vendorDTO.getVendorOpenStatus());
 
-            response.setItems(VendorDTOList);
+            response.setItemlist(VendorDTOList);
             response.setStatusCode(HttpStatus.OK.value());
 
             return ResponseEntity.ok().body(response);
@@ -46,13 +46,13 @@ public class VendorController {
 
     //모든 가게 정보 리스트
     @GetMapping("/info")
-    public ResponseEntity<?> getVendorInfoList(VendorDTO vendorDTO){
+    public ResponseEntity<?> getVendorInfoList(){
         ResponseDTO<VendorDTO> response = new ResponseDTO<>();
         try{
 
             List<VendorDTO> vendorDTOList = vendorService.getVendorList();
 
-            response.setItems(vendorDTOList);
+            response.setItemlist(vendorDTOList);
             response.setStatusCode(HttpStatus.OK.value());
 
             return ResponseEntity.ok().body(response);
@@ -61,6 +61,28 @@ public class VendorController {
             response.setStatusCode(HttpStatus.BAD_REQUEST.value());
             return ResponseEntity.badRequest().body(response);
         }
+    }
+
+
+    //open상태, 지역별로 카테고리화 조회
+    @GetMapping("/category/{address}")
+    public ResponseEntity<?> getVendorByAddressCategory(
+            @PathVariable String address){
+        ResponseDTO<VendorDTO> response = new ResponseDTO<>();
+
+        try{
+            List<VendorDTO> vendorDTOList = vendorService.getVendorByAddressCategory(address);
+
+            response.setItemlist(vendorDTOList);
+            response.setStatusCode(HttpStatus.OK.value());
+
+            return ResponseEntity.ok().body(response);
+        }catch(Exception e) {
+            response.setErrorMessage(e.getMessage());
+            response.setStatusCode(HttpStatus.BAD_REQUEST.value());
+            return ResponseEntity.badRequest().body(response);
+        }
+
     }
 
 
@@ -81,7 +103,7 @@ public class VendorController {
 
             List<VendorDTO> vendorDTOList = vendorService.getVendorList();
 
-            response.setItems(vendorDTOList);
+            response.setItemlist(vendorDTOList);
             response.setStatusCode(HttpStatus.OK.value());
 
             return ResponseEntity.ok().body(response);
@@ -105,7 +127,7 @@ public class VendorController {
             List<VendorDTO> vendorDTOList = vendorService.getVendorList();
 
 
-            response.setItems(vendorDTOList);
+            response.setItemlist(vendorDTOList);
             response.setStatusCode(HttpStatus.OK.value());
 
             return ResponseEntity.ok().body(response);
@@ -129,7 +151,7 @@ public class VendorController {
             List<VendorDTO> vendorDTOList = vendorService.getVendorList();
 
 
-            response.setItems(vendorDTOList);
+            response.setItemlist(vendorDTOList);
             response.setStatusCode(HttpStatus.OK.value());
 
             return ResponseEntity.ok().body(response);

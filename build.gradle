@@ -2,8 +2,7 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.1.2'
     id 'io.spring.dependency-management' version '1.1.2'
-    id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
-
+//    id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
 }
 
 group = 'com.example'
@@ -28,6 +27,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
     implementation group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1'
     implementation 'org.json:json:20230227'
     compileOnly 'org.projectlombok:lombok'
@@ -41,14 +41,17 @@ dependencies {
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.5'
-
+    //직렬화
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-hibernate5:2.12.5'
 
 
     // querydsl-jpa
     implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
-    annotationProcessor "com.querydsl:querydsl-apt:5.0.0:jakarta"
+    annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jakarta"
     annotationProcessor "jakarta.annotation:jakarta.annotation-api"
     annotationProcessor "jakarta.persistence:jakarta.persistence-api"
+    implementation 'javax.persistence:javax.persistence-api:2.2'
+
     implementation 'org.springframework.boot:spring-boot-starter-validation:3.1.0'
 
 
@@ -65,11 +68,19 @@ dependencies {
     // https://mvnrepository.com/artifact/org.modelmapper/modelmapper
     implementation 'org.modelmapper:modelmapper:3.1.1'
 
+// https://mvnrepository.com/artifact/io.springfox/springfox-boot-starter
+    implementation 'io.springfox:springfox-boot-starter:3.0.0'
+//// https://mvnrepository.com/artifact/io.springfox/springfox-swagger-ui
+//    implementation 'io.springfox:springfox-swagger-ui:3.0.0'
+// https://mvnrepository.com/artifact/org.springdoc/springdoc-openapi-starter-webmvc-ui
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0'
     //구글맵 API(주소를 위도경도로 변환)
       implementation 'com.google.code.geocoder-java:geocoder-java:0.16'
       implementation 'com.google.maps:google-maps-services:2.2.0'
       implementation 'com.google.code.gson:gson:2.10.1'
       implementation 'com.googlecode.json-simple:json-simple:1.1.1'
+// https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-aws
+    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 
     implementation 'io.awspring.cloud:spring-cloud-starter-aws:2.4.4'
 
@@ -80,19 +91,27 @@ dependencies {
 tasks.named('test') {
     useJUnitPlatform()
 }
-// queryDSL 추가 : QueryDSL 빌드 옵션
-def querydslDir = 'src/main/generated'
+bootJar {
+    duplicatesStrategy = 'exclude'
+    mainClass = "com.example.bitcamptiger.BitcamptigerApplication"
+//    java.util.jar.Attributes.Name.MAIN_CLASS
+}
 
-querydsl {
-    jpa = true
-    querydslSourcesDir = querydslDir
-}
-sourceSets {
-    main.java.srcDir querydslDir
-}
-configurations {
-    querydsl.extendsFrom compileClasspath
-}
-compileQuerydsl {
-    options.annotationProcessorPath = configurations.querydsl
-}
+//
+//    java.util.jar.Attributes.Name.MAIN_CLASS
+//// queryDSL 추가 : QueryDSL 빌드 옵션
+//def querydslDir = 'src/main/generated'
+//
+//querydsl {
+//    jpa = true
+//    querydslSourcesDir = querydslDir
+//}
+//sourceSets {
+//    main.java.srcDir querydslDir
+//}
+//configurations {
+//    querydsl.extendsFrom compileClasspath
+//}
+//compileQuerydsl {
+//    options.annotationProcessorPath = configurations.querydsl
+//}

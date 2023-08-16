@@ -1,26 +1,27 @@
 package com.example.bitcamptiger.configuration;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 public class WebMvcConfiguration implements WebMvcConfigurer {
 
-//    @Value(value = "${file.path}")
-//    private String filePath;
-//
-//
-//    @Override
-//    public void  addResourceHandlers(ResourceHandlerRegistry resourceHandlerRegistry){
-//
-//
-////       하위풀더에 업로드 요청이오면 filePath에서 꺼내서 쓸수 있게 설정
-//        resourceHandlerRegistry.addResourceHandler("/upload/**")
-//                .addResourceLocations(filePath);
-//
-//
-//    }
+    @Value(value = "${file.resource}")
+    private String filePath;
+
+    @Override
+    public void  addResourceHandlers(ResourceHandlerRegistry resourceHandlerRegistry){
+
+        //'/upload/'로 시작하는 요청이오면 해당 요청에 대응하는  파일을 filePath에서 제공
+        //실제 파일 시스템 경로를 설정. 클라이언트의 요청이 들어오면 해당 경로에서 정적 리소스를 찾아 제공.
+        resourceHandlerRegistry.addResourceHandler("/upload/**")
+                .addResourceLocations(filePath);
+
+
+    }
 
     @Override
     public void addCorsMappings(CorsRegistry registry){

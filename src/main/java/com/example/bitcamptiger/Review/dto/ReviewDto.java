@@ -27,6 +27,7 @@ public class ReviewDto {
                 .reviewNum(this.reviewNum)
                 .orderNum(this.orderNum)
                 .vendor(Vendor.builder().id(this.vendorId).build())
+                .member(Member.builder().username(this.username).build())
                 .reviewContent(this.reviewContent)
                 .reviewScore(this.reviewScore)
                 .reviewRegDate(this.reviewRegDate)

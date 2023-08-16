@@ -1,29 +1,24 @@
 package com.example.bitcamptiger.Review.controller;
 
-import com.example.bitcamptiger.Review.common.FileUtils;
+import com.example.bitcamptiger.common.reviewFileUtils;
 import com.example.bitcamptiger.Review.dto.ReviewDto;
 import com.example.bitcamptiger.Review.dto.ReviewFileDto;
 import com.example.bitcamptiger.Review.entity.Review;
 import com.example.bitcamptiger.Review.entity.ReviewFile;
 import com.example.bitcamptiger.Review.service.ReviewService;
-import com.example.bitcamptiger.board.entity.Board;
 import com.example.bitcamptiger.dto.ResponseDTO;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
-import org.springframework.web.servlet.ModelAndView;
 
 import java.io.File;
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -33,7 +28,7 @@ import java.util.*;
 public class ReviewController {
 
     private final ReviewService reviewService;
-    private final FileUtils fileUtils;
+    private final reviewFileUtils fileUtils;
 
     @Value("${file.path}")
     String attachPath;

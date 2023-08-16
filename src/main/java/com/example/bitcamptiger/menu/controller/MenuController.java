@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -20,14 +21,16 @@ public class MenuController {
 
     public final MenuRepository menuRepository;
 
-    //모든 메뉴 정보 리스트
-    @GetMapping("info/{vendorId}")
+
+
+    //해당 가게의 모든 메뉴 정보 리스트
+    @GetMapping("/info/{vendorId}")
     public ResponseEntity<?> getMenuInfoList(@PathVariable Long vendorId){
         ResponseDTO<MenuDTO> response = new ResponseDTO<>();
         try{
             List<MenuDTO> menuDTOList = menuService.getMenuList(vendorId);
 
-            response.setItems(menuDTOList);
+            response.setItemlist(menuDTOList);
             response.setStatusCode(HttpStatus.OK.value());
 
             return ResponseEntity.ok().body(response);
@@ -40,15 +43,16 @@ public class MenuController {
 
 
     //메뉴 등록
-    @PostMapping("info")
-    public ResponseEntity<?> insertMenu(@RequestBody MenuDTO menuDTO){
+    @PostMapping("/info")
+    public ResponseEntity<?> insertMenu(MenuDTO menuDTO, @RequestParam(required = false, value = "file") MultipartFile[] uploadFiles){
         ResponseDTO<MenuDTO> response = new ResponseDTO<>();
+
         try{
-            menuService.insertMenu(menuDTO);
+            menuService.insertMenu(menuDTO, uploadFiles);
 
             List<MenuDTO> menuDTOList = menuService.getMenuList(menuDTO.getVendor().getId());
 
-            response.setItems(menuDTOList);
+            response.setItemlist(menuDTOList);
             response.setStatusCode(HttpStatus.OK.value());
 
             return ResponseEntity.ok().body(response);
@@ -60,15 +64,15 @@ public class MenuController {
     }
 
     // 메뉴 수정
-    @PutMapping("info")
-    public ResponseEntity<?> updateMenu(@RequestBody MenuDTO menuDTO){
+    @PutMapping("/info")
+    public ResponseEntity<?> updateMenu(MenuDTO menuDTO, @RequestParam(required = false, value = "file") MultipartFile[] uploadFiles){
         ResponseDTO<MenuDTO> response = new ResponseDTO<>();
         try{
-            menuService.updateMenu(menuDTO);
+            menuService.updateMenu(menuDTO, uploadFiles);
 
             List<MenuDTO> menuDTOList = menuService.getMenuList(menuDTO.getVendor().getId());
 
-            response.setItems(menuDTOList);
+            response.setItemlist(menuDTOList);
             response.setStatusCode(HttpStatus.OK.value());
 
             return ResponseEntity.ok().body(response);
@@ -80,16 +84,17 @@ public class MenuController {
     }
 
 
+
     // 메뉴 삭제
-    @DeleteMapping("info")
-    public ResponseEntity<?> deleteMenu(@RequestBody MenuDTO menuDTO){
+    @DeleteMapping("/info")
+    public ResponseEntity<?> deleteMenu(MenuDTO menuDTO){
         ResponseDTO<MenuDTO> response = new ResponseDTO<>();
         try{
             menuService.deleteMenu(menuDTO);
 
             List<MenuDTO> menuDTOList = menuService.getMenuList(menuDTO.getVendor().getId());
 
-            response.setItems(menuDTOList);
+            response.setItemlist(menuDTOList);
             response.setStatusCode(HttpStatus.OK.value());
 
             return ResponseEntity.ok().body(response);

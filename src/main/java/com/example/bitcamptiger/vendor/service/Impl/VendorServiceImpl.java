@@ -1,12 +1,15 @@
 package com.example.bitcamptiger.vendor.service.Impl;
 
-import com.example.bitcamptiger.vendor.dto.RoadOcuuCertiData;
-import com.example.bitcamptiger.vendor.service.RoadOccuCertiService;
-import com.example.bitcamptiger.vendor.dto.BusinessResponseDto;
-import com.example.bitcamptiger.vendor.dto.RoadOcuuCertiData;
-import com.example.bitcamptiger.vendor.dto.VendorDTO;
+import com.example.bitcamptiger.menu.dto.MenuDTO;
+import com.example.bitcamptiger.menu.dto.MenuImageDTO;
+import com.example.bitcamptiger.menu.entity.Menu;
+import com.example.bitcamptiger.menu.entity.MenuImage;
+import com.example.bitcamptiger.menu.repository.MenuImageRepository;
+import com.example.bitcamptiger.menu.repository.MenuRepository;
+import com.example.bitcamptiger.vendor.dto.*;
+import com.example.bitcamptiger.vendor.entity.Randmark;
 import com.example.bitcamptiger.vendor.entity.Vendor;
-import com.example.bitcamptiger.vendor.entity.VendorOpenStatus;
+import com.example.bitcamptiger.vendor.repository.NowLocationRepository;
 import com.example.bitcamptiger.vendor.repository.VendorRepository;
 import com.example.bitcamptiger.vendor.service.GeoService;
 import com.example.bitcamptiger.vendor.service.RoadOccuCertiService;
@@ -33,6 +36,56 @@ public class VendorServiceImpl implements VendorService {
     private final GeoService geoService;
     private final VendorAPIService vendorAPIService;
     private final RoadOccuCertiService roadOccuCertiService;
+    private final MenuRepository menuRepository;
+    private final MenuImageRepository menuImageRepository;
+    private final NowLocationRepository nowLocationRepository;
+
+//    public final GeoService geoService;
+    @Override
+    public List<LocationDto> getNowLocationList(NowLocationDto nowLocationDto) {
+
+//        List<NowLocationDto> nowLocationDtoList = new ArrayList<>();
+//        List<Randmark> Randmark = nowLocationRepository.findAll();
+
+        JSONObject geocoding = geoService.geocoding(nowLocationDto.getAddress());
+        System.out.println(geocoding.toString());
+        nowLocationDto.setHardness(geocoding.get("x").toString());
+        nowLocationDto.setLatitude(geocoding.get("y").toString());
+        System.out.println(nowLocationDto);
+        List<Randmark> Location = nowLocationRepository.findAll();
+        List<LocationDto> locationDtoList = new ArrayList<>();
+//        List<>
+        for(Randmark randmark : Location){
+            if(Double.parseDouble(nowLocationDto.getLatitude())-Double.parseDouble(randmark.getHardness())<0.122699 && Double.parseDouble(nowLocationDto.getLatitude())-Double.parseDouble(randmark.getHardness()) < 0.244849){
+                System.out.println("!!!");
+//                locationDtoList.add(randmark.getLocation());
+                LocationDto locationDto = new LocationDto();
+                locationDto.setLocation(randmark.getLocation());
+                locationDtoList.add(locationDto);
+            }
+//            randmark.getHardness();
+//            randmark.getLatitude();
+        }
+        System.out.println(nowLocationDto);
+        return locationDtoList;
+    }
+
+    @Override
+    public NowLocationDto saverandmark(NowLocationDto nowLocationDto) {
+
+//        List<NowLocationDto> nowLocationDtoList = new ArrayList<>();
+//        List<Randmark> Randmark = nowLocationRepository.findAll();
+
+        JSONObject geocoding = geoService.geocoding(nowLocationDto.getAddress());
+        System.out.println(geocoding.toString());
+        nowLocationDto.setHardness(geocoding.get("x").toString());
+        nowLocationDto.setLatitude(geocoding.get("y").toString());
+        Randmark createrandmark = nowLocationDto.createrandmark();
+        System.out.println(createrandmark);
+        System.out.println(nowLocationDto);
+        nowLocationRepository.save(createrandmark);
+        return nowLocationDto;
+    }
 
     @Override
     public List<VendorDTO> getVendorList() {
@@ -46,6 +99,28 @@ public class VendorServiceImpl implements VendorService {
             //Vendor 객체를 VendorDTO 객체로 변환
             VendorDTO vendorDTO = VendorDTO.of(vendor);
 
+            List<Menu> menuList = menuRepository.findByVendor(vendor);
+
+            //vendor 조회시 등록된 menu 정보도 조회
+            List<MenuDTO> menuDTOList = new ArrayList<>();
+            for(Menu menu : menuList){
+                MenuDTO menuDTO = MenuDTO.of(menu);
+
+                //해당 메뉴 이미지 조회
+                List<MenuImage> menuImageList = menuImageRepository.findByMenu(menu);
+
+                List<MenuImageDTO> menuImageDTOList = new ArrayList<>();
+                for (MenuImage  menuImage: menuImageList){
+                    //MenuImage 객체를 MenuImageDTO 객체로 변환
+                    MenuImageDTO menuImageDTO = MenuImageDTO.of(menuImage);
+                    menuImageDTOList.add(menuImageDTO);
+                }
+                // MenuDTO 객체에 메뉴 이미지 리스트를 설정
+                menuDTO.setMenuImageList(menuImageDTOList);
+                menuDTOList.add(menuDTO);
+            }
+
+            vendorDTO.setMenuDTOList(menuDTOList);
             vendorDTOList.add(vendorDTO);
         }
 
@@ -55,7 +130,7 @@ public class VendorServiceImpl implements VendorService {
     @Override
     public List<VendorDTO> getOpenList(String vendorOpenStatus) {
 
-        List<Vendor> openList = vendorRepository.findByVendorOpenStatus(VendorOpenStatus.OPEN);
+        List<Vendor> openList = vendorRepository.findByVendorOpenStatus(vendorOpenStatus);
 
         List<VendorDTO> openDTOList = new ArrayList<>();
 
@@ -65,6 +140,22 @@ public class VendorServiceImpl implements VendorService {
             openDTOList.add(vendorDTO);
         }
         return openDTOList;
+    }
+
+
+    @Override
+    public List<VendorDTO> getVendorByAddressCategory(String address){
+        List<Vendor> vendorList = vendorRepository.findVendorByAddressCategory(address);
+
+        List<VendorDTO> vendorDTOList = new ArrayList<>();
+
+        // Page 인터페이스는 직접 Iterable 인터페이스를 구현하지 않음.
+        // 따라서 .getContent() 메서드를 사용하여 List를 가져와야 함.
+        for(Vendor vendor : vendorList){
+            VendorDTO vendorDTO = VendorDTO.of(vendor);
+            vendorDTOList.add(vendorDTO);
+        }
+        return vendorDTOList;
     }
 
     @Override
@@ -105,18 +196,18 @@ public class VendorServiceImpl implements VendorService {
 
 
 
+
     @Override
     public void updateVendor(VendorDTO vendorDTO) {
 
         Vendor vendor  =  vendorRepository.findById(vendorDTO.getId()).orElseThrow(EntityNotFoundException::new);
         //수정 가능한 필드만 업데이트
-        vendor.setVendorOpenStatus(VendorOpenStatus.valueOf(vendorDTO.getVendorOpenStatus()));
+        vendor.setVendorOpenStatus(vendorDTO.getVendorOpenStatus());
         vendor.setAddress(vendorDTO.getAddress());
         vendor.setTel(vendorDTO.getTel());
         vendor.setBusinessDay(vendorDTO.getBusinessDay());
         vendor.setOpen(LocalTime.parse(vendorDTO.getOpen()));
         vendor.setClose(LocalTime.parse(vendorDTO.getClose()));
-        vendor.setMenu(vendorDTO.getMenu());
 
         //주소가 변경된 경우에만 경도와 위도를 업데이트
         if(!vendor.getAddress().equals(vendorDTO.getAddress())){

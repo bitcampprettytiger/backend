@@ -33,8 +33,8 @@ public class Vendor {
     private String vendorName;
 
     @Column
-    @Enumerated(EnumType.STRING)
-    private VendorOpenStatus vendorOpenStatus;
+//    @Enumerated(EnumType.STRING)
+    private String vendorOpenStatus;
 
     @Column
     private String address;
@@ -58,9 +58,6 @@ public class Vendor {
 
     @Column
     private LocalTime close;
-
-    @Column
-    private String menu;
 
     @Column
     private String b_no;        //사업자 번호

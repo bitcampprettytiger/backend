@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import java.util.List;
 
 @Data
+
 public class ResponseDTO<T> {
 
     private Page<T> items;

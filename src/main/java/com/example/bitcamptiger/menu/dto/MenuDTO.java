@@ -1,9 +1,15 @@
 package com.example.bitcamptiger.menu.dto;
 
 import com.example.bitcamptiger.menu.entity.Menu;
+import com.example.bitcamptiger.menu.entity.MenuImage;
 import com.example.bitcamptiger.vendor.entity.Vendor;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.modelmapper.ModelMapper;
+
+import java.util.List;
 
 
 @Data
@@ -19,6 +25,7 @@ public class MenuDTO {
     private String menuType;
 
     private Vendor vendor;
+    private List<MenuImageDTO> menuImageList;
 
     private static ModelMapper modelMapper = new ModelMapper();
 
@@ -26,6 +33,8 @@ public class MenuDTO {
     public Menu createMenu(){
         return modelMapper.map(this, Menu.class);
     }
+
+
 
     public static MenuDTO of(Menu menu){
         return modelMapper.map(menu, MenuDTO.class);

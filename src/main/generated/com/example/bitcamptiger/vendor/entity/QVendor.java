@@ -30,8 +30,6 @@ public class QVendor extends EntityPathBase<Vendor> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
-    public final StringPath menu = createString("menu");
-
     public final ListPath<com.example.bitcamptiger.menu.entity.Menu, com.example.bitcamptiger.menu.entity.QMenu> menuList = this.<com.example.bitcamptiger.menu.entity.Menu, com.example.bitcamptiger.menu.entity.QMenu>createList("menuList", com.example.bitcamptiger.menu.entity.Menu.class, com.example.bitcamptiger.menu.entity.QMenu.class, PathInits.DIRECT2);
 
     public final TimePath<java.time.LocalTime> open = createTime("open", java.time.LocalTime.class);
@@ -44,7 +42,7 @@ public class QVendor extends EntityPathBase<Vendor> {
 
     public final StringPath vendorName = createString("vendorName");
 
-    public final EnumPath<VendorOpenStatus> vendorOpenStatus = createEnum("vendorOpenStatus", VendorOpenStatus.class);
+    public final StringPath vendorOpenStatus = createString("vendorOpenStatus");
 
     public final StringPath vendorType = createString("vendorType");
 

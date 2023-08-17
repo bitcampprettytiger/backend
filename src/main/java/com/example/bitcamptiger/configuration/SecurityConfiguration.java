@@ -53,7 +53,7 @@ public class SecurityConfiguration {
 //                    /요청은 모든 사용자가 이용가능
 
     authorizaRequests.requestMatchers("/member/**","/board/**","/api/**", "/menu/**").permitAll();
-     authorizaRequests.requestMatchers("/vendor/**").hasAuthority("ROLE_VENDOR");
+     authorizaRequests.requestMatchers("/vendor/**").permitAll();
      authorizaRequests.requestMatchers("/**").hasAuthority("ROLE_VENDOR");
      authorizaRequests.anyRequest().authenticated();
 })

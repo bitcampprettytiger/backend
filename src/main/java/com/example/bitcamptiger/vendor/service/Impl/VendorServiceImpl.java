@@ -128,6 +128,8 @@ public class VendorServiceImpl implements VendorService {
         return vendorDTOList;
     }
 
+
+
     @Override
     public List<VendorDTO> getOpenList(String vendorOpenStatus) {
 
@@ -182,6 +184,13 @@ public class VendorServiceImpl implements VendorService {
                 vendorDTO.setRlAppiNm(roadOcuuCertiData.getRlAppiNm());
                 // VendorDTO를 Vendor 엔티티로 변환하여 저장
                 Vendor vendor = vendorDTO.createVendor();
+                List<Randmark> randmarkBydistinct = nowLocationRepository.findRandmarkBydistinct(vendor);
+                if(!randmarkBydistinct.isEmpty())
+                vendor.setLocation(randmarkBydistinct.get(0).getLocation());
+                else
+                    vendor.setLocation("근처 역정보없음");
+
+                System.out.println(vendor);
                 vendorRepository.save(vendor);
 
             }else{
@@ -192,6 +201,11 @@ public class VendorServiceImpl implements VendorService {
             throw  new RuntimeException("사업자 유효성 검사에 실패하였습니다.");
         }
 
+        List<Randmark> randmarkList = nowLocationRepository.findAll();
+
+//        for(Randmark randmark : randmarkList){
+//
+//        }
 
     }
 

@@ -22,6 +22,4 @@ public class ResponseDTO<T> {
 
     private String message;
 
-
-
 }

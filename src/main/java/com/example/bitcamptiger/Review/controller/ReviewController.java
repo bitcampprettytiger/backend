@@ -1,5 +1,6 @@
 package com.example.bitcamptiger.Review.controller;
 
+import com.example.bitcamptiger.Review.repository.ReviewRepository;
 import com.example.bitcamptiger.common.reviewFileUtils;
 import com.example.bitcamptiger.Review.dto.ReviewDto;
 import com.example.bitcamptiger.Review.dto.ReviewFileDto;
@@ -29,6 +30,7 @@ public class ReviewController {
 
     private final ReviewService reviewService;
     private final reviewFileUtils fileUtils;
+    private final ReviewRepository reviewRepository;
 
     @Value("${file.path}")
     String attachPath;
@@ -36,31 +38,26 @@ public class ReviewController {
 
     @GetMapping("review-list")
     public ResponseEntity<?> getReviewList() {
+        ResponseDTO<ReviewDto> responseDTO = new ResponseDTO<>();
+        try {
+            List<ReviewDto> reviewDtos = reviewService.getReviewList();
 
-        List<Review> reviewList = reviewService.getReviewList();
+            responseDTO.setItemlist(reviewDtos);
+            responseDTO.setStatusCode(HttpStatus.OK.value());
 
-        List<ReviewDto> reviewDtoList = new ArrayList<>();
-
-        for(Review r : reviewList) {
-            ReviewDto returnReviewDto = ReviewDto.builder()
-                    .reviewNum(r.getReviewNum())
-                    .reviewContent(r.getReviewContent())
-                    .reviewScore(r.getReviewScore())
-                    .reviewRegDate(r.getReviewRegDate())
-                    .build();
-
-            reviewDtoList.add(returnReviewDto);
+            return ResponseEntity.ok().body(responseDTO);
+        } catch (Exception e) {
+            responseDTO.setErrorMessage(e.getMessage());
+            responseDTO.setStatusCode(HttpStatus.BAD_REQUEST.value());
+            return ResponseEntity.badRequest().body(responseDTO);
         }
-
-        return ResponseEntity.status(HttpStatus.OK).body(reviewDtoList);
     }
 
     //multipart form 데이터 형식을 받기 위해 consumes 속성 지정
     @PostMapping(value = "/review", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> createReview(ReviewDto reviewDto,
                                           MultipartHttpServletRequest mphsRequest) {
-        ResponseDTO<Map<String, String>> responseDTO =
-                new ResponseDTO<>();
+        ResponseDTO<Map<String, String>> responseDTO = new ResponseDTO<>();
 
         File directory = new File(attachPath);
 
@@ -70,13 +67,15 @@ public class ReviewController {
 
         List<ReviewFile> uploadFileList = new ArrayList<>();
 
+        Long reviewId = 1L;
+
         try{
             Review review = Review.builder()
                     .reviewContent(reviewDto.getReviewContent())
                     .reviewScore(reviewDto.getReviewScore())
                     .reviewRegDate(LocalDateTime.now())
                     .build();
-            System.out.println("=================" + review.getReviewRegDate());
+           System.out.println("=================" + review.getReviewRegDate());
 
             Iterator<String> iterator = mphsRequest.getFileNames();
 
@@ -87,11 +86,13 @@ public class ReviewController {
                     if(!multipartFile.isEmpty()) {
                         ReviewFile reviewFile = new ReviewFile();
 
-                        reviewFile = fileUtils.parseFileInfo(multipartFile, "review/");
+                        reviewFile = fileUtils.parseFileInfo(multipartFile,attachPath);
 
                         reviewFile.setReview(review);
 
                         uploadFileList.add(reviewFile);
+
+                        reviewId = reviewId + 1L;
                     }
                 }
             }
@@ -104,6 +105,14 @@ public class ReviewController {
             returnMap.put("msg", "정상적으로 저장되었습니다.");
 
             responseDTO.setItem(returnMap);
+
+
+            //List<ReviewDto> reviewDtoList = reviewService.getReviewList(reviewDto);
+
+//            ReviewDto savedReviewDto = new ReviewDto();
+
+           // responseDTO.setItemlist(reviewDtoList);
+
 
             return ResponseEntity.ok().body(responseDTO);
         } catch (Exception e) {
@@ -148,7 +157,7 @@ public class ReviewController {
 
                                 MultipartFile file = changeFileList[j];
 
-                                reviewFile = fileUtils.parseFileInfo(file, "review/");
+                                reviewFile = fileUtils.parseFileInfo(file,attachPath);
 
                                 reviewFile.setReview(review);
                                 reviewFile.setReviewFileNo(originFiles.get(i).getReviewFileNo());
@@ -178,7 +187,7 @@ public class ReviewController {
                             !file.getOriginalFilename().equals("")) {
                         ReviewFile reviewFile = new ReviewFile();
 
-                        reviewFile = fileUtils.parseFileInfo(file, "review/");
+                        reviewFile = fileUtils.parseFileInfo(file, attachPath);
 
                         reviewFile.setReview(review);
                         reviewFile.setReviewFileStatus("I");

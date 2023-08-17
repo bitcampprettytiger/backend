@@ -29,12 +29,13 @@ public class Review {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE,
                     generator = "ReviewSeqGenerator")
+    @Column(name = "reviewNum")
     private Long reviewNum; //리뷰번호
 
     private Long orderNum; //포장번호
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "vendor_id", referencedColumnName = "vender_id")
+    @JoinColumn(name = "vendor_id", referencedColumnName = "vendor_id")
     private Vendor vendor;//상점번호
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -59,7 +60,7 @@ public class Review {
                 .vendor(this.vendor)
                 .member(this.member)
                 .reviewContent(this.reviewContent)
-                .reviewRegDate(this.reviewRegDate)
+                .reviewRegDate(this.reviewRegDate.toString())
                 .reviewScore(this.reviewScore)
                 .build();
     }

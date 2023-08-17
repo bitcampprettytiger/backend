@@ -21,7 +21,7 @@ public class ReviewDto {
     private Vendor vendor;
     private Member member;
     private String reviewContent;
-    private LocalDateTime reviewRegDate;
+    private String reviewRegDate;
     private int reviewScore;
     private List<ReviewFileDto> reviewFileList;
 
@@ -33,7 +33,7 @@ public class ReviewDto {
                 .member(this.member)
                 .reviewContent(this.reviewContent)
                 .reviewScore(this.reviewScore)
-                .reviewRegDate(this.reviewRegDate)
+                .reviewRegDate(LocalDateTime.parse(this.reviewRegDate))
                 .build();
     }
 }

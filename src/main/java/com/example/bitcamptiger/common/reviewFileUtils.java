@@ -6,6 +6,7 @@ import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.example.bitcamptiger.Review.entity.ReviewFile;
@@ -105,5 +106,14 @@ public class reviewFileUtils {
         }
 
         return reviewFile;
+    }
+
+    public void deleteImage(String bucketName, String key){
+
+        try{
+            s3.deleteObject(new DeleteObjectRequest(bucketName, key));
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 }

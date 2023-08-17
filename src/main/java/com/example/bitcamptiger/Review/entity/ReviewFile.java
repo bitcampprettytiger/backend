@@ -16,7 +16,6 @@ import lombok.NoArgsConstructor;
 @Builder
 public class ReviewFile {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long reviewFileNo; //파일번호
     private String reviewFileOrigin;// 원본 파일명
     private String reviewFileName; // 저장된 파일 명
@@ -33,7 +32,7 @@ public class ReviewFile {
     private Review review;
 
     public ReviewFileDto EntitytoDto() {
-        ReviewFileDto reviewFIleDto = ReviewFileDto.builder()
+        ReviewFileDto reviewFileDto = ReviewFileDto.builder()
                 .reviewNum(this.review.getReviewNum()) // Review 참조
                 .reviewFileNo(this.reviewFileNo)
                 .reviewFileName(this.reviewFileName)
@@ -41,7 +40,7 @@ public class ReviewFile {
                 .reviewFileOrigin(this.reviewFileOrigin)
                 .reviewFileCate(this.reviewFileCate)
                 .build();
-        return reviewFIleDto;
+        return reviewFileDto;
     }
 
 

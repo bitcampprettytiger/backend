@@ -1,6 +1,7 @@
 package com.example.bitcamptiger.Review.dto;
 
 import com.example.bitcamptiger.Review.entity.Review;
+import com.example.bitcamptiger.Review.entity.ReviewFile;
 import com.example.bitcamptiger.member.entity.Member;
 import com.example.bitcamptiger.vendor.entity.Vendor;
 import lombok.AllArgsConstructor;

@@ -10,12 +10,12 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "REVIEW_FILE")
 @Data
-@IdClass(ReviewFileId.class)
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class ReviewFile {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long reviewFileNo; //파일번호
     private String reviewFileOrigin;// 원본 파일명
     private String reviewFileName; // 저장된 파일 명
@@ -26,10 +26,11 @@ public class ReviewFile {
     @Transient
     private String newFileName;
 
-    @Id
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "reviewNum", referencedColumnName = "reviewNum")
+    @JoinColumn(name = "reviewNum")
     private Review review;
+
 
     public ReviewFileDto EntitytoDto() {
         ReviewFileDto reviewFileDto = ReviewFileDto.builder()

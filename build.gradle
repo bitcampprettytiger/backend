@@ -43,6 +43,7 @@ dependencies {
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.5'
     //직렬화
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-hibernate5:2.12.5'
+    implementation group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310'
 
 
     // querydsl-jpa

@@ -57,7 +57,7 @@ public class ReviewController {
     @PostMapping(value = "/review", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> createReview(ReviewDto reviewDto,
                                           MultipartHttpServletRequest mphsRequest) {
-        ResponseDTO<Map<String, String>> responseDTO = new ResponseDTO<>();
+        ResponseDTO<Review> responseDTO = new ResponseDTO<>();
 
         File directory = new File(attachPath);
 
@@ -74,8 +74,11 @@ public class ReviewController {
                     .reviewContent(reviewDto.getReviewContent())
                     .reviewScore(reviewDto.getReviewScore())
                     .reviewRegDate(LocalDateTime.now())
+                    .images(uploadFileList)
                     .build();
            System.out.println("=================" + review.getReviewRegDate());
+
+
 
             Iterator<String> iterator = mphsRequest.getFileNames();
 
@@ -104,15 +107,7 @@ public class ReviewController {
 
             returnMap.put("msg", "정상적으로 저장되었습니다.");
 
-            responseDTO.setItem(returnMap);
-
-
-            //List<ReviewDto> reviewDtoList = reviewService.getReviewList(reviewDto);
-
-//            ReviewDto savedReviewDto = new ReviewDto();
-
-           // responseDTO.setItemlist(reviewDtoList);
-
+            responseDTO.setItem(review);
 
             return ResponseEntity.ok().body(responseDTO);
         } catch (Exception e) {

@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -170,11 +171,11 @@ public class VendorController {
 
     //신규 가게 등록
     @PostMapping("/info")
-    public ResponseEntity<?> insertVendorInfo(@RequestBody VendorDTO vendorDTO){
-        System.out.println(vendorDTO);
+    public ResponseEntity<?> insertVendorInfo(VendorDTO vendorDTO, @RequestParam(required = false, value = "file")MultipartFile[] uploadFiles){
         ResponseDTO<VendorDTO> response = new ResponseDTO<>();
+
         try{
-            vendorService.insertVendor(vendorDTO);
+            vendorService.insertVendor(vendorDTO, uploadFiles);
 
             List<VendorDTO> vendorDTOList = vendorService.getVendorList();
 
@@ -193,11 +194,11 @@ public class VendorController {
 
     //가게 정보 수정
     @PutMapping("/info")
-    public ResponseEntity<?> updateVendorInfo(@RequestBody VendorDTO vendorDTO){
+    public ResponseEntity<?> updateVendorInfo(VendorDTO vendorDTO, @RequestParam(required = false, value = "file")MultipartFile[] uploadFiles){
         ResponseDTO<VendorDTO> response = new ResponseDTO<>();
 
         try{
-            vendorService.updateVendor(vendorDTO);
+            vendorService.updateVendor(vendorDTO, uploadFiles);
 
             List<VendorDTO> vendorDTOList = vendorService.getVendorList();
 

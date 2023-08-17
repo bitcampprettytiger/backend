@@ -69,7 +69,7 @@ public class MenuServiceImpl implements MenuService {
     }
 
 
-    @Value("${file.path}")
+    @Value("${menuFile.path}")
     String attachPath;
 
 

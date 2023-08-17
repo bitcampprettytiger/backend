@@ -2,10 +2,16 @@ package com.example.bitcamptiger.vendor.controller;
 
 
 import com.example.bitcamptiger.dto.ResponseDTO;
+import com.example.bitcamptiger.response.BaseResponse;
+import com.example.bitcamptiger.vendor.dto.LocationDto;
+import com.example.bitcamptiger.vendor.dto.NowLocationDto;
 import com.example.bitcamptiger.vendor.dto.VendorDTO;
 import com.example.bitcamptiger.vendor.entity.Vendor;
 import com.example.bitcamptiger.vendor.repository.VendorRepository;
 import com.example.bitcamptiger.vendor.service.VendorService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +19,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+
+import static com.example.bitcamptiger.response.BaseResponseStatus.*;
 
 @RestController
 @RequestMapping("/vendor")
@@ -25,28 +33,62 @@ public class VendorController {
 
 
 
-    @GetMapping("/search")
-    public ResponseEntity<?> getVendorOpenInfoList() {
-
-        ResponseDTO<VendorDTO> response = new ResponseDTO<>();
+    @PostMapping("/search")
+    public BaseResponse<?> getVendorOpenInfoList(@RequestBody NowLocationDto nowLocationDto) {
+        System.out.println(nowLocationDto);
+        ResponseDTO<LocationDto> response = new ResponseDTO<>();
         try{
-
+            List<LocationDto> nowLocationList = vendorService.getNowLocationList(nowLocationDto);
+            if(nowLocationList.isEmpty()){
+                System.out.println("null");
+               return new BaseResponse<>(RESPONSE_ERROR);
+            }
+            System.out.println("????????");
 //            List<VendorDTO> VendorDTOList = vendorService.getOpenList(vendorDTO.getVendorOpenStatus());
 
-//            response.setItemlist();
+            response.setItemlist(nowLocationList);
             response.setStatusCode(HttpStatus.OK.value());
 
-            return ResponseEntity.ok().body(response);
-        }catch(Exception e) {
+            return new BaseResponse<>(response);
+        } catch(Exception e) {
+            System.out.println(e.getMessage());
             response.setErrorMessage(e.getMessage());
             response.setStatusCode(HttpStatus.BAD_REQUEST.value());
-            return ResponseEntity.badRequest().body(response);
+            return new BaseResponse<>(response);
+        }
+
+    }
+    @PostMapping("/locationsave")
+    public BaseResponse<?> saveVendorOpenInfoList(@RequestBody NowLocationDto nowLocationDto) {
+
+        ResponseDTO<NowLocationDto> response = new ResponseDTO<>();
+
+        try{
+            NowLocationDto saverandmark = vendorService.saverandmark(nowLocationDto);
+            if(saverandmark.equals(null)){
+                return new BaseResponse<>(POST_ISNULL);
+            }
+//            List<VendorDTO> VendorDTOList = vendorService.getOpenList(vendorDTO.getVendorOpenStatus());
+
+            response.setItem(saverandmark);
+            response.setStatusCode(HttpStatus.OK.value());
+
+            return new BaseResponse<>(response);
+        } catch(Exception e) {
+            response.setErrorMessage(e.getMessage());
+            response.setStatusCode(HttpStatus.BAD_REQUEST.value());
+            return new BaseResponse<>(response);
         }
 
     }
 
-
     //현재 "OPEN" 가게 정보 리스트
+
+    @Operation(summary = "openinfo", description = "가게오픈정보 가져오기")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "통과"),
+            @ApiResponse(responseCode = "400", description = "실패")
+    })
     @GetMapping("/openInfo")
     public ResponseEntity<?> getVendorOpenInfoList(VendorDTO vendorDTO) {
 
@@ -170,8 +212,19 @@ public class VendorController {
 
 
     //신규 가게 등록
+
+    @Operation(summary = "postinfo", description = "가게 등록하기")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "통과"),
+            @ApiResponse(responseCode = "400", description = "실패")
+    })
     @PostMapping("/info")
     public ResponseEntity<?> insertVendorInfo(VendorDTO vendorDTO, @RequestParam(required = false, value = "file")MultipartFile[] uploadFiles){
+        System.out.println(vendorDTO);
+//        vendorDTO null 일때 vaildation
+        if(vendorDTO.equals(null)){
+            new BaseResponse<>(VENDORDTO_NUTNULL);
+        }
         ResponseDTO<VendorDTO> response = new ResponseDTO<>();
 
         try{

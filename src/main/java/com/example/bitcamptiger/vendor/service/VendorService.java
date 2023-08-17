@@ -13,6 +13,10 @@ public interface VendorService {
 
     List<VendorDTO> getVendorByCategory(String address, String menuName, String vendorName);
 
+    List<VendorDTO> getVendorByVendorType(String vendorType);
+
+    List<VendorDTO> getVendorByMenuType(String menuType);
+
     void insertVendor(VendorDTO vendorDTO) throws JsonProcessingException;
 
     void updateVendor(VendorDTO vendorDTO);

@@ -5,7 +5,6 @@ import com.example.bitcamptiger.vendor.entity.QVendor;
 import com.example.bitcamptiger.vendor.entity.Vendor;
 import com.example.bitcamptiger.vendor.repository.VendorRepositoryCustom;
 import com.querydsl.core.BooleanBuilder;
-import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 
@@ -22,6 +21,8 @@ public class VendorRepositoryCustomImpl implements VendorRepositoryCustom {
         this.queryFactory = new JPAQueryFactory(em);
     }
 
+
+    //검색어에 해당하는 모든 가게 정보 조회
     @Override
     public List<Vendor> findVendorByCategory(String address, String menuName, String vendorName) {
 
@@ -61,6 +62,55 @@ public class VendorRepositoryCustomImpl implements VendorRepositoryCustom {
         return content;
     }
 
+    //길거리 음식, 포장마차 타입 분류
+    //해당 타입에 포함되는 가게 조회하기
+    @Override
+    public List<Vendor> findVendorByvendorType(String vendorType) {
+
+        BooleanBuilder builder = new BooleanBuilder();
+
+        if(vendorType != null && !vendorType.isEmpty()){
+            builder.and(QVendor.vendor.vendorType.contains(vendorType));
+        }
+
+        List<Vendor> content = queryFactory.selectFrom(QVendor.vendor)
+                .where(builder)
+                .orderBy(QVendor.vendor.vendorName.asc())
+                .fetch();
+
+        return content;
+    }
+
+    //메뉴 타입별 가게 정보 조회
+    @Override
+    public List<Vendor> findMenuByCategory(String menuType) {
+        BooleanBuilder builder = new BooleanBuilder();
+
+        if(menuType != null && !menuType.isEmpty()){
+            builder.and(QMenu.menu.menuType.contains(menuType));
+        }
+
+        List<Vendor> content = queryFactory.selectFrom(QVendor.vendor)
+                .leftJoin(QVendor.vendor.menuList, QMenu.menu)
+                .where(builder)
+                .orderBy(QVendor.vendor.vendorName.asc())
+                .fetch();
+
+
+        return content;
+    }
+
+
+
+
+
+
+    //Query dsl의 메소드
+    //vendorType을 기준으로 분류
+//    private BooleanExpression searchVendorType(String vendorType){
+//        return QVendor.vendor.vendorType.contains(vendorType);
+//    }
+
 
     //Query dsl의 메소드
     //null이거나 null이 아닌 값을 같은지 확인해서 boolean 비교
@@ -68,22 +118,6 @@ public class VendorRepositoryCustomImpl implements VendorRepositoryCustom {
 //    private BooleanExpression searchOpenStatusEq(VendorOpenStatus vendorOpenStatus){
 //        return vendorOpenStatus == null ? null : QVendor.vendor.vendorOpenStatus.eq(vendorOpenStatus);
 //    }
-
-
-    //Query dsl의 메소드
-    //주소 검색
-    private BooleanExpression searchAddressEq(String address){
-        return QVendor.vendor.address.contains(address);
-    }
-    //메뉴명 검색
-    private BooleanExpression searchMenuNameEq(String menuName){
-        return QMenu.menu.menuName.contains(menuName);
-    }
-    //가게명 검색
-    private BooleanExpression searchVendorNameEq(String vendorName){
-        return QVendor.vendor.vendorName.contains(vendorName);
-    }
-
 
 
 

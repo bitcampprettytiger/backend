@@ -128,6 +128,60 @@ public class VendorServiceImpl implements VendorService {
 
 
 
+    //길거리 음식, 포장마차 타입 분류
+    //해당 타입에 포함되는 가게 조회하기
+    @Override
+    public List<VendorDTO> getVendorByVendorType(String vendorType) {
+        List<Vendor> vendorList = vendorRepository.findVendorByvendorType(vendorType);
+
+        List<VendorDTO> vendorDTOList = new ArrayList<>();
+
+        for(Vendor vendor : vendorList) {
+            VendorDTO vendorDTO = VendorDTO.of(vendor);
+
+            List<Menu> menuList = menuRepository.findByVendor(vendor);
+
+            //vendor 조회시 등록된 menu 정보도 조회
+            List<MenuDTO> menuDTOList = new ArrayList<>();
+            for(Menu menu : menuList){
+                MenuDTO menuDTO = MenuDTO.of(menu);
+                menuDTOList.add(menuDTO);
+            }
+            vendorDTO.setMenuDTOList(menuDTOList);
+            vendorDTOList.add(vendorDTO);
+        }
+        return vendorDTOList;
+    }
+
+
+
+    //메뉴 타입별 가게 정보 조회
+    @Override
+    public List<VendorDTO> getVendorByMenuType(String menuType) {
+        List<Vendor> vendorList = vendorRepository.findMenuByCategory(menuType);
+
+        List<VendorDTO> vendorDTOList = new ArrayList<>();
+
+        for(Vendor vendor : vendorList) {
+            VendorDTO vendorDTO = VendorDTO.of(vendor);
+
+            List<Menu> menuList = menuRepository.findByVendor(vendor);
+
+            List<MenuDTO> menuDTOList = new ArrayList<>();
+            for(Menu menu : menuList) {
+                MenuDTO menuDTO = MenuDTO.of(menu);
+                menuDTOList.add(menuDTO);
+            }
+            vendorDTO.setMenuDTOList(menuDTOList);
+            vendorDTOList.add(vendorDTO);
+        }
+
+        return vendorDTOList;
+    }
+
+
+
+
     @Override
     public void insertVendor(VendorDTO vendorDTO) throws JsonProcessingException {
 

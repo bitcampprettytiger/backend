@@ -90,6 +90,52 @@ public class VendorController {
     }
 
 
+    //길거리 음식, 포장마차 타입 분류
+    //해당 타입에 포함되는 가게 조회하기
+    @GetMapping("/vendorType/{vendorType}")
+    public ResponseEntity<?> getVendorByVendorType(
+            @PathVariable String vendorType){
+
+        ResponseDTO<VendorDTO> response = new ResponseDTO<>();
+
+        try{
+            List<VendorDTO> vendorDTOList = vendorService.getVendorByVendorType(vendorType);
+
+            response.setItemlist(vendorDTOList);
+            response.setStatusCode(HttpStatus.OK.value());
+
+            return ResponseEntity.ok().body(response);
+        }catch(Exception e) {
+            response.setErrorMessage(e.getMessage());
+            response.setStatusCode(HttpStatus.BAD_REQUEST.value());
+            return ResponseEntity.badRequest().body(response);
+        }
+    }
+
+
+
+    //메뉴 타입별 가게 정보 조회
+
+    @GetMapping("/menuType/{menuType}")
+    public ResponseEntity<?> getVendorByMenuType(
+            @PathVariable String menuType){
+
+        ResponseDTO<VendorDTO> response = new ResponseDTO<>();
+
+        try{
+            List<VendorDTO> vendorDTOList = vendorService.getVendorByMenuType(menuType);
+
+            response.setItemlist(vendorDTOList);
+            response.setStatusCode(HttpStatus.OK.value());
+
+            return ResponseEntity.ok().body(response);
+        }catch(Exception e) {
+            response.setErrorMessage(e.getMessage());
+            response.setStatusCode(HttpStatus.BAD_REQUEST.value());
+            return ResponseEntity.badRequest().body(response);
+        }
+    }
+
 
 
     //개별 상점 상세 정보 확인

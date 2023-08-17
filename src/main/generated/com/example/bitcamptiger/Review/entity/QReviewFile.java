@@ -22,17 +22,17 @@ public class QReviewFile extends EntityPathBase<ReviewFile> {
 
     public static final QReviewFile reviewFile = new QReviewFile("reviewFile");
 
-    public final StringPath filePath = createString("filePath");
-
-    public final NumberPath<Long> fileSize = createNumber("fileSize", Long.class);
-
-    public final NumberPath<Long> id = createNumber("id", Long.class);
-
-    public final StringPath originName = createString("originName");
-
     public final QReview review;
 
-    public final StringPath savedName = createString("savedName");
+    public final StringPath reviewFileCate = createString("reviewFileCate");
+
+    public final StringPath reviewFileName = createString("reviewFileName");
+
+    public final NumberPath<Long> reviewFileNo = createNumber("reviewFileNo", Long.class);
+
+    public final StringPath reviewFileOrigin = createString("reviewFileOrigin");
+
+    public final StringPath reviewFilePath = createString("reviewFilePath");
 
     public QReviewFile(String variable) {
         this(ReviewFile.class, forVariable(variable), INITS);

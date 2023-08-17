@@ -24,4 +24,8 @@ public class NowLocationDto {
      return  modelMapper.map(randmark,NowLocationDto.class);
 
     }
+
+    public Randmark createrandmark(){
+        return modelMapper.map(this,Randmark.class);
+    }
 }

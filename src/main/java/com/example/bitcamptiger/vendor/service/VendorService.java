@@ -9,6 +9,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import java.util.List;
 
 public interface VendorService {
+    NowLocationDto saverandmark(NowLocationDto nowLocationDto);
+
     List<VendorDTO> getVendorList();
 
     List<VendorDTO> getOpenList(String vendorOpenStatus);

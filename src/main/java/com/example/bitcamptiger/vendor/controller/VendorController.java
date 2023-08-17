@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static com.example.bitcamptiger.response.BaseResponseStatus.POST_ISNULL;
 import static com.example.bitcamptiger.response.BaseResponseStatus.RESPONSE_ERROR;
 
 @RestController
@@ -31,13 +32,15 @@ public class VendorController {
 
     @PostMapping("/search")
     public BaseResponse<?> getVendorOpenInfoList(@RequestBody NowLocationDto nowLocationDto) {
-
+        System.out.println(nowLocationDto);
         ResponseDTO<LocationDto> response = new ResponseDTO<>();
         try{
             List<LocationDto> nowLocationList = vendorService.getNowLocationList(nowLocationDto);
             if(nowLocationList.isEmpty()){
+                System.out.println("null");
                return new BaseResponse<>(RESPONSE_ERROR);
             }
+            System.out.println("????????");
 //            List<VendorDTO> VendorDTOList = vendorService.getOpenList(vendorDTO.getVendorOpenStatus());
 
             response.setItemlist(nowLocationList);
@@ -45,6 +48,7 @@ public class VendorController {
 
             return new BaseResponse<>(response);
         } catch(Exception e) {
+            System.out.println(e.getMessage());
             response.setErrorMessage(e.getMessage());
             response.setStatusCode(HttpStatus.BAD_REQUEST.value());
             return new BaseResponse<>(response);
@@ -54,15 +58,16 @@ public class VendorController {
     @PostMapping("/locationsave")
     public BaseResponse<?> saveVendorOpenInfoList(@RequestBody NowLocationDto nowLocationDto) {
 
-        ResponseDTO<LocationDto> response = new ResponseDTO<>();
+        ResponseDTO<NowLocationDto> response = new ResponseDTO<>();
+
         try{
-            List<LocationDto> nowLocationList = vendorService.getNowLocationList(nowLocationDto);
-            if(nowLocationList.isEmpty()){
-                return new BaseResponse<>(RESPONSE_ERROR);
+            NowLocationDto saverandmark = vendorService.saverandmark(nowLocationDto);
+            if(saverandmark.equals(null)){
+                return new BaseResponse<>(POST_ISNULL);
             }
 //            List<VendorDTO> VendorDTOList = vendorService.getOpenList(vendorDTO.getVendorOpenStatus());
 
-            response.setItemlist(nowLocationList);
+            response.setItem(saverandmark);
             response.setStatusCode(HttpStatus.OK.value());
 
             return new BaseResponse<>(response);

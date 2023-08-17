@@ -48,13 +48,16 @@ public class VendorServiceImpl implements VendorService {
 //        List<Randmark> Randmark = nowLocationRepository.findAll();
 
         JSONObject geocoding = geoService.geocoding(nowLocationDto.getAddress());
+        System.out.println(geocoding.toString());
         nowLocationDto.setHardness(geocoding.get("x").toString());
         nowLocationDto.setLatitude(geocoding.get("y").toString());
+        System.out.println(nowLocationDto);
         List<Randmark> Location = nowLocationRepository.findAll();
         List<LocationDto> locationDtoList = new ArrayList<>();
 //        List<>
         for(Randmark randmark : Location){
-            if(Double.parseDouble(nowLocationDto.getLatitude())-Double.parseDouble(randmark.getHardness())>0.122699 && Double.parseDouble(nowLocationDto.getLatitude())-Double.parseDouble(randmark.getHardness()) > 0.244849){
+            if(Double.parseDouble(nowLocationDto.getLatitude())-Double.parseDouble(randmark.getHardness())<0.122699 && Double.parseDouble(nowLocationDto.getLatitude())-Double.parseDouble(randmark.getHardness()) < 0.244849){
+                System.out.println("!!!");
 //                locationDtoList.add(randmark.getLocation());
                 LocationDto locationDto = new LocationDto();
                 locationDto.setLocation(randmark.getLocation());
@@ -63,9 +66,26 @@ public class VendorServiceImpl implements VendorService {
 //            randmark.getHardness();
 //            randmark.getLatitude();
         }
+        System.out.println(nowLocationDto);
         return locationDtoList;
     }
 
+    @Override
+    public NowLocationDto saverandmark(NowLocationDto nowLocationDto) {
+
+//        List<NowLocationDto> nowLocationDtoList = new ArrayList<>();
+//        List<Randmark> Randmark = nowLocationRepository.findAll();
+
+        JSONObject geocoding = geoService.geocoding(nowLocationDto.getAddress());
+        System.out.println(geocoding.toString());
+        nowLocationDto.setHardness(geocoding.get("x").toString());
+        nowLocationDto.setLatitude(geocoding.get("y").toString());
+        Randmark createrandmark = nowLocationDto.createrandmark();
+        System.out.println(createrandmark);
+        System.out.println(nowLocationDto);
+        nowLocationRepository.save(createrandmark);
+        return nowLocationDto;
+    }
 
     @Override
     public List<VendorDTO> getVendorList() {
@@ -173,6 +193,7 @@ public class VendorServiceImpl implements VendorService {
 
 
     }
+
 
 
 

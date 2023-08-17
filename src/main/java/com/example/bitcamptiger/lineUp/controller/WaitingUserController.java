@@ -31,7 +31,7 @@ public class WaitingUserController {
     @DeleteMapping("/{restaurantId}/cancel/{userId}")
     public ResponseEntity<?> cancelWaitingUser(
             @PathVariable String restaurantId,
-            @PathVariable Long userId
+            @PathVariable String userId
     ) {
         try {
             // 대기자 취소 서비스 메서드 호출

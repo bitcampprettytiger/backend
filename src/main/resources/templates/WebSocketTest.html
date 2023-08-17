@@ -21,7 +21,8 @@
                 $("#waitingCount").text("현재 대기 중인 인원: " + data.waitingCount);
             } else if (data.type === "queueNumber") {
                 // 대기 순번 업데이트
-                $("#queueNumber").text("대기 순번: " + data.queueNumber);
+                let queueNumber = parseInt(data.queueNumber.match(/\d+/)[0]);
+                $("#queueNumber").text("대기 순번: " + queueNumber);
             } else if (data.type === "positionNotification") {
                 // 대기 순번에 따른 알림 메시지 처리
                 alert(data.message);
@@ -33,18 +34,22 @@
                 });
             }
         };
+        $(function () {
+            // 줄서기 완료 버튼 클릭 이벤트
+            $("#joinQueueButton").click(function() {
+                alert("줄서기 신청")
+                // 서버로 줄서기 요청 메시지 전송
+                socket.send(JSON.stringify({ type: "joinQueue" }));
+            });
 
-        // 줄서기 완료 버튼 클릭 이벤트
-        $("#joinQueueButton").click(function() {
-            // 서버로 줄서기 요청 메시지 전송
-            socket.send(JSON.stringify({ type: "joinQueue" }));
-        });
+            // 줄서기 취소 버튼 클릭 이벤트
+            $("#cancelQueueButton").click(function() {
+                alert("줄서기 취소")
+                // 서버로 줄서기 취소 요청 메시지 전송
+                socket.send(JSON.stringify({ type: "cancelQueue" }));
+            });
+        })
 
-        // 줄서기 취소 버튼 클릭 이벤트
-        $("#cancelQueueButton").click(function() {
-            // 서버로 줄서기 취소 요청 메시지 전송
-            socket.send(JSON.stringify({ type: "cancelQueue" }));
-        });
     </script>
 </head>
 <body>

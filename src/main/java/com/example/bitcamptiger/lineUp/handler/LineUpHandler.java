@@ -4,6 +4,9 @@ import com.example.bitcamptiger.lineUp.dto.RestaurantDTO;
 import com.example.bitcamptiger.lineUp.dto.WaitingUserDTO;
 import com.example.bitcamptiger.lineUp.service.RestaurantService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
@@ -52,10 +55,15 @@ public class LineUpHandler extends TextWebSocketHandler {
     // 사용자의 대기 순번을 확인하고, 대기 순번 정보가 없으면
     // 대기 인원 수 및 대기 순번을 갱신하고 관련 정보를 해당 세션에 전송
     @Override
-    protected void handleTextMessage(WebSocketSession session, TextMessage message) {
+    protected void handleTextMessage(WebSocketSession session, TextMessage message) throws ParseException {
         // 해당 세션의 대기 순번 가져오기
         Long queueNumber = userQueueNumbers.get(session);
+        System.out.println(message.getPayload());
 
+        JSONParser parser = new JSONParser();
+        Object obj = parser.parse( message.getPayload().toString() );
+
+        JSONObject jsonObj = (JSONObject) obj;
         // 대기 순번이 없을 경우 새로운 대기자로 처리
         if (queueNumber == null) {
             // 대기 인원 수 증가
@@ -70,6 +78,34 @@ public class LineUpHandler extends TextWebSocketHandler {
             // 대기 순번에 따른 알림 전송
             sendPositionNotification(session, queueNumber);
             sendWaitingListToAllLoggedInUsers(); // 추가: 대기자 명단 변경 시 전송
+        } else {
+            if(jsonObj.get("type").equals("joinQueue")) {
+                // 대기 인원 수 증가
+                waitingCount++;
+                // 대기 순번 지정 및 세션에 저장
+                queueNumber = (long) waitingCount;
+                userQueueNumbers.put(session, queueNumber);
+                // 모든 로그인한 사용자에게 대기 인원 수 전송
+                sendWaitingCountToAllLoggedInUsers();
+                // 대기 순번 전송
+                sendQueueNumber(session);
+                // 대기 순번에 따른 알림 전송
+                sendPositionNotification(session, queueNumber);
+                sendWaitingListToAllLoggedInUsers(); // 추가: 대기자 명단 변경 시 전송
+            } else {
+                // 대기 인원 수 증가
+                waitingCount--;
+                // 대기 순번 지정 및 세션에 저장
+                queueNumber = (long) waitingCount;
+                userQueueNumbers.put(session, queueNumber);
+                // 모든 로그인한 사용자에게 대기 인원 수 전송
+                sendWaitingCountToAllLoggedInUsers();
+                // 대기 순번 전송
+                sendQueueNumber(session);
+                // 대기 순번에 따른 알림 전송
+                sendPositionNotification(session, queueNumber);
+                sendWaitingListToAllLoggedInUsers(); // 추가: 대기자 명단 변경 시 전송
+            }
         }
     }
 
@@ -88,8 +124,14 @@ public class LineUpHandler extends TextWebSocketHandler {
     // 특정 세션으로 현재 대기 인원 수를 전송하는 메소드
     public void sendWaitingCount(WebSocketSession session) {
         try {
+            Map<String, String> jsonMap = new HashMap<>();
+
+            jsonMap.put("type", "waitingCount");
+            jsonMap.put("waitingCount", String.valueOf(waitingCount));
             // 대기 인원 수를 해당 세션으로 전송
-            session.sendMessage(new TextMessage("현재 대기 중인 인원: " + waitingCount));
+            ObjectMapper objectMapper = new ObjectMapper();
+            String jsonData = objectMapper.writeValueAsString(jsonMap);
+            session.sendMessage(new TextMessage(jsonData));
         } catch (IOException e) {
             System.out.println("세션에 대기 인원 수 전송 중 오류 발생: " + session.getId());
             e.printStackTrace();
@@ -110,7 +152,15 @@ public class LineUpHandler extends TextWebSocketHandler {
     public void sendQueueNumber(WebSocketSession session) {
         Long queueNumber = userQueueNumbers.get(session);
         if (queueNumber != null) {
-            try {
+            try {// JSON 데이터 생성
+                Map<String, String> jsonMap = new HashMap<>();
+                jsonMap.put("type", "queueNumber");
+                jsonMap.put("queueNumber", String.valueOf(queueNumber));
+                ObjectMapper objectMapper = new ObjectMapper();
+                String jsonData = objectMapper.writeValueAsString(jsonMap);
+
+                // JSON 데이터를 해당 세션으로 전송
+                session.sendMessage(new TextMessage(jsonData));
                 // 사용자의 대기 순번을 해당 세션으로 전송
                 session.sendMessage(new TextMessage("대기 순번: " + queueNumber));
             } catch (IOException e) {
@@ -128,6 +178,15 @@ public class LineUpHandler extends TextWebSocketHandler {
             Long sQueueNumber = userQueueNumbers.get(s);
             if (sQueueNumber != null && sQueueNumber > queueNumber && sQueueNumber <= queueNumber + 3) {
                 try {
+                    // JSON 데이터 생성
+                    Map<String, String> jsonMap = new HashMap<>();
+                    jsonMap.put("type", "positionNotification");
+                    jsonMap.put("message", "준비하세요! 곧 차례가 됩니다.");
+                    ObjectMapper objectMapper = new ObjectMapper();
+                    String jsonData = objectMapper.writeValueAsString(jsonMap);
+
+                    // JSON 데이터를 해당 세션으로 전송
+                    s.sendMessage(new TextMessage(jsonData));
                     // 알림 메시지 전송
                     s.sendMessage(new TextMessage("준비하세요! 곧 차례가 됩니다."));
                 } catch (IOException e) {

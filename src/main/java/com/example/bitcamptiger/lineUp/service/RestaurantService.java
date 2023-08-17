@@ -48,7 +48,7 @@ public class RestaurantService {
     }
 
     // 대기자 취소
-    public void cancelWaitingUser(RestaurantDTO restaurantDTO, Long userId) {
+    public void cancelWaitingUser(RestaurantDTO restaurantDTO, String userId) {
         List<WaitingUserDTO> waitingList = restaurantDTO.getWaitingUsers();
 
         // 대기자 목록에서 userId에 해당하는 대기자 찾기

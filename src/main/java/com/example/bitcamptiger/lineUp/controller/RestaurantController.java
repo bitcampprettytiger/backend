@@ -50,6 +50,22 @@ public class RestaurantController {
         }
     }
 
+    @PostMapping("/{restaurantId}/cancel")
+    public ResponseEntity<?> cancelWaitingUser(
+            @PathVariable String restaurantId,
+            @RequestBody WaitingUserDTO waitingUserDTO
+    ) {
+        try {
+            // 대기자를 특정 음식점의 대기자 명단에 추가하는 서비스 메서드 호출
+            RestaurantDTO restaurantDTO = new RestaurantDTO(restaurantId);
+            restaurantService.cancelWaitingUser(restaurantDTO, waitingUserDTO.getUserId());
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            // 예외 처리 및 적절한 응답 반환
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
     // 입장 완료 처리하는 컨트롤러
     @PostMapping("/{restaurantId}/completeEntry")
     public ResponseEntity<?> completeEntry(

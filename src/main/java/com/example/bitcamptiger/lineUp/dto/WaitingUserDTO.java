@@ -16,6 +16,9 @@ public class WaitingUserDTO {
         this.restaurantId = restaurantId;
     }
 
+    public WaitingUserDTO(Long userId) {
+    }
+
     public int getQueueNumber() {
         return queueNumber;
     }

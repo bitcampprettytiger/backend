@@ -9,10 +9,8 @@ import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.example.bitcamptiger.Review.entity.ReviewFile;
 import com.example.bitcamptiger.configuration.NaverConfiguration;
 import com.example.bitcamptiger.menu.entity.MenuImage;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 

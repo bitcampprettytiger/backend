@@ -5,19 +5,22 @@ import com.example.bitcamptiger.dto.ResponseDTO;
 import com.example.bitcamptiger.response.BaseResponse;
 import com.example.bitcamptiger.vendor.dto.LocationDto;
 import com.example.bitcamptiger.vendor.dto.NowLocationDto;
+import com.example.bitcamptiger.response.BaseResponseStatus;
 import com.example.bitcamptiger.vendor.dto.VendorDTO;
 import com.example.bitcamptiger.vendor.entity.Vendor;
 import com.example.bitcamptiger.vendor.repository.VendorRepository;
 import com.example.bitcamptiger.vendor.service.VendorService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
-
 import static com.example.bitcamptiger.response.BaseResponseStatus.POST_ISNULL;
 import static com.example.bitcamptiger.response.BaseResponseStatus.RESPONSE_ERROR;
+import static com.example.bitcamptiger.response.BaseResponseStatus.VENDORDTO_NUTNULL;
 
 @RestController
 @RequestMapping("/vendor")
@@ -80,6 +83,12 @@ public class VendorController {
     }
 
     //현재 "OPEN" 가게 정보 리스트
+
+    @Operation(summary = "openinfo", description = "가게오픈정보 가져오기")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "통과"),
+            @ApiResponse(responseCode = "400", description = "실패")
+    })
     @GetMapping("/openInfo")
     public ResponseEntity<?> getVendorOpenInfoList(VendorDTO vendorDTO) {
 
@@ -151,9 +160,19 @@ public class VendorController {
 
 
     //신규 가게 등록
+
+    @Operation(summary = "postinfo", description = "가게 등록하기")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "통과"),
+            @ApiResponse(responseCode = "400", description = "실패")
+    })
     @PostMapping("/info")
     public ResponseEntity<?> insertVendorInfo(@RequestBody VendorDTO vendorDTO){
         System.out.println(vendorDTO);
+//        vendorDTO null 일때 vaildation
+        if(vendorDTO.equals(null)){
+            new BaseResponse<>(VENDORDTO_NUTNULL);
+        }
         ResponseDTO<VendorDTO> response = new ResponseDTO<>();
         try{
             vendorService.insertVendor(vendorDTO);

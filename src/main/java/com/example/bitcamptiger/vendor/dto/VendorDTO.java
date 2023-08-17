@@ -33,6 +33,7 @@ public class VendorDTO {
     private String rlAppiNm;        //신청인명
 
 
+    private List<VendorImageDTO> vendorImageDTOList;
     private List<MenuDTO> menuDTOList;
 
 

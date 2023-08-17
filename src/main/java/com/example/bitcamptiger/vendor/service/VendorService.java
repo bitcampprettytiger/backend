@@ -5,7 +5,9 @@ import com.example.bitcamptiger.vendor.dto.NowLocationDto;
 import com.example.bitcamptiger.vendor.dto.VendorDTO;
 import com.example.bitcamptiger.vendor.entity.Vendor;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 public interface VendorService {
@@ -15,11 +17,15 @@ public interface VendorService {
 
     List<VendorDTO> getOpenList(String vendorOpenStatus);
 
-    List<VendorDTO> getVendorByAddressCategory(String address);
+    List<VendorDTO> getVendorByCategory(String address, String menuName, String vendorName);
 
-    void insertVendor(VendorDTO vendorDTO) throws JsonProcessingException;
+    List<VendorDTO> getVendorByVendorType(String vendorType);
 
-    void updateVendor(VendorDTO vendorDTO);
+    List<VendorDTO> getVendorByMenuType(String menuType);
+
+    void insertVendor(VendorDTO vendorDTO, MultipartFile[] uploadFiles) throws IOException;
+
+    void updateVendor(VendorDTO vendorDTO, MultipartFile[] uploadFiles) throws IOException;
 
     void deleteVendor(VendorDTO vendorDTO);
 

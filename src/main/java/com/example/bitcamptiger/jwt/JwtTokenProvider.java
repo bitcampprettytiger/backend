@@ -47,6 +47,8 @@ public class JwtTokenProvider {
                 .setIssuedAt(new Date())
 //                토큰 만료일자
                 .setExpiration(expireDate)
+                .claim("role",member.getRole())
+
 //               토큰발행
                 .compact();
     }
@@ -76,13 +78,13 @@ public class JwtTokenProvider {
     //   JWT Token의 유효성 확인하느 메소드
 //    subject에 담겨있는 username을 리턴한다.
     public String validateAndGetUsername(String token){
+        System.out.println(token);
 //        받아온 토큰 값을 파싱해서 유효성 검사
 //        토큰에 있는 시그니쳐와 서버에서 가지고있는 시그니쳐값 비교
 
         Claims claims
                  = Jwts.parserBuilder()
  //                시그니쳐에 담겨있느 토큰의값이랑 시크릿 키랑 비교
-
                 .setSigningKey(SECRET_KEY.getBytes())
                 .build()
                 .parseClaimsJws(token)

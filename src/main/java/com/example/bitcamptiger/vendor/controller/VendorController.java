@@ -22,6 +22,29 @@ public class VendorController {
 
     public final VendorRepository vendorRepository;
 
+
+
+    @GetMapping("/search")
+    public ResponseEntity<?> getVendorOpenInfoList() {
+
+        ResponseDTO<VendorDTO> response = new ResponseDTO<>();
+        try{
+
+//            List<VendorDTO> VendorDTOList = vendorService.getOpenList(vendorDTO.getVendorOpenStatus());
+
+//            response.setItemlist();
+            response.setStatusCode(HttpStatus.OK.value());
+
+            return ResponseEntity.ok().body(response);
+        }catch(Exception e) {
+            response.setErrorMessage(e.getMessage());
+            response.setStatusCode(HttpStatus.BAD_REQUEST.value());
+            return ResponseEntity.badRequest().body(response);
+        }
+
+    }
+
+
     //현재 "OPEN" 가게 정보 리스트
     @GetMapping("/openInfo")
     public ResponseEntity<?> getVendorOpenInfoList(VendorDTO vendorDTO) {

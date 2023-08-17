@@ -38,7 +38,6 @@ class VendorServiceImplTest {
             vendor.setBusinessDay("FRI");
             vendor.setOpen(LocalTime.now());
             vendor.setClose(LocalTime.now());
-            vendor.setMenu("메뉴 테스트" + i);
 
             Vendor savedVendor = vendorRepository.save(vendor);
 
@@ -61,7 +60,6 @@ class VendorServiceImplTest {
         vendor.setBusinessDay("FRI");
         vendor.setOpen(LocalTime.now());
         vendor.setClose(LocalTime.now());
-        vendor.setMenu("팥붕, 슈붕");
 
         Vendor savedVendor = vendorRepository.save(vendor);
 
@@ -82,7 +80,6 @@ class VendorServiceImplTest {
         vendor.setBusinessDay("FRI");
         vendor.setOpen(LocalTime.now());
         vendor.setClose(LocalTime.now());
-        vendor.setMenu("팥붕, 슈붕");
 
         Vendor savedVendor = vendorRepository.save(vendor);
 
@@ -112,7 +109,6 @@ class VendorServiceImplTest {
         vendor.setBusinessDay("FRI");
         vendor.setOpen(LocalTime.now());
         vendor.setClose(LocalTime.now());
-        vendor.setMenu("팥붕, 슈붕");
 
         Vendor savedVendor = vendorRepository.save(vendor);
         System.out.println(savedVendor.toString());

@@ -58,6 +58,7 @@ public class VendorServiceImpl implements VendorService {
         for(Randmark randmark : Location){
             if(Double.parseDouble(nowLocationDto.getLatitude())-Double.parseDouble(randmark.getHardness())<0.122699 && Double.parseDouble(nowLocationDto.getLatitude())-Double.parseDouble(randmark.getHardness()) < 0.244849){
                 System.out.println("!!!");
+                System.out.println("test");
 //                locationDtoList.add(randmark.getLocation());
                 LocationDto locationDto = new LocationDto();
                 locationDto.setLocation(randmark.getLocation());

@@ -1,5 +1,6 @@
 package com.example.bitcamptiger.vendor.entity;
 
+import com.example.bitcamptiger.vendor.dto.NowLocationDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,5 +30,12 @@ public class Randmark {
 
     @Column
     private String Hardness;
+
+    @Column
+    private String mapLocation;
+
+//    public NowLocationDto createNowLocation(){
+//
+//    }
 
 }

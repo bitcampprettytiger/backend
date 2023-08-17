@@ -1,5 +1,7 @@
 package com.example.bitcamptiger.vendor.service;
 
+import com.example.bitcamptiger.vendor.dto.LocationDto;
+import com.example.bitcamptiger.vendor.dto.NowLocationDto;
 import com.example.bitcamptiger.vendor.dto.VendorDTO;
 import com.example.bitcamptiger.vendor.entity.Vendor;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -21,4 +23,5 @@ public interface VendorService {
 
     Vendor getVendorDetail(Long id);
 
+   List<LocationDto> getNowLocationList(NowLocationDto nowLocationDto);
 }

@@ -6,10 +6,10 @@ import com.example.bitcamptiger.menu.entity.Menu;
 import com.example.bitcamptiger.menu.entity.MenuImage;
 import com.example.bitcamptiger.menu.repository.MenuImageRepository;
 import com.example.bitcamptiger.menu.repository.MenuRepository;
-import com.example.bitcamptiger.vendor.dto.BusinessResponseDto;
-import com.example.bitcamptiger.vendor.dto.RoadOcuuCertiData;
-import com.example.bitcamptiger.vendor.dto.VendorDTO;
+import com.example.bitcamptiger.vendor.dto.*;
+import com.example.bitcamptiger.vendor.entity.Randmark;
 import com.example.bitcamptiger.vendor.entity.Vendor;
+import com.example.bitcamptiger.vendor.repository.NowLocationRepository;
 import com.example.bitcamptiger.vendor.repository.VendorRepository;
 import com.example.bitcamptiger.vendor.service.GeoService;
 import com.example.bitcamptiger.vendor.service.RoadOccuCertiService;
@@ -38,6 +38,34 @@ public class VendorServiceImpl implements VendorService {
     private final RoadOccuCertiService roadOccuCertiService;
     private final MenuRepository menuRepository;
     private final MenuImageRepository menuImageRepository;
+    private final NowLocationRepository nowLocationRepository;
+
+//    public final GeoService geoService;
+    @Override
+    public List<LocationDto> getNowLocationList(NowLocationDto nowLocationDto) {
+
+//        List<NowLocationDto> nowLocationDtoList = new ArrayList<>();
+//        List<Randmark> Randmark = nowLocationRepository.findAll();
+
+        JSONObject geocoding = geoService.geocoding(nowLocationDto.getAddress());
+        nowLocationDto.setHardness(geocoding.get("x").toString());
+        nowLocationDto.setLatitude(geocoding.get("y").toString());
+        List<Randmark> Location = nowLocationRepository.findAll();
+        List<LocationDto> locationDtoList = new ArrayList<>();
+//        List<>
+        for(Randmark randmark : Location){
+            if(Double.parseDouble(nowLocationDto.getLatitude())-Double.parseDouble(randmark.getHardness())>0.122699 && Double.parseDouble(nowLocationDto.getLatitude())-Double.parseDouble(randmark.getHardness()) > 0.244849){
+//                locationDtoList.add(randmark.getLocation());
+                LocationDto locationDto = new LocationDto();
+                locationDto.setLocation(randmark.getLocation());
+                locationDtoList.add(locationDto);
+            }
+//            randmark.getHardness();
+//            randmark.getLatitude();
+        }
+        return locationDtoList;
+    }
+
 
     @Override
     public List<VendorDTO> getVendorList() {

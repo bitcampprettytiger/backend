@@ -1,10 +1,13 @@
 package com.example.bitcamptiger.vendor.dto;
 
-import lombok.Getter;
-import lombok.Setter;
+import com.example.bitcamptiger.vendor.entity.Randmark;
+import lombok.*;
+import org.modelmapper.ModelMapper;
 
-@Getter
-@Setter
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class NowLocationDto {
 
     private String address;
@@ -13,4 +16,12 @@ public class NowLocationDto {
 
     private String Hardness;
 
+
+    private static ModelMapper modelMapper = new ModelMapper();
+
+    public static NowLocationDto createNowLocation(Randmark randmark){
+
+     return  modelMapper.map(randmark,NowLocationDto.class);
+
+    }
 }

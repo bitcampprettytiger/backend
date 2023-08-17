@@ -2,6 +2,9 @@ package com.example.bitcamptiger.vendor.controller;
 
 
 import com.example.bitcamptiger.dto.ResponseDTO;
+import com.example.bitcamptiger.response.BaseResponse;
+import com.example.bitcamptiger.vendor.dto.LocationDto;
+import com.example.bitcamptiger.vendor.dto.NowLocationDto;
 import com.example.bitcamptiger.vendor.dto.VendorDTO;
 import com.example.bitcamptiger.vendor.entity.Vendor;
 import com.example.bitcamptiger.vendor.repository.VendorRepository;
@@ -12,6 +15,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
+import static com.example.bitcamptiger.response.BaseResponseStatus.RESPONSE_ERROR;
 
 @RestController
 @RequestMapping("/vendor")
@@ -24,26 +29,50 @@ public class VendorController {
 
 
 
-    @GetMapping("/search")
-    public ResponseEntity<?> getVendorOpenInfoList() {
+    @PostMapping("/search")
+    public BaseResponse<?> getVendorOpenInfoList(@RequestBody NowLocationDto nowLocationDto) {
 
-        ResponseDTO<VendorDTO> response = new ResponseDTO<>();
+        ResponseDTO<LocationDto> response = new ResponseDTO<>();
         try{
-
+            List<LocationDto> nowLocationList = vendorService.getNowLocationList(nowLocationDto);
+            if(nowLocationList.isEmpty()){
+               return new BaseResponse<>(RESPONSE_ERROR);
+            }
 //            List<VendorDTO> VendorDTOList = vendorService.getOpenList(vendorDTO.getVendorOpenStatus());
 
-//            response.setItemlist();
+            response.setItemlist(nowLocationList);
             response.setStatusCode(HttpStatus.OK.value());
 
-            return ResponseEntity.ok().body(response);
-        }catch(Exception e) {
+            return new BaseResponse<>(response);
+        } catch(Exception e) {
             response.setErrorMessage(e.getMessage());
             response.setStatusCode(HttpStatus.BAD_REQUEST.value());
-            return ResponseEntity.badRequest().body(response);
+            return new BaseResponse<>(response);
         }
 
     }
+    @PostMapping("/locationsave")
+    public BaseResponse<?> saveVendorOpenInfoList(@RequestBody NowLocationDto nowLocationDto) {
 
+        ResponseDTO<LocationDto> response = new ResponseDTO<>();
+        try{
+            List<LocationDto> nowLocationList = vendorService.getNowLocationList(nowLocationDto);
+            if(nowLocationList.isEmpty()){
+                return new BaseResponse<>(RESPONSE_ERROR);
+            }
+//            List<VendorDTO> VendorDTOList = vendorService.getOpenList(vendorDTO.getVendorOpenStatus());
+
+            response.setItemlist(nowLocationList);
+            response.setStatusCode(HttpStatus.OK.value());
+
+            return new BaseResponse<>(response);
+        } catch(Exception e) {
+            response.setErrorMessage(e.getMessage());
+            response.setStatusCode(HttpStatus.BAD_REQUEST.value());
+            return new BaseResponse<>(response);
+        }
+
+    }
 
     //현재 "OPEN" 가게 정보 리스트
     @GetMapping("/openInfo")

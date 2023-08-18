@@ -69,7 +69,7 @@ public class MenuServiceImpl implements MenuService {
     }
 
 
-    @Value("${file.path}")
+    @Value("${menuFile.path}")
     String attachPath;
 
 
@@ -95,23 +95,40 @@ public class MenuServiceImpl implements MenuService {
         //메뉴 이미지 아이디 저장할 변수를 초기화
         Long imageId = 1L;
 
-        //파일 처리
-        for(MultipartFile file : uploadFiles){
 
-            if(file.getOriginalFilename() != null && !file.getOriginalFilename().isEmpty()){
-                MenuImage menuImage = fileUtils.parseFileInfo(file, attachPath);
+        if(uploadFiles != null && uploadFiles.length > 0) {
 
-                //이전에 저장된 메뉴 정보를 설정.
-                menuImage.setMenu(save);
-                //menuImage 객체에 imageId 설정.
-                menuImage.setId(imageId);
+            //파일 처리
+            for (MultipartFile file : uploadFiles) {
 
-                uploadFileList.add(menuImage);
-                //다음 이미지에 사용될 id값 증가.
-                imageId = imageId + 1L;
+                if (file != null && !file.isEmpty() && file.getOriginalFilename() != null && !file.getOriginalFilename().isEmpty()) {
+                    MenuImage menuImage = fileUtils.parseFileInfo(file, attachPath);
+
+                    //이전에 저장된 메뉴 정보를 설정.
+                    menuImage.setMenu(save);
+                    //menuImage 객체에 imageId 설정.
+                    menuImage.setId(imageId);
+
+                    uploadFileList.add(menuImage);
+                    //다음 이미지에 사용될 id값 증가.
+                    imageId = imageId + 1L;
+                }
+
             }
-
         }
+
+        //menuImage가 등록되지 않았을 경우 기본이미지 설정
+        if(uploadFileList.isEmpty()) {
+            MenuImage defaultMenuImage = fileUtils.getDefaultMenuImage();
+            defaultMenuImage.setMenu(save);
+            //menuImage 객체에 imageId 설정.
+            defaultMenuImage.setId(imageId);
+            uploadFileList.add(defaultMenuImage);
+
+            //다음 이미지에 사용될 id값 증가.
+            imageId = imageId + 1;
+        }
+
 
         for(MenuImage menuImage : uploadFileList){
             menuImageRepository.save(menuImage);

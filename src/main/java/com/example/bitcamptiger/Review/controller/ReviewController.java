@@ -30,7 +30,7 @@ public class ReviewController {
     private final ReviewService reviewService;
     private final reviewFileUtils fileUtils;
 
-    @Value("${file.path}")
+    @Value("${reviewFile.path}")
     String attachPath;
 
 

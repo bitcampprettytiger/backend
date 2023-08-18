@@ -69,6 +69,9 @@ public class Vendor {
     @Column
     private String rlAppiNm;        //신청인명
 
+    @Column
+    private String location;
+
     @OneToMany(mappedBy = "vendor", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Menu> menuList = new ArrayList<>();
 

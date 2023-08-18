@@ -1,0 +1,39 @@
+package com.example.bitcamptiger.vendor.entity;
+
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Entity
+@Builder
+public class VendorImage {
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "vendor_id")
+    private Vendor vendor;
+
+    @Id
+    @GeneratedValue(
+            strategy = GenerationType.IDENTITY)
+    @Column(name = "vendor_img_id")
+    private Long id;
+
+    @Column
+    private String fileName;
+
+    @Column
+    private String url;
+
+    @Column
+    private String originName;
+
+    @Column
+    private String fileCate;
+
+
+}

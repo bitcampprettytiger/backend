@@ -2,7 +2,7 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.1.2'
     id 'io.spring.dependency-management' version '1.1.2'
-//    id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
+    id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
 }
 
 group = 'com.example'
@@ -41,8 +41,13 @@ dependencies {
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.5'
+
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+
+
     //직렬화
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-hibernate5:2.12.5'
+
 
 
     // querydsl-jpa
@@ -69,7 +74,7 @@ dependencies {
     implementation 'org.modelmapper:modelmapper:3.1.1'
 
 // https://mvnrepository.com/artifact/io.springfox/springfox-boot-starter
-    implementation 'io.springfox:springfox-boot-starter:3.0.0'
+//    implementation 'io.springfox:springfox-boot-starter:3.0.0'
 //// https://mvnrepository.com/artifact/io.springfox/springfox-swagger-ui
 //    implementation 'io.springfox:springfox-swagger-ui:3.0.0'
 // https://mvnrepository.com/artifact/org.springdoc/springdoc-openapi-starter-webmvc-ui
@@ -85,6 +90,8 @@ dependencies {
     implementation 'io.awspring.cloud:spring-cloud-starter-aws:2.4.4'
 
 
+    //webSocket
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
 
 }
 
@@ -97,21 +104,21 @@ bootJar {
 //    java.util.jar.Attributes.Name.MAIN_CLASS
 }
 
-//
-//    java.util.jar.Attributes.Name.MAIN_CLASS
-//// queryDSL 추가 : QueryDSL 빌드 옵션
-//def querydslDir = 'src/main/generated'
-//
-//querydsl {
-//    jpa = true
-//    querydslSourcesDir = querydslDir
-//}
-//sourceSets {
-//    main.java.srcDir querydslDir
-//}
-//configurations {
-//    querydsl.extendsFrom compileClasspath
-//}
-//compileQuerydsl {
-//    options.annotationProcessorPath = configurations.querydsl
-//}
+
+    java.util.jar.Attributes.Name.MAIN_CLASS
+// queryDSL 추가 : QueryDSL 빌드 옵션
+def querydslDir = 'src/main/generated'
+
+querydsl {
+    jpa = true
+    querydslSourcesDir = querydslDir
+}
+sourceSets {
+    main.java.srcDir querydslDir
+}
+configurations {
+    querydsl.extendsFrom compileClasspath
+}
+compileQuerydsl {
+    options.annotationProcessorPath = configurations.querydsl
+}

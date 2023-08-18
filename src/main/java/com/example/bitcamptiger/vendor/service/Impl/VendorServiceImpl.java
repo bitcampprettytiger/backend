@@ -303,8 +303,6 @@ public class VendorServiceImpl implements VendorService {
 
                 List<VendorImage> uploadFileList = new ArrayList<>();
 
-//                boolean filesExist = false;
-
 
                 if(uploadFiles != null && uploadFiles.length > 0){
 

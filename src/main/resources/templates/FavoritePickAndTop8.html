@@ -20,7 +20,11 @@
         $.post(`/api/favoritePick/${memberId}/add/${vendorId}`, function() {
             alert("찜하기 콕!");
         }).fail(function(error) {
-            console.error("Error adding favorite:", error);
+            if (error.status === 400 && error.responseText.includes("이미 찜한 가게입니다")) {
+                alert("이미 찜한 가게입니다 :)");
+            } else {
+                console.error("Error adding favorite:", error);
+            }
         });
     });
 

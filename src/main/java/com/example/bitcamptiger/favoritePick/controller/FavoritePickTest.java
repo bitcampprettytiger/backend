@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class FavoritePickTest {
 
     @GetMapping("/favorite-Test")
-    public String FavoritPickPage() {
-        return "FavoritPickAndTop8";
+    public String FavoritePickPage() {
+        return "FavoritePickAndTop8";
     }
 }

@@ -25,14 +25,19 @@ public class FavoriteServiceImpl implements FavoriteService {
     }
 
 
-    //찜하기 기능 추가
+    //이미 찜한 기록이 없는 경우에만 찜을 추가
     @Transactional
     public void addFavoriteVendor(Member member, Vendor vendor) {
-        FavoriteVendor favoriteVendor = FavoriteVendor.builder()
-                .member(member)
-                .vendor(vendor)
-                .build();
-        favoriteVendorRepository.save(favoriteVendor);
+        // 이미 찜한 기록이 있는지 확인
+        List<FavoriteVendor> existingFavorites = favoriteVendorRepository.findByMemberAndVendor(member, vendor);
+
+        if (existingFavorites.isEmpty()) {
+            FavoriteVendor favoriteVendor = FavoriteVendor.builder()
+                    .member(member)
+                    .vendor(vendor)
+                    .build();
+            favoriteVendorRepository.save(favoriteVendor);
+        }
     }
 
     //내 찜하기에서 삭제하기

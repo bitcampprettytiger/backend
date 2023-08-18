@@ -41,26 +41,26 @@ public class ReviewController {
     private final VendorRepository vendorRepository;
     private final MemberRepository memberRepository;
 
-    @Value("${file.path}")
+    @Value("${reviewFile.path}")
     String attachPath;
 
 
-//    @GetMapping("review-list")
-//    public ResponseEntity<?> getReviewList() {
-//        ResponseDTO<ReviewDto> responseDTO = new ResponseDTO<>();
-//        try {
-//            List<ReviewDto> reviewDtos = reviewService.getReviewList();
-//
-//            responseDTO.setItemlist(reviewDtos);
-//            responseDTO.setStatusCode(HttpStatus.OK.value());
-//
-//            return ResponseEntity.ok().body(responseDTO);
-//        } catch (Exception e) {
-//            responseDTO.setErrorMessage(e.getMessage());
-//            responseDTO.setStatusCode(HttpStatus.BAD_REQUEST.value());
-//            return ResponseEntity.badRequest().body(responseDTO);
-//        }
-//    }
+    @GetMapping("review-list")
+    public ResponseEntity<?> getReviewList() {
+        ResponseDTO<ReviewDto> responseDTO = new ResponseDTO<>();
+        try {
+            List<ReviewDto> reviewDtos = reviewService.getReviewList();
+
+            responseDTO.setItemlist(reviewDtos);
+            responseDTO.setStatusCode(HttpStatus.OK.value());
+
+            return ResponseEntity.ok().body(responseDTO);
+        } catch (Exception e) {
+            responseDTO.setErrorMessage(e.getMessage());
+            responseDTO.setStatusCode(HttpStatus.BAD_REQUEST.value());
+            return ResponseEntity.badRequest().body(responseDTO);
+        }
+    }
 
     //multipart form 데이터 형식을 받기 위해 consumes 속성 지정
     @PostMapping(value = "/review", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

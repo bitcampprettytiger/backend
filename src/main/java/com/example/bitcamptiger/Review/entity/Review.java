@@ -61,5 +61,4 @@ public class Review {
                 .reviewScore(this.reviewScore)
                 .build();
     }
-
 }

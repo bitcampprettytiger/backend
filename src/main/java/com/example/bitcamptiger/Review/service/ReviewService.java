@@ -23,8 +23,8 @@ public interface ReviewService {
 
     List<ReviewFile> getReviewFileList(Long reviewNum);
 
-//    List<ReviewDto> getReviewList();
-//
-//    List<ReviewFileDto> findReviewFilesByReviewNum(Long reviewNum);
+    List<ReviewDto> getReviewList();
+
+
 
 }

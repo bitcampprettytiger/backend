@@ -18,9 +18,9 @@ public interface ReviewFileRepository extends JpaRepository<ReviewFile, ReviewFi
     public long findMaxFileNo();
 
     List<ReviewFile> findByReviewReviewNum(long reviewNum);
-//
-//    List<ReviewFile> findByReviewNum(long reviewNum);
-//
-//    List<ReviewFile> findByReview(Review review);
+
+    //List<ReviewFile> findByReviewNum(long reviewNum);
+
+    List<ReviewFile> findByReview(Review review);
 
 }

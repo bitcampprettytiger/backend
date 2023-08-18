@@ -40,22 +40,18 @@ public class ReviewServiceImpl implements ReviewService {
     private final ReviewFileRepository reviewFileRepository;
     private final reviewFileUtils reviewFileUtils;
 
-    @Value("${file.path}")
-    String attachPath;
+    @Override
+    public List<ReviewDto> getReviewList() {
+        List<Review> reviews = reviewRepository.findAll();
+        return reviews.stream()
+                .map(review -> {
+                    ReviewDto reviewDto = ReviewDto.entityToDto(review);
+                    return reviewDto;
+                })
+                .collect(Collectors.toList());
+    }
 
-//    @Override
-//    public List<ReviewDto> getReviewList() {
-//        List<Review> reviews = reviewRepository.findAll();
-//        return reviews.stream()
-//                .map(review -> {
-//                    ReviewDto reviewDto = ReviewDto.entityToDto(review);
-//                    List<ReviewFileDto> reviewFiles = findReviewFilesByReviewNum(review.getReviewNum());
-//                    reviewDto.setReviewFileList(reviewFiles);
-//                    return reviewDto;
-//                })
-//                .collect(Collectors.toList());
-//    }
-//
+
 //    @Override
 //    public List<ReviewFileDto> findReviewFilesByReviewNum(Long reviewNum) {
 //        List<ReviewFile> reviewFiles = reviewFileRepository.findByReviewNum(reviewNum);

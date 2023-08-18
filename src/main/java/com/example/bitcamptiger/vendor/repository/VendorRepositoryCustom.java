@@ -6,5 +6,11 @@ import java.util.List;
 
 public interface VendorRepositoryCustom {
 
-    List<Vendor> findVendorByAddressCategory(String address);
+    List<Vendor> findVendorByCategory(String address, String menuName, String vendorName);
+
+    List<Vendor> findVendorByvendorType(String vendorType);
+
+    List<Vendor> findMenuByCategory(String menuType);
+
+
 }

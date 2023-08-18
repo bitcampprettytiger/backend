@@ -39,7 +39,7 @@ public class Review {
     private Vendor vendor;//상점번호
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "username")
+    @JoinColumn(name = "id")
     private Member member;
 
     @Column
@@ -49,19 +49,17 @@ public class Review {
     @Column
     private Integer reviewScore; //별점
 
-    //리뷰와 리뷰 파일 간의 일대다 관계
-    @OneToMany(mappedBy = "review", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ReviewFile> images = new ArrayList<>();
 
     public ReviewDto EntityToDto() {
         return ReviewDto.builder()
                 .reviewNum(this.reviewNum)
                 .orderNum(this.orderNum)
-                .vendor(this.vendor)
-                .member(this.member)
+                .memberId(this.member.getId())
+                .vendorId(this.vendor.getId())
                 .reviewContent(this.reviewContent)
-                .reviewRegDate(this.reviewRegDate.toString())
+                .reviewRegDate(this.reviewRegDate)
                 .reviewScore(this.reviewScore)
                 .build();
     }
+
 }

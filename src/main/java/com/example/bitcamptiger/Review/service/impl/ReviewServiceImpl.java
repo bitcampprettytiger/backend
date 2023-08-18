@@ -10,6 +10,7 @@ import com.example.bitcamptiger.Review.service.ReviewService;
 import com.example.bitcamptiger.common.reviewFileUtils;
 import com.example.bitcamptiger.member.entity.Member;
 import com.example.bitcamptiger.member.reposiitory.MemberRepository;
+import com.example.bitcamptiger.menu.entity.MenuImage;
 import com.example.bitcamptiger.vendor.entity.Vendor;
 import com.example.bitcamptiger.vendor.repository.VendorRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -42,20 +43,24 @@ public class ReviewServiceImpl implements ReviewService {
     @Value("${file.path}")
     String attachPath;
 
-    @Override
-    public List<ReviewDto> getReviewList() {
-        List<Review> reviews = reviewRepository.findAll();
-        return reviews.stream()
-                .map(review -> {
-                    ReviewDto reviewDto = review.EntityToDto();
-                    List<ReviewFileDto> reviewFileDtos = review.getImages().stream()
-                            .map(ReviewFile::EntitytoDto)
-                            .collect(Collectors.toList());
-                    reviewDto.setReviewFileList(reviewFileDtos);
-                    return reviewDto;
-                })
-                .collect(Collectors.toList());
-    }
+//    @Override
+//    public List<ReviewDto> getReviewList() {
+//        List<Review> reviews = reviewRepository.findAll();
+//        return reviews.stream()
+//                .map(review -> {
+//                    ReviewDto reviewDto = ReviewDto.entityToDto(review);
+//                    List<ReviewFileDto> reviewFiles = findReviewFilesByReviewNum(review.getReviewNum());
+//                    reviewDto.setReviewFileList(reviewFiles);
+//                    return reviewDto;
+//                })
+//                .collect(Collectors.toList());
+//    }
+//
+//    @Override
+//    public List<ReviewFileDto> findReviewFilesByReviewNum(Long reviewNum) {
+//        List<ReviewFile> reviewFiles = reviewFileRepository.findByReviewNum(reviewNum);
+//        return reviewFiles.stream().map(reviewFile -> ReviewFileDto.entityToDto(reviewFile)).collect(Collectors.toList());
+//    }
 
     @Override
     public Review getReview(Long reviewNum) {
@@ -66,59 +71,55 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public void createReview(Review review, List<ReviewFile> uploadFileList) throws IOException {
+    public void createReview(Review review, List<ReviewFile> uploadFileList ) throws IOException {
+
+        reviewRepository.save(review);
+        //변경사항 커밋 후 저장
+        reviewRepository.flush();
+
+        for (ReviewFile reviewFile : uploadFileList) {
+            reviewFile.setReview(review);
+            System.out.println(reviewFile + "========================================");
+            System.out.println("========================================================>" + review.getReviewNum());
+            long reviewFileNo = reviewFileRepository.findMaxFileNo();
+            reviewFile.setReviewFileNo(reviewFileNo);
+
+            reviewFileRepository.save(reviewFile);
+        }
+    }
+
+//        Review save = reviewRepository.save(reviewDto.createReview());
+//
 //        File directory = new File(attachPath);
 //
-//        if (!directory.exists()) {
-//            directory.mkdir();
+//        if(!directory.exists()){
+//            directory.mkdirs();
 //        }
 //
 //        List<ReviewFile> uploadFileList = new ArrayList<>();
 //
-//        Long reviewId = 1L;
+//        Long imageId = 1L;
 //
-//        try {
-//            Review review = Review.builder()
-//                    .reviewContent(reviewDto.getReviewContent())
-//                    .reviewScore(reviewDto.getReviewScore())
-//                    .reviewRegDate(LocalDateTime.now())
-//                    .build();
-//            System.out.println("=================" + review.getReviewRegDate());
+//        for(MultipartFile file : uploadFiles){
 //
-//            Iterator<String> iterator = mphsRequest.getFileNames();
+//            if(file.getOriginalFilename() != null && !file.getOriginalFilename().isEmpty()){
+//                ReviewFile reviewFile = reviewFileUtils.parseFileInfo(file, attachPath);
 //
-//            while (iterator.hasNext()) {
-//                List<MultipartFile> fileList = mphsRequest.getFiles(iterator.next());
+//                //이전에 저장된 메뉴 정보를 설정.
+//                reviewFile.setReview(save);
+//                //menuImage 객체에 imageId 설정.
+//                reviewFile.setReviewFileNo(imageId);
 //
-//                for (MultipartFile multipartFile : fileList) {
-//                    if (!multipartFile.isEmpty()) {
-//                        ReviewFile reviewFile = new ReviewFile();
-//
-//                        reviewFile = reviewFileUtils.parseFileInfo(multipartFile, attachPath);
-//
-//                        reviewFile.setReview(review);
-//
-//                        uploadFileList.add(reviewFile);
-//
-//                        reviewId = reviewId + 1L;
-//                    }
-//                }
+//                uploadFileList.add(reviewFile);
+//                //다음 이미지에 사용될 id값 증가.
+//                imageId = imageId + 1L;
 //            }
-
-            reviewRepository.save(review);
-            //변경사항 커밋 후 저장
-            reviewRepository.flush();
-
-            for (ReviewFile reviewFile : uploadFileList) {
-                reviewFile.setReview(review);
-                System.out.println(reviewFile + "========================================");
-
-                long reviewFileNo = reviewFileRepository.findMaxFileNo(review.getReviewNum());
-                reviewFile.setReviewFileNo(reviewFileNo);
-
-                reviewFileRepository.save(reviewFile);
-            }
-        }
+//
+//        }
+//
+//        for (ReviewFile reviewFile : uploadFileList) {
+//            reviewFileRepository.save(reviewFile);
+//        }
 
         @Override
         public void updateReview (Review review, List < ReviewFile > ufileList){
@@ -133,8 +134,7 @@ public class ReviewServiceImpl implements ReviewService {
                     } else if (ufileList.get(i).getReviewFileStatus().equals("I")) {
                         //추가한 파일들은 reviewNum은 가지고 있지만 reviewFileNo가 없는 상태라
                         //reviewFileNo를 추가
-                        Long reviewFileNo = reviewFileRepository.findMaxFileNo(
-                                ufileList.get(i).getReview().getReviewNum());
+                        Long reviewFileNo = reviewFileRepository.findMaxFileNo();
 
                         ufileList.get(i).setReviewFileNo(reviewFileNo);
 
@@ -150,13 +150,7 @@ public class ReviewServiceImpl implements ReviewService {
                 // ReviewDto에서 id로 기존의 Review 엔티티를 찾음
                 Review review = reviewRepository.findById(reviewDto.getReviewNum()).orElseThrow(EntityNotFoundException::new);
 
-                //리뷰애 연결된 이미지도 함께 삭제
-                for (ReviewFile reviewFile : review.getImages()) {
-                    //s3에서 이미지 삭제
-                    reviewFileUtils.deleteImage("springboot", reviewFile.getReviewFilePath() + reviewFile.getReviewFileName());
-                    //db에서 이미지 삭제
-                    reviewFileRepository.delete(reviewFile);
-                }
+
                 reviewRepository.delete(review);
             }
 

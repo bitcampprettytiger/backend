@@ -7,7 +7,6 @@ import com.querydsl.core.types.dsl.*;
 import com.querydsl.core.types.PathMetadata;
 import javax.annotation.processing.Generated;
 import com.querydsl.core.types.Path;
-import com.querydsl.core.types.dsl.PathInits;
 
 
 /**
@@ -31,8 +30,6 @@ public class QVendor extends EntityPathBase<Vendor> {
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
     public final StringPath location = createString("location");
-
-    public final ListPath<com.example.bitcamptiger.menu.entity.Menu, com.example.bitcamptiger.menu.entity.QMenu> menuList = this.<com.example.bitcamptiger.menu.entity.Menu, com.example.bitcamptiger.menu.entity.QMenu>createList("menuList", com.example.bitcamptiger.menu.entity.Menu.class, com.example.bitcamptiger.menu.entity.QMenu.class, PathInits.DIRECT2);
 
     public final TimePath<java.time.LocalTime> open = createTime("open", java.time.LocalTime.class);
 

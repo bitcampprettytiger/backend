@@ -153,7 +153,7 @@ public class MenuServiceImpl implements MenuService {
         menu.setMenuType(menuDTO.getMenuType());
 
         //기존 이미지 삭제
-        List<MenuImage> existingImages = menu.getImages();
+        List<MenuImage> existingImages = menuImageRepository.findByMenu_Id(menu.getId());
         Long lastImageId = 1L;
         if(existingImages != null && !existingImages.isEmpty()){
             for(MenuImage menuImage : existingImages){
@@ -168,7 +168,7 @@ public class MenuServiceImpl implements MenuService {
                 menuImageRepository.delete(menuImage);
             }
             //메뉴 객체에서 이미지 목록 삭제
-            menu.getImages().clear();
+//            menu.getImages().clear();
         }
 
 
@@ -202,7 +202,7 @@ public class MenuServiceImpl implements MenuService {
         Menu menu = menuRepository.findById(menuDTO.getId()).orElseThrow(EntityNotFoundException::new);
 
         //메뉴에 연결된 이미지도 함께 삭제
-        for(MenuImage menuImage : menu.getImages()){
+        for(MenuImage menuImage : menuImageRepository.findByMenu_Id(menu.getId())){
 
             //s3에서 이미지 삭제
             fileUtils.deleteImage("springboot", menuImage.getUrl() + menuImage.getFileName());

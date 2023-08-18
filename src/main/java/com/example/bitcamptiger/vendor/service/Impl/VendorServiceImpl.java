@@ -18,6 +18,7 @@ import com.example.bitcamptiger.vendor.service.GeoService;
 import com.example.bitcamptiger.vendor.service.RoadOccuCertiService;
 import com.example.bitcamptiger.vendor.service.VendorAPIService;
 import com.example.bitcamptiger.vendor.service.VendorService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.JSONObject;
@@ -168,6 +169,21 @@ public class VendorServiceImpl implements VendorService {
             openDTOList.add(vendorDTO);
         }
         return openDTOList;
+    }
+
+    @Override
+    public List<VendorDTO> getVendorByAddressCategory(String address) {
+        return null;
+    }
+
+    @Override
+    public void insertVendor(VendorDTO vendorDTO) throws JsonProcessingException {
+
+    }
+
+    @Override
+    public void updateVendor(VendorDTO vendorDTO) {
+
     }
 
 

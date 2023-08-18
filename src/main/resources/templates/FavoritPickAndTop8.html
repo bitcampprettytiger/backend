@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Favorite Pick Test</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+<h1>Favorite Pick Test</h1>
+
+<button id="addFavoriteBtn">Add Heart</button>
+<button id="removeFavoriteBtn">Remove Heart</button>
+
+<script>
+    $("#addFavoriteBtn").click(function() {
+        const memberId = 2; // 유저의 ID
+        const vendorId = 11; // 가게의 ID
+
+        $.post(`/api/favoritePick/${memberId}/add/${vendorId}`, function() {
+            alert("찜하기 콕!");
+        }).fail(function(error) {
+            console.error("Error adding favorite:", error);
+        });
+    });
+
+    $("#removeFavoriteBtn").click(function() {
+        const memberId = 2; // 유저의 ID
+        const vendorId = 11; // 가게의 ID
+
+        $.post(`/api/favoritePick/${memberId}/remove/${vendorId}`, function() {
+            alert("찜하기 취소!");
+        }).fail(function(error) {
+            console.error("Error removing favorite:", error);
+        });
+    });
+</script>
+</body>
+</html>

@@ -256,6 +256,7 @@ public class VendorServiceImpl implements VendorService {
     String attachPath;
 
 
+    // 가게 등록
     @Override
     public void insertVendor(VendorDTO vendorDTO, MultipartFile[] uploadFiles) throws IOException {
 
@@ -277,8 +278,8 @@ public class VendorServiceImpl implements VendorService {
             if (roadOcuuCertiData != null) {
                 vendorDTO.setPerNo(roadOcuuCertiData.getPerNo());
                 vendorDTO.setRlAppiNm(roadOcuuCertiData.getRlAppiNm());
-                // VendorDTO를 Vendor 엔티티로 변환하여 저장
-//                Vendor save = vendorRepository.save(vendorDTO.createVendor());
+
+
                 Vendor vendor = vendorDTO.createVendor();
 
                 Vendor savedVendor = vendorRepository.save(vendor);
@@ -302,13 +303,16 @@ public class VendorServiceImpl implements VendorService {
 
                 List<VendorImage> uploadFileList = new ArrayList<>();
 
-                boolean filesExist = false;
+//                boolean filesExist = false;
+
+
+                if(uploadFiles != null && uploadFiles.length > 0){
 
                     //파일 처리
                     for (MultipartFile file : uploadFiles) {
 
-                        if (file.getOriginalFilename() != null && !file.getOriginalFilename().isEmpty()) {
-                            filesExist = true;
+                        if (file != null && !file.isEmpty() && file.getOriginalFilename() != null && !file.getOriginalFilename().isEmpty()) {
+//                            filesExist = true;
                             VendorImage vendorImage = fileUtils.vendorFileInfo(file, attachPath);
 
                             //이전에 저장된 가게 정보를 설정.
@@ -319,13 +323,15 @@ public class VendorServiceImpl implements VendorService {
                         }
                     }
 
-                    //vendorImage가 등록되지 않았을 경우 기본이미지 설정
-                    if(!filesExist){
-                         VendorImage defaultVendorImage = fileUtils.getDefaultVendorImage();
-                         defaultVendorImage.setVendor(savedVendor);
-                         uploadFileList.add(defaultVendorImage);
+                }
 
-                    }
+                //vendorImage가 등록되지 않았을 경우 기본이미지 설정
+                if(uploadFileList.isEmpty()){
+                    VendorImage defaultVendorImage = fileUtils.getDefaultVendorImage();
+                    defaultVendorImage.setVendor(savedVendor);
+                    uploadFileList.add(defaultVendorImage);
+                }
+
 
                 for (VendorImage vendorImage : uploadFileList) {
                     vendorImageRepository.save(vendorImage);
@@ -338,12 +344,6 @@ public class VendorServiceImpl implements VendorService {
         } else {
             throw new RuntimeException("사업자 유효성 검사에 실패하였습니다.");
         }
-
-        List<Randmark> randmarkList = nowLocationRepository.findAll();
-
-//        for(Randmark randmark : randmarkList){
-//
-//        }
 
     }
 

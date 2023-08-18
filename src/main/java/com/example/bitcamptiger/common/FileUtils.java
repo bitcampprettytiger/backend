@@ -193,13 +193,34 @@ public class FileUtils {
         String defaultOriginName = "defaultVendorImage.jpg";
         String defaultUrl = "C:/finalproject/vendorDefaultImage/";
         String defaultImageUUID = UUID.randomUUID().toString();
+        String defaultFileCate = "defaultImage";
 
 
         defaultVendorImage.setOriginName(defaultOriginName);
         defaultVendorImage.setUrl(defaultUrl);
         defaultVendorImage.setFileName(defaultImageUUID);
+        defaultVendorImage.setFileCate(defaultFileCate);
 
         return defaultVendorImage;
+
+    }
+
+
+    //menu 기본 이미지 반환 메소드
+    public MenuImage getDefaultMenuImage(){
+        MenuImage defaultMenuImage = new MenuImage();
+
+        String defaultOriginName = "defaultMenuImage.jpg";
+        String defaultUrl = "C:/finalproject/menuDefaultImage/";
+        String defaultImageUUID = UUID.randomUUID().toString();
+        String defaultFileCate = "defaultImage";
+
+        defaultMenuImage.setOriginName(defaultOriginName);
+        defaultMenuImage.setUrl(defaultUrl);
+        defaultMenuImage.setFileName(defaultImageUUID);
+        defaultMenuImage.setFileCate(defaultFileCate);
+
+        return defaultMenuImage;
 
     }
 

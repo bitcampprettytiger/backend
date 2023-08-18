@@ -1,6 +1,6 @@
 package com.example.bitcamptiger.Review.controller;
 
-import com.example.bitcamptiger.Review.dto.ReviewResponseDto;
+import com.example.bitcamptiger.Review.dto.ReviewWithFilesDto;
 import com.example.bitcamptiger.Review.repository.ReviewRepository;
 import com.example.bitcamptiger.common.reviewFileUtils;
 import com.example.bitcamptiger.Review.dto.ReviewDto;
@@ -25,10 +25,8 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import java.io.File;
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/reviews")
@@ -45,14 +43,15 @@ public class ReviewController {
     String attachPath;
 
 
-    @GetMapping("review-list")
+    @GetMapping("/review-list")
     public ResponseEntity<?> getReviewList() {
         ResponseDTO<ReviewDto> responseDTO = new ResponseDTO<>();
         try {
-            List<ReviewDto> reviewDtos = reviewService.getReviewList();
+            List<ReviewDto> reviewsWithFiles = reviewService.getAllReviewsWithFiles();
 
-            responseDTO.setItemlist(reviewDtos);
+            responseDTO.setItemlist(reviewsWithFiles);
             responseDTO.setStatusCode(HttpStatus.OK.value());
+
 
             return ResponseEntity.ok().body(responseDTO);
         } catch (Exception e) {
@@ -67,12 +66,7 @@ public class ReviewController {
     public ResponseEntity<?> createReview(ReviewDto reviewDto,
                                           MultipartHttpServletRequest mphsRequest) {
         ResponseDTO<Review> responseDTO = new ResponseDTO<>();
-
-        File directory = new File(attachPath);
-
-        if(!directory.exists()) {
-            directory.mkdir();
-        }
+        
 
         List<ReviewFile> uploadFileList = new ArrayList<>();
 

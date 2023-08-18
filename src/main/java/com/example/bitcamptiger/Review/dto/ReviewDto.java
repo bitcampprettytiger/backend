@@ -27,38 +27,19 @@ public class ReviewDto {
     private String reviewContent;
     private LocalDateTime reviewRegDate;
     private int reviewScore;
-    private List<ReviewFileDto> reviewFileList;
+    private List<ReviewFileDto> reviewFiles;
 
-//    private static ModelMapper modelMapper = new ModelMapper();
-//
-//
-//    public Review createReview() {
-//        return modelMapper.map(this,Review.class);
-//    }
-//
-//    public static ReviewDto of(Review review){
-//        return modelMapper.map(review, ReviewDto.class);
-//    }
-
-//    public Review DtoToEntity() {
-//        return Review.builder()
-//                .reviewNum(this.reviewNum)
-//                .orderNum(this.orderNum)
-//                .reviewContent(this.reviewContent)
-//                .reviewScore(this.reviewScore)
-//                .reviewRegDate(this.reviewRegDate)
-//                .build();
-//    }
-
-    public static ReviewDto entityToDto(Review review) {
-        ReviewDto reviewDto = new ReviewDto();
-        reviewDto.setReviewNum(review.getReviewNum());
-        reviewDto.setReviewContent(review.getReviewContent());
-        reviewDto.setReviewRegDate(review.getReviewRegDate());
-        reviewDto.setReviewScore(review.getReviewScore());
-        reviewDto.setVendorId(review.getVendor().getId());
-        reviewDto.setMemberId(review.getMember().getId());
-        return reviewDto;
+    public Review DtoToEntity() {
+        Review review = Review.builder()
+                .reviewNum(this.reviewNum)
+                .reviewContent(this.reviewContent)
+                .reviewRegDate(this.reviewRegDate)
+                .reviewScore(this.getReviewScore())
+                .member(Member.builder().id(this.memberId).build())
+                .vendor(Vendor.builder().id(this.vendorId).build())
+                .orderNum(this.orderNum)
+                .build();
+        return review;
     }
 }
 

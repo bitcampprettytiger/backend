@@ -28,6 +28,8 @@ public class QReview extends EntityPathBase<Review> {
 
     public final StringPath reviewContent = createString("reviewContent");
 
+    public final ListPath<ReviewFile, QReviewFile> reviewFiles = this.<ReviewFile, QReviewFile>createList("reviewFiles", ReviewFile.class, QReviewFile.class, PathInits.DIRECT2);
+
     public final NumberPath<Long> reviewNum = createNumber("reviewNum", Long.class);
 
     public final DateTimePath<java.time.LocalDateTime> reviewRegDate = createDateTime("reviewRegDate", java.time.LocalDateTime.class);

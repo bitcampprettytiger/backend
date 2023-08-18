@@ -2,6 +2,7 @@ package com.example.bitcamptiger.Review.service;
 
 import com.example.bitcamptiger.Review.dto.ReviewDto;
 import com.example.bitcamptiger.Review.dto.ReviewFileDto;
+import com.example.bitcamptiger.Review.dto.ReviewWithFilesDto;
 import com.example.bitcamptiger.Review.entity.Review;
 import com.example.bitcamptiger.Review.entity.ReviewFile;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,7 +24,8 @@ public interface ReviewService {
 
     List<ReviewFile> getReviewFileList(Long reviewNum);
 
-    List<ReviewDto> getReviewList();
+
+    List<ReviewDto> getAllReviewsWithFiles();
 
 
 

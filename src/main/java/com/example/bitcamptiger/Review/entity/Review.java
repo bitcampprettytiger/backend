@@ -49,6 +49,9 @@ public class Review {
     @Column
     private Integer reviewScore; //별점
 
+    @OneToMany(mappedBy = "review", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ReviewFile> reviewFiles = new ArrayList<>();
+
 
     public ReviewDto EntityToDto() {
         return ReviewDto.builder()

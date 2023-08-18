@@ -20,6 +20,6 @@ public class ResponseDTO<T> {
 
     private int statusCode;
 
-
+    private String message;
 
 }

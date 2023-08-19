@@ -167,8 +167,7 @@ public class MenuServiceImpl implements MenuService {
                 //db에서 이미지 삭제
                 menuImageRepository.delete(menuImage);
             }
-            //메뉴 객체에서 이미지 목록 삭제
-//            menu.getImages().clear();
+
         }
 
 
@@ -184,6 +183,18 @@ public class MenuServiceImpl implements MenuService {
                 menuImage.setId(lastImageId);
                 uploadFileList.add(menuImage);
             }
+        }
+
+        //menuImage가 등록되지 않았을 경우 기본이미지 설정
+        if(uploadFileList.isEmpty()) {
+            MenuImage defaultMenuImage = fileUtils.getDefaultMenuImage();
+            defaultMenuImage.setMenu(menu);
+            //menuImage 객체에 imageId 설정.
+            defaultMenuImage.setId(lastImageId);
+            uploadFileList.add(defaultMenuImage);
+
+            //다음 이미지에 사용될 id값 증가.
+            lastImageId = lastImageId + 1;
         }
 
         //새로운 이미지 객체들을 메뉴이미지 데이터베이스에 저장

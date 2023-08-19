@@ -2,6 +2,8 @@ package com.example.bitcamptiger.cart.controller;
 
 import com.example.bitcamptiger.cart.dto.CartDTO;
 import com.example.bitcamptiger.cart.dto.CartItemDTO;
+import com.example.bitcamptiger.cart.entity.Cart;
+import com.example.bitcamptiger.cart.entity.CartItem;
 import com.example.bitcamptiger.cart.repository.CartRepository;
 import com.example.bitcamptiger.cart.service.CartService;
 import com.example.bitcamptiger.dto.ResponseDTO;
@@ -28,35 +30,38 @@ public class CartController {
     public final MemberRepository memberRepository;
     public final MenuRepository menuRepository;
 
-//    @GetMapping("/cartmenu")
-//    public ResponseEntity<?> getCartMenuList(CustomUserDetails userDetails){
-//        ResponseDTO<CartDTO> response = new ResponseDTO<>();
-//        try{
-//            List<CartDTO> cartDTOList = cartService.getCartList();
-//
-//            response.setItemlist(cartDTOList);
-//            response.setStatusCode(HttpStatus.OK.value());
-//
-//            return ResponseEntity.ok().body(response);
-//        }catch(Exception e) {
-//            response.setErrorMessage(e.getMessage());
-//            response.setStatusCode(HttpStatus.BAD_REQUEST.value());
-//            return ResponseEntity.badRequest().body(response);
-//        }
-//    }
+    //내 장바구니 조회
+    @GetMapping("/member/{id}")
+    public ResponseEntity<?> getMyCart(@PathVariable int id, CartItem cartItem){
+        ResponseDTO<CartItemDTO> response = new ResponseDTO<>();
+        try{
+
+            List<CartItemDTO> cartItemDTOList = cartService.getCartList(cartItem.getCart());
+
+            response.setItemlist(cartItemDTOList);
+            response.setStatusCode(HttpStatus.OK.value());
+
+            return ResponseEntity.ok().body(response);
+        }catch(Exception e) {
+            response.setErrorMessage(e.getMessage());
+            response.setStatusCode(HttpStatus.BAD_REQUEST.value());
+            return ResponseEntity.badRequest().body(response);
+        }
+    }
 
 
-    @PostMapping("/insertCart")
-    public ResponseEntity<?> insertCart(CartItemDTO cartItemDTO){
-
-        ResponseDTO<CartDTO> response = new ResponseDTO<>();
+    @PostMapping("/addCart")
+    public ResponseEntity<?> addCart(@RequestBody CartItemDTO cartItemDTO){
+        ResponseDTO<CartItemDTO> response = new ResponseDTO<>();
 
         try{
-            cartService.insertCart(cartItemDTO);
+            Member member = memberRepository.findById(cartItemDTO.getCart().getMember().getId()).orElseThrow();
+            Menu menu = menuRepository.findById(cartItemDTO.getMenu().getId()).orElseThrow();
+            cartService.addCart(member, menu, cartItemDTO.getCartQuantity());
 
-            List<CartDTO> cartDTOList = cartService.getCartList(cartItemDTO.getId());
+            List<CartItemDTO> cartItemDTOList = cartService.getCartList(cartItemDTO.getCart());
 
-            response.setItemlist(cartDTOList);
+            response.setItemlist(cartItemDTOList);
             response.setStatusCode(HttpStatus.OK.value());
 
             return ResponseEntity.ok().body(response);

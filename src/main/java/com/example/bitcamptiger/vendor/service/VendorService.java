@@ -29,7 +29,7 @@ public interface VendorService {
 
     void deleteVendor(VendorDTO vendorDTO);
 
-    Vendor getVendorDetail(Long id);
+    VendorDTO getVendorDetail(Long id);
 
    List<LocationDto> getNowLocationList(NowLocationDto nowLocationDto);
 }

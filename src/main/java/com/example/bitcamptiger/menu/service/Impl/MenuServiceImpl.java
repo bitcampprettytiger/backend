@@ -189,12 +189,14 @@ public class MenuServiceImpl implements MenuService {
         if(uploadFileList.isEmpty()) {
             MenuImage defaultMenuImage = fileUtils.getDefaultMenuImage();
             defaultMenuImage.setMenu(menu);
+
             //menuImage 객체에 imageId 설정.
+            lastImageId = lastImageId + 1L;
             defaultMenuImage.setId(lastImageId);
             uploadFileList.add(defaultMenuImage);
 
             //다음 이미지에 사용될 id값 증가.
-            lastImageId = lastImageId + 1;
+//            lastImageId = lastImageId + 1;
         }
 
         //새로운 이미지 객체들을 메뉴이미지 데이터베이스에 저장

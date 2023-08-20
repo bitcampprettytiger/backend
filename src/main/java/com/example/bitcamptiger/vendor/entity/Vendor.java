@@ -72,7 +72,7 @@ public class Vendor {
     @Column
     private String location;
 
-    @OneToMany(mappedBy = "vendor", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "vendor", orphanRemoval = true)
     private List<Menu> menuList = new ArrayList<>();
 
 

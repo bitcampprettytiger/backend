@@ -78,29 +78,34 @@ public class CartServiceImpl implements CartService {
         for(CartItem cartItem : cartItems){
             CartItemDTO cartItemDTO = CartItemDTO.of(cartItem);
             Menu menu = cartItem.getMenu();
+            cartItemDTO.setMenu(menu);
+            cartItemDTO.setCart(cart);
 
-            MenuDTO menuDTO = MenuDTO.of(menu);
-
+            //해당 메뉴 이미지 조회
             List<MenuImage> menuImageList = menuImageRepository.findByMenu(menu);
             List<MenuImageDTO> menuImageDTOList = new ArrayList<>();
             for(MenuImage menuImage : menuImageList){
                 MenuImageDTO menuImageDTO = MenuImageDTO.of(menuImage);
                 menuImageDTOList.add(menuImageDTO);
             }
-
-            menuDTO.setMenuImageList(menuImageDTOList);
-            cartItemDTO.setMenu(menu);
-
+            cartItemDTO.setMenuImageDTOList(menuImageDTOList);
             cartItemDTOList.add(cartItemDTO);
+
         }
         return cartItemDTOList;
     }
 
+
+    //장바구니 수량 수정
+
+
+
     //장바구니 menu 삭제
     @Override
-    public void deleteCartItem(Long cartItemId) {
-        cartItemRepository.deleteById(cartItemId);
+    public void deleteCartItem(CartItemDTO cartItemDTO) {
+        cartItemRepository.deleteById(cartItemDTO.getId());
     }
+
 
     //장바구니 menu 전체 삭제
     @Override
@@ -111,25 +116,6 @@ public class CartServiceImpl implements CartService {
 
 
 
-
-//    @Override
-//    public void insertCart(CartItemDTO cartItemDTO) {
-//
-////        Member member = memberRepository.findById(customUserDetails.getUser().getId()).orElseThrow();
-//        Member member = memberRepository.findById(cartItemDTO.getCart().getMember().getId()).orElseThrow();
-//        Menu menu = menuRepository.findById(cartItemDTO.getMenu().getId()).orElseThrow();
-//
-//        CartItem existingCartItem = cartItemRepository.findByMenuAndCart_Member(menu, member);
-//            if(existingCartItem == null){
-//                CartItem cartItem = cartItemDTO.createCartItem();
-//                cartItemRepository.save(cartItem);
-//            }else{
-//                //장바구니에 메뉴가 이미 담겨있을 경우 수량 더하기
-//                existingCartItem.setCartQuantity(existingCartItem.getCartQuantity() + cartItemDTO.getCartQuantity());
-//                cartItemRepository.save(existingCartItem);
-//            }
-//
-//        }
 
 
 

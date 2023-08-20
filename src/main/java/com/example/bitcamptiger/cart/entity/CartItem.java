@@ -1,6 +1,7 @@
 package com.example.bitcamptiger.cart.entity;
 
 import com.example.bitcamptiger.menu.entity.Menu;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,8 +20,9 @@ public class CartItem {
     @Column(name = "cart_item_id")
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "cart_id")
+    @JsonBackReference  //순환참조 문제를 해결하기 위해 참조속성 명시
     private Cart cart;
 
     @ManyToOne

@@ -255,7 +255,6 @@ public class VendorController {
 
             List<VendorDTO> vendorDTOList = vendorService.getVendorList();
 
-
             response.setItemlist(vendorDTOList);
             response.setStatusCode(HttpStatus.OK.value());
 
@@ -278,7 +277,6 @@ public class VendorController {
             vendorService.deleteVendor(vendorDTO);
 
             List<VendorDTO> vendorDTOList = vendorService.getVendorList();
-
 
             response.setItemlist(vendorDTOList);
             response.setStatusCode(HttpStatus.OK.value());

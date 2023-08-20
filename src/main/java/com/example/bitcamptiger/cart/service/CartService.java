@@ -21,7 +21,7 @@ public interface CartService {
     List<CartItemDTO> getCartList(Cart cart);
 
     //장바구니 menu 삭제
-    void deleteCartItem(Long cartItemId);
+    void deleteCartItem(CartItemDTO cartItemDTO);
 
     //장바구니 menu 전체 삭제
     void deleteCart(Long memberId);

@@ -369,7 +369,7 @@ public class VendorServiceImpl implements VendorService {
             vendorDTO.setX(point.get("x").toString());
             vendorDTO.setY(point.get("y").toString());
         }
-//        vendorRepository.save(vendor);
+        vendorRepository.save(vendor);
 
 
         //기존 이미지 삭제
@@ -391,6 +391,7 @@ public class VendorServiceImpl implements VendorService {
                 VendorImage vendorImage = fileUtils.vendorFileInfo(file, attachPath);
                 vendorImage.setVendor(vendor);
 
+                uploadFileList.add(vendorImage);
             }
         }
 

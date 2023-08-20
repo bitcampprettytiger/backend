@@ -31,6 +31,7 @@ public class WebSocketConfig implements WebSocketConfigurer {
         // 위에서 생성한 빈을 주입하여 LineUpHandler를 생성
         registry.addHandler(new LineUpHandler(restaurantService, restaurantDTO()), "/lineup")
                 .setAllowedOrigins("*");
+//                .setAllowedOriginPatterns("*");
     }
 }
 

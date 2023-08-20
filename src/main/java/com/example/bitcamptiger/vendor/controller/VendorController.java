@@ -40,8 +40,6 @@ public class VendorController {
         try{
             List<LocationDto> nowLocationList = vendorService.getNowLocationList(nowLocationDto);
             if(nowLocationList.isEmpty()){
-                System.out.println("null");
-                System.out.println("테스트");
                return new BaseResponse<>(RESPONSE_ERROR);
             }
             System.out.println("????????");

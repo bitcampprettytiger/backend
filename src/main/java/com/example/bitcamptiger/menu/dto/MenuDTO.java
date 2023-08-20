@@ -23,7 +23,6 @@ public class MenuDTO {
     private String menuContent;
     private String menuSellStatus;
     private String menuType;
-
     private Vendor vendor;
     private List<MenuImageDTO> menuImageList;
 

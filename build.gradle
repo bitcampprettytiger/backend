@@ -2,7 +2,7 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.1.2'
     id 'io.spring.dependency-management' version '1.1.2'
-//    id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
+    id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
 }
 
 group = 'com.example'
@@ -47,6 +47,7 @@ dependencies {
 
     //직렬화
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-hibernate5:2.12.5'
+    implementation group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310'
 
 
 
@@ -104,21 +105,21 @@ bootJar {
 //    java.util.jar.Attributes.Name.MAIN_CLASS
 }
 
-//
-//    java.util.jar.Attributes.Name.MAIN_CLASS
-//// queryDSL 추가 : QueryDSL 빌드 옵션
-//def querydslDir = 'src/main/generated'
-//
-//querydsl {
-//    jpa = true
-//    querydslSourcesDir = querydslDir
-//}
-//sourceSets {
-//    main.java.srcDir querydslDir
-//}
-//configurations {
-//    querydsl.extendsFrom compileClasspath
-//}
-//compileQuerydsl {
-//    options.annotationProcessorPath = configurations.querydsl
-//}
+
+    java.util.jar.Attributes.Name.MAIN_CLASS
+// queryDSL 추가 : QueryDSL 빌드 옵션
+def querydslDir = 'src/main/generated'
+
+querydsl {
+    jpa = true
+    querydslSourcesDir = querydslDir
+}
+sourceSets {
+    main.java.srcDir querydslDir
+}
+configurations {
+    querydsl.extendsFrom compileClasspath
+}
+compileQuerydsl {
+    options.annotationProcessorPath = configurations.querydsl
+}

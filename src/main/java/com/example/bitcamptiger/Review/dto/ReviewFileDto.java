@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.modelmapper.ModelMapper;
 
 @Data
 @NoArgsConstructor
@@ -22,20 +23,42 @@ public class ReviewFileDto {
     private String reviewFileStatus;
     private String newFileName;
 
-    public ReviewFile DtoToEntity() {
-        Review review = Review.builder()
-                .reviewNum(this.reviewNum)
-                .build();
+//    private static ModelMapper modelMapper = new ModelMapper();
+//
+//    public Review createReviewFile() {
+//        return modelMapper.map(this, Review.class);
+//    }
+//
+//    public static ReviewFileDto of(ReviewFile reviewFile) {
+//        return modelMapper.map(reviewFile, ReviewFileDto.class);
+//    }
 
-        ReviewFile reviewFile = ReviewFile.builder()
-                .review(review)
-                .reviewFileNo(this.reviewFileNo)
-                .reviewFileOrigin(this.reviewFileOrigin)
-                .reviewFileName(this.reviewFileName)
-                .reviewFilePath(this.reviewFilePath)
-                .reviewFileCate(this.reviewFileCate)
-                .build();
-        return reviewFile;
+//    public ReviewFile DtoToEntity() {
+//        Review review = Review.builder()
+//                .reviewNum(this.reviewNum)
+//                .build();
+//
+//        ReviewFile reviewFile = ReviewFile.builder()
+//                .review(review)
+//                .reviewFileNo(this.reviewFileNo)
+//                .reviewFileOrigin(this.reviewFileOrigin)
+//                .reviewFileName(this.reviewFileName)
+//                .reviewFilePath(this.reviewFilePath)
+//                .reviewFileCate(this.reviewFileCate)
+//                .build();
+//        return reviewFile;
+//    }
+
+    public static ReviewFileDto entityToDto(ReviewFile reviewFile) {
+        ReviewFileDto reviewFileDto = new ReviewFileDto();
+        reviewFileDto.setReviewFileNo(reviewFile.getReviewFileNo());
+        reviewFileDto.setReviewFileName(reviewFile.getReviewFileName());
+        reviewFileDto.setReviewFileOrigin(reviewFile.getReviewFileOrigin());
+        reviewFileDto.setReviewFilePath(reviewFile.getReviewFilePath());
+        reviewFileDto.setReviewFileCate(reviewFile.getReviewFileCate());
+        reviewFileDto.setReviewNum(reviewFile.getReview().getReviewNum());
+
+        return reviewFileDto;
     }
 
 }

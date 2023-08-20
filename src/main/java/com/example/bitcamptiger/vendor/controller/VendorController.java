@@ -38,6 +38,9 @@ public class VendorController {
         System.out.println(nowLocationDto);
         ResponseDTO<LocationDto> response = new ResponseDTO<>();
         try{
+
+
+
             List<LocationDto> nowLocationList = vendorService.getNowLocationList(nowLocationDto);
             if(nowLocationList.isEmpty()){
                return new BaseResponse<>(RESPONSE_ERROR);

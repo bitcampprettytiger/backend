@@ -39,7 +39,9 @@ public class SecurityConfiguration {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
 
-        return http
+
+        return http.addFilterAfter(jwtAuthenticationFilter, CorsFilter.class)
+
 //              csrf 공격에 대한 옵션 꺼두기
                 .csrf(AbstractHttpConfigurer::disable)
                 .httpBasic(httpSecurityHttpBasicConfigurer -> {
@@ -52,11 +54,11 @@ public class SecurityConfiguration {
         authorizeHttpRequests((authorizaRequests) -> {
 //                    /요청은 모든 사용자가 이용가능
 
-    authorizaRequests.requestMatchers("/member/**","/board/**","/api/**", "/menu/**","/waiting/**").permitAll();
+//    authorizaRequests.requestMatchers("/member/**","/board/**","/api/**", "/menu/**","/waiting/**").permitAll();
     authorizaRequests.requestMatchers("/member/**","/board/**","/api/**", "/menu/**", "/favorite-Test").permitAll();
-     authorizaRequests.requestMatchers("/vendor/**").permitAll();
-     authorizaRequests.requestMatchers("/**").hasAuthority("ROLE_VENDOR");
-     authorizaRequests.anyRequest().authenticated();
+    authorizaRequests.requestMatchers("/vendor/**").permitAll();
+//    authorizaRequests.requestMatchers("/**").hasAuthority("ROLE_VENDOR");
+    authorizaRequests.anyRequest().authenticated();
 })
 //                로그인 로그아웃 설정
 //                AuthenticationProvider에게 전달할
@@ -64,9 +66,7 @@ public class SecurityConfiguration {
 //                상태까지 설정
 //              filter 등록
 //                매요청마다 corsfilter 실행 후 jwtAuthenticationFilter 실행
-                .addFilterAfter(jwtAuthenticationFilter, CorsFilter.class)
                 .build();
-
 
     }
 

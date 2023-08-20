@@ -55,11 +55,13 @@ public class VendorServiceImpl implements VendorService {
 
 //        List<NowLocationDto> nowLocationDtoList = new ArrayList<>();
 //        List<Randmark> Randmark = nowLocationRepository.findAll();
+        if(nowLocationDto.getHardness()==null&&nowLocationDto.getLatitude()==null){
 
-        JSONObject geocoding = geoService.geocoding(nowLocationDto.getAddress());
-        System.out.println(geocoding.toString());
-        nowLocationDto.setHardness(geocoding.get("x").toString());
-        nowLocationDto.setLatitude(geocoding.get("y").toString());
+            JSONObject geocoding = geoService.geocoding(nowLocationDto.getAddress());
+            System.out.println(geocoding.toString());
+            nowLocationDto.setHardness(geocoding.get("x").toString());
+            nowLocationDto.setLatitude(geocoding.get("y").toString());
+        }
         System.out.println(nowLocationDto);
         List<Randmark> Location = nowLocationRepository.findAll();
         List<LocationDto> locationDtoList = new ArrayList<>();

@@ -1,5 +1,6 @@
 package com.example.bitcamptiger.cart.controller;
 
+import com.example.bitcamptiger.cart.dto.CartDTO;
 import com.example.bitcamptiger.cart.dto.CartItemDTO;
 import com.example.bitcamptiger.cart.entity.Cart;
 import com.example.bitcamptiger.cart.repository.CartItemRepository;
@@ -80,12 +81,13 @@ public class CartController {
 
 
     //장바구니 menu 삭제
-    @DeleteMapping("/info/{cartId}/{menuId}")
-    public ResponseEntity<?> deleteCart(@PathVariable Long cartId, @PathVariable Long menuId, CartItemDTO cartItemDTO){
+    @DeleteMapping("/deletecartitem")
+    public ResponseEntity<?> deleteCartItem(@RequestBody CartItemDTO cartItemDTO){
+        System.out.println(cartItemDTO);
         ResponseDTO<CartItemDTO> response = new ResponseDTO<>();
 
         try{
-            cartService.deleteCartItem(cartId, menuId);
+            cartService.deleteCartItem(cartItemDTO.getCart().getId(), cartItemDTO.getMenu().getId());
 
             List<CartItemDTO> cartItemDTOList = cartService.getCartList(cartItemDTO.getCart());
 
@@ -102,6 +104,22 @@ public class CartController {
 
 
     //장바구니 menu 전체 삭제
+    @DeleteMapping("/info")
+    public ResponseEntity<?> deleteCart(@RequestBody CartItemDTO cartItemDTO){
+        ResponseDTO<CartItemDTO> response = new ResponseDTO<>();
+
+        try{
+            cartService.deleteCart(cartItemDTO);
+
+            response.setStatusCode(HttpStatus.OK.value());
+
+            return ResponseEntity.ok().body(response);
+        }catch(Exception e) {
+            response.setErrorMessage(e.getMessage());
+            response.setStatusCode(HttpStatus.BAD_REQUEST.value());
+            return ResponseEntity.badRequest().body(response);
+        }
+    }
 
 
 

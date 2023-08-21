@@ -3,12 +3,10 @@ package com.example.bitcamptiger.cart.entity;
 import com.example.bitcamptiger.menu.entity.Menu;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -20,7 +18,7 @@ public class CartItem {
     @Column(name = "cart_item_id")
     private Long id;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "cart_id")
     @JsonBackReference  //순환참조 문제를 해결하기 위해 참조속성 명시
     private Cart cart;

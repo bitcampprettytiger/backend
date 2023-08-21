@@ -32,6 +32,10 @@ public class VendorDTO {
     private String perNo;       //도로 점유증 허가 번호
     private String rlAppiNm;        //신청인명
 
+    private String location;
+    private Double totalReviewScore;
+    private Long reviewCount;
+    private Double weightedAverageScore;
 
     private List<VendorImageDTO> vendorImageDTOList;
     private List<MenuDTO> menuDTOList;

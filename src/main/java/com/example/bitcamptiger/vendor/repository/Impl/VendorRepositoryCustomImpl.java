@@ -107,9 +107,16 @@ public class VendorRepositoryCustomImpl implements VendorRepositoryCustom {
         return content;
     }
 
+    //리뷰 가장 많은 순 / 별점 높은 순 정렬
+    @Override
+    public List<Vendor> findByReview(Double weightedAverageScore) {
 
-
-
+            List<Vendor> content = queryFactory.selectFrom(QVendor.vendor)
+                    .orderBy(QVendor.vendor.weightedAverageScore.desc())
+                    .fetch();
+        
+        return content;
+    }
 
 
     //Query dsl의 메소드

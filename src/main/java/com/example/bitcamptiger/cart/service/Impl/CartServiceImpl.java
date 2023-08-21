@@ -17,6 +17,7 @@ import com.example.bitcamptiger.menu.repository.MenuRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,23 +36,24 @@ public class CartServiceImpl implements CartService {
 
 
     //처음 장바구니에 상품을 담을 때는 해당 member의 장바구니를 생성해야 함.
-    public void createCart(Member member){
-        Cart cart = Cart.createCart(member);
-        cartRepository.save(cart);
-    }
+//    public void createCart(Member member){
+//        Cart cart = Cart.createCart(member);
+//        cartRepository.save(cart);
+//    }
 
 
 
     //장바구니에 menu 추가
     @Override
-    public void addCart(Member member, Menu menu, int cartQuantity) {
+    public Cart addCart(Member member, Menu menu, int cartQuantity) {
 
        Cart cart = cartRepository.findByMemberId(member.getId());
 
        //cart가 비어있으면 생성.
         if(cart == null){
             cart = Cart.createCart(member);
-            cartRepository.save(cart);
+            Cart save = cartRepository.save(cart);
+            cart.setId(save.getId());
         }
 
         //cartItem 생성
@@ -66,7 +68,7 @@ public class CartServiceImpl implements CartService {
             cartItem.addCount(cartQuantity);
             cartItemRepository.save(cartItem);
         }
-
+        return  cart;
     }
 
     //장바구니 조회
@@ -102,8 +104,9 @@ public class CartServiceImpl implements CartService {
 
     //장바구니 menu 삭제
     @Override
-    public void deleteCartItem(CartItemDTO cartItemDTO) {
-        cartItemRepository.deleteById(cartItemDTO.getId());
+    public void deleteCartItem(Long cartId, Long menuId) {
+       CartItem cartItem = cartItemRepository.findByCartIdAndMenuId(cartId, menuId);
+       cartItemRepository.delete(cartItem);
     }
 
 

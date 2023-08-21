@@ -178,6 +178,7 @@ public class VendorServiceImpl implements VendorService {
         return null;
     }
 
+
     @Override
     public void insertVendor(VendorDTO vendorDTO) throws JsonProcessingException {
 
@@ -272,6 +273,25 @@ public class VendorServiceImpl implements VendorService {
 
     @Value("${vendorFile.path}")
     String attachPath;
+
+
+    //리뷰 가장 많은 순 / 별점 높은 순 정렬
+    @Override
+    public List<VendorDTO> getVendorByReview(Double weightedAverageScore) {
+
+        List<Vendor> vendorList = vendorRepository.findByReview(weightedAverageScore);
+
+        List<VendorDTO> vendorDTOList = new ArrayList<>();
+
+        for(Vendor vendor : vendorList){
+            VendorDTO vendorDTO = VendorDTO.of(vendor);
+
+            vendorDTOList.add(vendorDTO);
+        }
+
+        return vendorDTOList;
+    }
+
 
 
     // 가게 등록

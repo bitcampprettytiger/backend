@@ -107,12 +107,15 @@ public class VendorRepositoryCustomImpl implements VendorRepositoryCustom {
         return content;
     }
 
+    //리뷰 가장 많은 순 / 별점 높은 순 정렬
     @Override
     public List<Vendor> findByReview(Double weightedAverageScore) {
-        BooleanBuilder builder = new BooleanBuilder();
 
+            List<Vendor> content = queryFactory.selectFrom(QVendor.vendor)
+                    .orderBy(QVendor.vendor.weightedAverageScore.desc())
+                    .fetch();
         
-        return null;
+        return content;
     }
 
 

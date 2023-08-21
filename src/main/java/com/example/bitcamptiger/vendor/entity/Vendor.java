@@ -105,7 +105,7 @@ public class Vendor {
         }
         this.reviewCount++;
         this.totalReviewScore += review.getReviewScore();
-        this.weightedAverageScore = (this.totalReviewScore * 0.5) + (this.reviewCount * 0.5);
+        this.weightedAverageScore = (this.totalReviewScore) / (this.reviewCount);
 
 
     }

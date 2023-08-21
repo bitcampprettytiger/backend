@@ -466,6 +466,8 @@ public class VendorServiceImpl implements VendorService {
 
     @Override
     public VendorDTO getVendorDetail(Long id) {
+
+
         Vendor vendor = vendorRepository.findById(id).orElseThrow();
         VendorDTO vendorDTO = VendorDTO.of(vendor);
 
@@ -478,10 +480,29 @@ public class VendorServiceImpl implements VendorService {
         }
         vendorDTO.setVendorImageDTOList(vendorImageDTOList);
 
+        //vendor 조회시 등록된 menu 정보도 조회
+        List<Menu> menuList = menuRepository.findByVendor(vendor);
+
+        List<MenuDTO> menuDTOList = new ArrayList<>();
+        for(Menu menu : menuList) {
+            MenuDTO menuDTO = MenuDTO.of(menu);
+
+            //해당 메뉴 이미지 조회
+            List<MenuImage> menuImageList = menuImageRepository.findByMenu(menu);
+
+            List<MenuImageDTO> menuImageDTOList = new ArrayList<>();
+            for (MenuImage menuImage : menuImageList) {
+                MenuImageDTO menuImageDTO = MenuImageDTO.of(menuImage);
+                menuImageDTOList.add(menuImageDTO);
+            }
+            menuDTO.setMenuImageList(menuImageDTOList);
+            menuDTOList.add(menuDTO);
+        }
+
+        vendorDTO.setMenuDTOList(menuDTOList);
+
         return vendorDTO;
     }
-
-
 
 
 

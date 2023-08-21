@@ -28,6 +28,8 @@ public class QCart extends EntityPathBase<Cart> {
 
     public final com.example.bitcamptiger.member.entity.QMember member;
 
+    public final com.example.bitcamptiger.userOrder.entity.QUserOrder userOrder;
+
     public QCart(String variable) {
         this(Cart.class, forVariable(variable), INITS);
     }
@@ -47,6 +49,7 @@ public class QCart extends EntityPathBase<Cart> {
     public QCart(Class<? extends Cart> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.member = inits.isInitialized("member") ? new com.example.bitcamptiger.member.entity.QMember(forProperty("member")) : null;
+        this.userOrder = inits.isInitialized("userOrder") ? new com.example.bitcamptiger.userOrder.entity.QUserOrder(forProperty("userOrder"), inits.get("userOrder")) : null;
     }
 
 }

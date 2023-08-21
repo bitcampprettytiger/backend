@@ -53,7 +53,7 @@ public class CartController {
 
 
     // 장바구니에 메뉴 추가
-    @PostMapping("/add-to-cart")
+    @PostMapping("/addCart")
     public ResponseEntity<ResponseDTO<CartItemDTO>> addMenuToCart(@RequestBody CartItemDTO cartItemDTO) {
         ResponseDTO<CartItemDTO> response = new ResponseDTO<>();
 

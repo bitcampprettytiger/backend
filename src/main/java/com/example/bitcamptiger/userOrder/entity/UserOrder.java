@@ -43,7 +43,6 @@ public class UserOrder {
     @JoinColumn(name = "vendor_id") // 가게 정보를 참조하는 외래키
     private Vendor vendor; // 해당 메뉴를 제공하는 가게 정보
 
-
     // 메뉴의 가격과 수량을 곱해서 총 금액 계산 및 저장
     public void calculateTotalAmount() {
         totalAmount = menu.getPrice() * quantity;
@@ -53,7 +52,7 @@ public class UserOrder {
 
 
     // 메뉴별 합산 금액
-    public void setMenuTotalAmountAndQuantity() {
+    public void setMenuTotalAmount() {
         menuTotalAmount = price * quantity;
     }
 
@@ -69,7 +68,6 @@ public class UserOrder {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cart_id")
     private Cart cart;
-
 
 
 

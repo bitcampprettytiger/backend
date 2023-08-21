@@ -22,6 +22,8 @@ public class QUserOrder extends EntityPathBase<UserOrder> {
 
     public static final QUserOrder userOrder = new QUserOrder("userOrder");
 
+    public final com.example.bitcamptiger.cart.entity.QCart cart;
+
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
     public final com.example.bitcamptiger.member.entity.QMember member;
@@ -58,6 +60,7 @@ public class QUserOrder extends EntityPathBase<UserOrder> {
 
     public QUserOrder(Class<? extends UserOrder> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
+        this.cart = inits.isInitialized("cart") ? new com.example.bitcamptiger.cart.entity.QCart(forProperty("cart"), inits.get("cart")) : null;
         this.member = inits.isInitialized("member") ? new com.example.bitcamptiger.member.entity.QMember(forProperty("member")) : null;
         this.menu = inits.isInitialized("menu") ? new com.example.bitcamptiger.menu.entity.QMenu(forProperty("menu"), inits.get("menu")) : null;
         this.vendor = inits.isInitialized("vendor") ? new com.example.bitcamptiger.vendor.entity.QVendor(forProperty("vendor")) : null;

@@ -38,9 +38,11 @@ public class VendorController {
         System.out.println(nowLocationDto);
         ResponseDTO<LocationDto> response = new ResponseDTO<>();
         try{
+
+
+
             List<LocationDto> nowLocationList = vendorService.getNowLocationList(nowLocationDto);
             if(nowLocationList.isEmpty()){
-                System.out.println("null");
                return new BaseResponse<>(RESPONSE_ERROR);
             }
             System.out.println("????????");
@@ -206,7 +208,7 @@ public class VendorController {
 
     //개별 상점 상세 정보 확인
     @GetMapping("/infoDetail/{id}")
-    public Vendor getVendorInfoDetail(@PathVariable Long id){
+    public VendorDTO getVendorInfoDetail(@PathVariable Long id){
         return vendorService.getVendorDetail(id);
     }
 
@@ -255,7 +257,6 @@ public class VendorController {
 
             List<VendorDTO> vendorDTOList = vendorService.getVendorList();
 
-
             response.setItemlist(vendorDTOList);
             response.setStatusCode(HttpStatus.OK.value());
 
@@ -278,7 +279,6 @@ public class VendorController {
             vendorService.deleteVendor(vendorDTO);
 
             List<VendorDTO> vendorDTOList = vendorService.getVendorList();
-
 
             response.setItemlist(vendorDTOList);
             response.setStatusCode(HttpStatus.OK.value());

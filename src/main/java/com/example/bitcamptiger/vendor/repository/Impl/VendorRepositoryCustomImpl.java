@@ -26,6 +26,9 @@ public class VendorRepositoryCustomImpl implements VendorRepositoryCustom {
     @Override
     public List<Vendor> findVendorByCategory(String address, String menuName, String vendorName) {
 
+        //vedor라는 별칭 중복으로 인한 혼동을 방지하기 위해 별칭 설정
+       // QVendor otherVendor = QVendor.vendor;
+        //QMenu otherMenu = QMenu.menu;
 
         // where절에서 or조건절을 사용하기 위해서 BooleanBuilder를 사용
         BooleanBuilder builder = new BooleanBuilder();
@@ -41,6 +44,7 @@ public class VendorRepositoryCustomImpl implements VendorRepositoryCustom {
         if(vendorName != null && !vendorName.isEmpty()){
             builder.or(QVendor.vendor.vendorName.contains(vendorName));
         }
+
 
         //selectFrom은 select와 from을 한 번에 같이 불러올 수 있음.
         List<Vendor> content = queryFactory.selectFrom(QVendor.vendor)
@@ -89,6 +93,9 @@ public class VendorRepositoryCustomImpl implements VendorRepositoryCustom {
         if(menuType != null && !menuType.isEmpty()){
             builder.and(QMenu.menu.menuType.contains(menuType));
         }
+
+        //vedor라는 별칭 중복으로 인한 혼동을 방지하기 위해 별칭 설정
+        //QVendor otherVendor = QVendor.vendor;
 
         List<Vendor> content = queryFactory.selectFrom(QVendor.vendor)
                 .leftJoin(QVendor.vendor.menuList, QMenu.menu)

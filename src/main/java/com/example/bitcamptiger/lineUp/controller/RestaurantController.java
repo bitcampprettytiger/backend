@@ -21,8 +21,7 @@ public class RestaurantController {
 
     @GetMapping("/{restaurantId}")
     public ResponseEntity<List<WaitingUserDTO>> getWaitingListByRestaurant(
-            @PathVariable String restaurantId
-    ) {
+            @PathVariable String restaurantId) {
         try {
             // 특정 음식점의 대기자 명단 조회 서비스 메서드 호출
             RestaurantDTO restaurantDTO = new RestaurantDTO(restaurantId);
@@ -39,6 +38,7 @@ public class RestaurantController {
             @PathVariable String restaurantId,
             @RequestBody WaitingUserDTO waitingUserDTO
     ) {
+        System.out.println(restaurantId+"여거"+waitingUserDTO);
         try {
             // 대기자를 특정 음식점의 대기자 명단에 추가하는 서비스 메서드 호출
             RestaurantDTO restaurantDTO = new RestaurantDTO(restaurantId);

@@ -57,10 +57,12 @@ public class CartController {
 
         try{
             Member member = memberRepository.findById(cartItemDTO.getCart().getMember().getId()).orElseThrow();
-            Menu menu = menuRepository.findById(cartItemDTO.getMenu().getId()).orElseThrow();
-            cartService.addCart(member, menu, cartItemDTO.getCartQuantity());
 
-            List<CartItemDTO> cartItemDTOList = cartService.getCartList(cartItemDTO.getCart());
+            Menu menu = menuRepository.findById(cartItemDTO.getMenu().getId()).orElseThrow();
+
+            Cart cart = cartService.addCart(member, menu, cartItemDTO.getCartQuantity());
+
+            List<CartItemDTO> cartItemDTOList = cartService.getCartList(cart);
 
             response.setItemlist(cartItemDTOList);
             response.setStatusCode(HttpStatus.OK.value());
@@ -78,12 +80,12 @@ public class CartController {
 
 
     //장바구니 menu 삭제
-    @DeleteMapping("/info")
-    public ResponseEntity<?> deleteCart(CartItemDTO cartItemDTO){
+    @DeleteMapping("/info/{cartId}/{menuId}")
+    public ResponseEntity<?> deleteCart(@PathVariable Long cartId, @PathVariable Long menuId, CartItemDTO cartItemDTO){
         ResponseDTO<CartItemDTO> response = new ResponseDTO<>();
 
         try{
-            cartService.deleteCartItem(cartItemDTO);
+            cartService.deleteCartItem(cartId, menuId);
 
             List<CartItemDTO> cartItemDTOList = cartService.getCartList(cartItemDTO.getCart());
 

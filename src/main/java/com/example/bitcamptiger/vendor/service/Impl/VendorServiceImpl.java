@@ -18,6 +18,7 @@ import com.example.bitcamptiger.vendor.service.GeoService;
 import com.example.bitcamptiger.vendor.service.RoadOccuCertiService;
 import com.example.bitcamptiger.vendor.service.VendorAPIService;
 import com.example.bitcamptiger.vendor.service.VendorService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.JSONObject;
@@ -54,17 +55,19 @@ public class VendorServiceImpl implements VendorService {
 
 //        List<NowLocationDto> nowLocationDtoList = new ArrayList<>();
 //        List<Randmark> Randmark = nowLocationRepository.findAll();
+        if(nowLocationDto.getHardness()==null&&nowLocationDto.getLatitude()==null){
 
-        JSONObject geocoding = geoService.geocoding(nowLocationDto.getAddress());
-        System.out.println(geocoding.toString());
-        nowLocationDto.setHardness(geocoding.get("x").toString());
-        nowLocationDto.setLatitude(geocoding.get("y").toString());
+            JSONObject geocoding = geoService.geocoding(nowLocationDto.getAddress());
+            System.out.println(geocoding.toString());
+            nowLocationDto.setHardness(geocoding.get("x").toString());
+            nowLocationDto.setLatitude(geocoding.get("y").toString());
+        }
         System.out.println(nowLocationDto);
         List<Randmark> Location = nowLocationRepository.findAll();
         List<LocationDto> locationDtoList = new ArrayList<>();
 //        List<>
         for(Randmark randmark : Location){
-            if(Double.parseDouble(nowLocationDto.getLatitude())-Double.parseDouble(randmark.getHardness())<0.122699 && Double.parseDouble(nowLocationDto.getLatitude())-Double.parseDouble(randmark.getHardness()) < 0.244849){
+            if(Double.parseDouble(nowLocationDto.getLatitude())-Double.parseDouble(randmark.getLatitude())<0.1 && Double.parseDouble(nowLocationDto.getHardness())-Double.parseDouble(randmark.getHardness()) < 0.1){
                 System.out.println("!!!");
                 System.out.println("test");
 //                locationDtoList.add(randmark.getLocation());
@@ -168,6 +171,21 @@ public class VendorServiceImpl implements VendorService {
             openDTOList.add(vendorDTO);
         }
         return openDTOList;
+    }
+
+    @Override
+    public List<VendorDTO> getVendorByAddressCategory(String address) {
+        return null;
+    }
+
+    @Override
+    public void insertVendor(VendorDTO vendorDTO) throws JsonProcessingException {
+
+    }
+
+    @Override
+    public void updateVendor(VendorDTO vendorDTO) {
+
     }
 
 

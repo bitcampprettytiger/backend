@@ -21,16 +21,20 @@ public class ReviewDto {
     private Long vendorId;
     private Long memberId;
     private String reviewContent;
-    private LocalDateTime reviewRegDate;
+    private String reviewRegDate;
     private int reviewScore;
-    private List<ReviewFileDto> reviewFiles;
+    private int likedCount;
+    private int disLikedCount;
+    private ReviewFileDto reviewFile;
 
     public Review DtoToEntity() {
         Review review = Review.builder()
                 .reviewNum(this.reviewNum)
                 .reviewContent(this.reviewContent)
-                .reviewRegDate(this.reviewRegDate)
+                .reviewRegDate(LocalDateTime.parse(this.reviewRegDate))
                 .reviewScore(this.reviewScore)
+                .likeCount(this.likedCount)
+                .disLikeCount(this.disLikedCount)
                 .member(Member.builder().id(this.memberId).build())
                 .vendor(Vendor.builder().id(this.vendorId).build())
                 .orderNum(this.orderNum)

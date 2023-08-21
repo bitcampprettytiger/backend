@@ -65,8 +65,8 @@ public class ReviewController {
     @PostMapping(value = "/review", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> createReview(ReviewDto reviewDto,
                                           MultipartHttpServletRequest mphsRequest) {
-        ResponseDTO<Review> responseDTO = new ResponseDTO<>();
-        
+        ResponseDTO<Map<String, Object>> responseDTO = new ResponseDTO<>();
+
 
         List<ReviewFile> uploadFileList = new ArrayList<>();
 
@@ -78,7 +78,7 @@ public class ReviewController {
                     .reviewScore(reviewDto.getReviewScore())
                     .reviewRegDate(LocalDateTime.now())
                     .build();
-           System.out.println("=================" + review.getReviewRegDate());
+            System.out.println("=================" + review.getReviewRegDate());
 
             // vendorId 값으로 Vendor 엔티티를 조회합니다.
             Optional<Vendor> optionalVendor = vendorRepository.findById(reviewDto.getVendorId());
@@ -124,12 +124,13 @@ public class ReviewController {
             reviewService.createReview(review, uploadFileList);
             System.out.println("2222222222222222222222222");
 
-            Map<String, String> returnMap =
+            Map<String, Object> returnMap =
                     new HashMap<>();
 
             returnMap.put("msg", "정상적으로 저장되었습니다.");
+            returnMap.put("review", uploadFileList);
 
-            responseDTO.setItem(review);
+            responseDTO.setItem(returnMap);
 
             return ResponseEntity.ok().body(responseDTO);
         } catch (Exception e) {
@@ -182,15 +183,8 @@ public class ReviewController {
         List<ReviewFile> uFileList = new ArrayList<>();
 
         try {
-            Review review = Review.builder()
-                    .reviewNum(reviewDto.getReviewNum())
-                    .orderNum(reviewDto.getOrderNum())
-                    .vendor(Vendor.builder().id(reviewDto.getVendorId()).build())
-                    .member(Member.builder().id(reviewDto.getMemberId()).build())
-                    .reviewContent(reviewDto.getReviewContent())
-                    .reviewRegDate(reviewDto.getReviewRegDate())
-                    .reviewScore(reviewDto.getReviewScore())
-                    .build();
+            Review review = reviewDto.DtoToEntity();
+            System.out.println(reviewDto);
             if (originFiles != null) {
                 //파일처리
                 for (int i = 0; i < originFiles.size(); i++) {

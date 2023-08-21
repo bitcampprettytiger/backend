@@ -48,9 +48,11 @@ public class Review {
     private LocalDateTime reviewRegDate = LocalDateTime.now(); //리뷰작성일자
     @Column
     private Integer reviewScore; //별점
+    @Column
+    private Integer likeCount; //좋아요 수
+    @Column
+    private Integer disLikeCount; // 싫어요 수
 
-    @OneToMany(mappedBy = "review", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<ReviewFile> reviewFiles = new ArrayList<>();
 
     public ReviewDto EntityToDto() {
         return ReviewDto.builder()
@@ -59,7 +61,7 @@ public class Review {
                 .memberId(this.member.getId())
                 .vendorId(this.vendor.getId())
                 .reviewContent(this.reviewContent)
-                .reviewRegDate(this.reviewRegDate)
+                .reviewRegDate(this.reviewRegDate.toString())
                 .reviewScore(this.reviewScore)
                 .build();
     }

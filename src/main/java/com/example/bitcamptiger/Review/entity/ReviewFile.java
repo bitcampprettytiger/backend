@@ -26,8 +26,8 @@ public class ReviewFile {
     @Transient
     private String newFileName;
 
-
-    @ManyToOne(fetch = FetchType.LAZY)
+    @Id
+    @ManyToOne
     @JoinColumn(name = "reviewNum")
     private Review review;
 

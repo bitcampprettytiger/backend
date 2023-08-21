@@ -6,8 +6,10 @@ import com.example.bitcamptiger.Review.dto.ReviewWithFilesDto;
 import com.example.bitcamptiger.Review.entity.Review;
 import com.example.bitcamptiger.Review.entity.ReviewFile;
 import com.example.bitcamptiger.Review.entity.ReviewFileId;
+import com.example.bitcamptiger.Review.entity.UserReivewAction;
 import com.example.bitcamptiger.Review.repository.ReviewFileRepository;
 import com.example.bitcamptiger.Review.repository.ReviewRepository;
+import com.example.bitcamptiger.Review.repository.UserReviewActionRepository;
 import com.example.bitcamptiger.Review.service.ReviewService;
 import com.example.bitcamptiger.common.reviewFileUtils;
 import com.example.bitcamptiger.member.entity.Member;
@@ -17,6 +19,7 @@ import com.example.bitcamptiger.vendor.entity.Vendor;
 import com.example.bitcamptiger.vendor.repository.VendorRepository;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,6 +44,7 @@ public class ReviewServiceImpl implements ReviewService {
     private final VendorRepository vendorRepository;
     private final ReviewFileRepository reviewFileRepository;
     private final reviewFileUtils reviewFileUtils;
+    private final UserReviewActionRepository userReviewActionRepository;
 
 
     @Override
@@ -62,7 +66,7 @@ public class ReviewServiceImpl implements ReviewService {
             reviewFile.setReview(review);
             System.out.println(reviewFile + "========================================");
             System.out.println("========================================================>" + review.getReviewNum());
-            long reviewFileNo = reviewFileRepository.findMaxFileNo();
+            long reviewFileNo = reviewFileRepository.findMaxFileNo(review.getReviewNum());
             reviewFile.setReviewFileNo(reviewFileNo);
 
             reviewFileRepository.save(reviewFile);
@@ -115,7 +119,8 @@ public class ReviewServiceImpl implements ReviewService {
                 } else if (ufileList.get(i).getReviewFileStatus().equals("I")) {
                     //추가한 파일들은 reviewNum은 가지고 있지만 reviewFileNo가 없는 상태라
                     //reviewFileNo를 추가
-                    Long reviewFileNo = reviewFileRepository.findMaxFileNo();
+                    Long reviewFileNo = reviewFileRepository.findMaxFileNo(
+                            ufileList.get(i).getReview().getReviewNum());
 
                     ufileList.get(i).setReviewFileNo(reviewFileNo);
 
@@ -138,25 +143,99 @@ public class ReviewServiceImpl implements ReviewService {
         return reviewFileRepository.findByReviewReviewNum(reviewNum);
     }
 
+//    @Override
+//    public List<ReviewDto> getAllReviewsWithFiles() {
+//        List<Review> reviews = reviewRepository.findAll(); // 모든 리뷰 조회
+//
+//        return reviews.stream()
+//                .map(review -> {
+//
+//                    review.getReviewFiles().size();
+//
+//                    List<ReviewFileDto> reviewFiles = review.getReviewFiles().stream()
+//                            .map(ReviewFile::EntitytoDto)
+//                            .collect(Collectors.toList());
+//
+//                    ReviewDto reviewDto = review.EntityToDto();
+//                    reviewDto.setReviewFiles(reviewFiles);
+//
+//                    return reviewDto;
+//                })
+//                .collect(Collectors.toList());
+//    }
+
     @Override
+    @Transactional
     public List<ReviewDto> getAllReviewsWithFiles() {
-        List<Review> reviews = reviewRepository.findAll(); // 모든 리뷰 조회
+        List<ReviewDto> reviewDtos = new ArrayList<>();
 
-        return reviews.stream()
-                .map(review -> {
+        List<Object[]> results = reviewRepository.findAllReviewsWithFiles();
+        for (Object[] result : results) {
+            Review review = (Review) result[0];
+            ReviewDto reviewDto = review.EntityToDto();
 
-                    review.getReviewFiles().size();
+            // 리뷰 파일 관련 정보 추가
+            if (result[1] != null) {
+                ReviewFile reviewFile = (ReviewFile) result[1];
+                ReviewFileDto reviewFileDto = reviewFile.EntitytoDto();
+                reviewDto.setReviewFile(reviewFileDto);
+            }
 
-                    List<ReviewFileDto> reviewFiles = review.getReviewFiles().stream()
-                            .map(ReviewFile::EntitytoDto)
-                            .collect(Collectors.toList());
+            reviewDtos.add(reviewDto);
+        }
 
-                    ReviewDto reviewDto = review.EntityToDto();
-                    reviewDto.setReviewFiles(reviewFiles);
+        return reviewDtos;
+    }
 
-                    return reviewDto;
-                })
-                .collect(Collectors.toList());
+    @Override
+    public void likeReview(Member member, Review review) {
+        Optional<UserReivewAction> userReivewAction = userReviewActionRepository.findByMemberAndReview(member, review);
+
+        if(userReivewAction.isPresent()) {
+            UserReivewAction action = userReivewAction.get();
+            if(!action.isLiked()) {
+                action.setLiked(true);
+                action.setDisliked(false);
+                review.setLikeCount(review.getLikeCount() + 1);
+                userReviewActionRepository.save(action);
+                reviewRepository.save(review);
+            }
+        } else  {
+            UserReivewAction newAction = new UserReivewAction();
+            newAction.setMember(member);
+            newAction.setReview(review);
+            newAction.setLiked(true);
+            newAction.setDisliked(false);
+            userReviewActionRepository.save(newAction);
+
+            review.setLikeCount(review.getLikeCount() + 1);
+            reviewRepository.save(review);
+        }
+    }
+
+    public void disLikeReview(Member member, Review review) {
+        Optional<UserReivewAction> userReivewAction = userReviewActionRepository.findByMemberAndReview(member, review);
+
+        if(userReivewAction.isPresent()) {
+            UserReivewAction action = userReivewAction.get();
+            if(!action.isDisliked()) {
+                action.setDisliked(true);
+                action.setLiked(false);
+                review.setDisLikeCount(review.getDisLikeCount() + 1);
+                userReviewActionRepository.save(action);
+                reviewRepository.save(review);
+            }
+        } else {
+            UserReivewAction newAction = new UserReivewAction();
+            newAction.setMember(member);
+            newAction.setReview(review);
+            newAction.setDisliked(true);
+            newAction.setLiked(false);
+            userReviewActionRepository.save(newAction);
+
+            review.setDisLikeCount(review.getDisLikeCount() + 1);
+            reviewRepository.save(review);
+        }
     }
 }
 

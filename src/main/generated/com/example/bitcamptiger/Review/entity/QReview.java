@@ -22,13 +22,15 @@ public class QReview extends EntityPathBase<Review> {
 
     public static final QReview review = new QReview("review");
 
+    public final NumberPath<Integer> disLikeCount = createNumber("disLikeCount", Integer.class);
+
+    public final NumberPath<Integer> likeCount = createNumber("likeCount", Integer.class);
+
     public final com.example.bitcamptiger.member.entity.QMember member;
 
     public final NumberPath<Long> orderNum = createNumber("orderNum", Long.class);
 
     public final StringPath reviewContent = createString("reviewContent");
-
-    public final ListPath<ReviewFile, QReviewFile> reviewFiles = this.<ReviewFile, QReviewFile>createList("reviewFiles", ReviewFile.class, QReviewFile.class, PathInits.DIRECT2);
 
     public final NumberPath<Long> reviewNum = createNumber("reviewNum", Long.class);
 

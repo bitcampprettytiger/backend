@@ -1,19 +1,15 @@
 package com.example.bitcamptiger.Review.dto;
 
 import com.example.bitcamptiger.Review.entity.Review;
-import com.example.bitcamptiger.Review.entity.ReviewFile;
 import com.example.bitcamptiger.member.entity.Member;
 import com.example.bitcamptiger.vendor.entity.Vendor;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.modelmapper.ModelMapper;
 
 import java.time.LocalDateTime;
 import java.util.List;
-
-import static junit.runner.Version.id;
 
 @Data
 @NoArgsConstructor
@@ -34,7 +30,7 @@ public class ReviewDto {
                 .reviewNum(this.reviewNum)
                 .reviewContent(this.reviewContent)
                 .reviewRegDate(this.reviewRegDate)
-                .reviewScore(this.getReviewScore())
+                .reviewScore(this.reviewScore)
                 .member(Member.builder().id(this.memberId).build())
                 .vendor(Vendor.builder().id(this.vendorId).build())
                 .orderNum(this.orderNum)

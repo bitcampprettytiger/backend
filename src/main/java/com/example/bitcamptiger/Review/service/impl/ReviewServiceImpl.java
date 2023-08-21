@@ -38,7 +38,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     private final ReviewRepository reviewRepository;
     private final MemberRepository memberRepository;
-    private final VendorRepository vendorRepositor;
+    private final VendorRepository vendorRepository;
     private final ReviewFileRepository reviewFileRepository;
     private final reviewFileUtils reviewFileUtils;
 
@@ -138,12 +138,15 @@ public class ReviewServiceImpl implements ReviewService {
         return reviewFileRepository.findByReviewReviewNum(reviewNum);
     }
 
-    @Transactional
+    @Override
     public List<ReviewDto> getAllReviewsWithFiles() {
         List<Review> reviews = reviewRepository.findAll(); // 모든 리뷰 조회
 
         return reviews.stream()
                 .map(review -> {
+
+                    review.getReviewFiles().size();
+
                     List<ReviewFileDto> reviewFiles = review.getReviewFiles().stream()
                             .map(ReviewFile::EntitytoDto)
                             .collect(Collectors.toList());

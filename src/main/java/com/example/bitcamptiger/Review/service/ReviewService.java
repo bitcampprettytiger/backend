@@ -24,7 +24,7 @@ public interface ReviewService {
 
     List<ReviewFile> getReviewFileList(Long reviewNum);
 
-
+    @Transactional
     List<ReviewDto> getAllReviewsWithFiles();
 
 

@@ -19,6 +19,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import javax.persistence.EntityExistsException;
+import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -105,15 +107,18 @@ public class CartServiceImpl implements CartService {
     //장바구니 menu 삭제
     @Override
     public void deleteCartItem(Long cartId, Long menuId) {
-       CartItem cartItem = cartItemRepository.findByCartIdAndMenuId(cartId, menuId);
+       CartItem cartItem = cartItemRepository.findByCartItem(cartId, menuId);
+
        cartItemRepository.delete(cartItem);
     }
 
 
     //장바구니 menu 전체 삭제
     @Override
-    public void deleteCart(Long memberId) {
-        cartItemRepository.deleteByCartMemberId(memberId);
+    public void deleteCart(CartItemDTO cartItemDTO) {
+        List<CartItem> cartItemList = cartItemRepository.findByCart(cartItemDTO.getCart());
+
+        cartItemRepository.deleteAll(cartItemList);
 
     }
 

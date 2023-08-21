@@ -20,5 +20,5 @@ public interface CartService {
     void deleteCartItem(Long cartId, Long menuId);
 
     //장바구니 menu 전체 삭제
-    void deleteCart(Long memberId);
+    void deleteCart(CartItemDTO cartItemDTO);
 }

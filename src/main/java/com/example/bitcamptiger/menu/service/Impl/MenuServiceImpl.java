@@ -215,4 +215,25 @@ public class MenuServiceImpl implements MenuService {
     }
 
 
+    //메뉴조회수순 탑5
+    //조회수가 높은 순서대로 상위 5개의 메뉴 정보를 추천
+    public List<MenuDTO> getRecommendedMenus() {
+        List<Menu> recommendedMenus = menuRepository.findTop5ByOrderByViewsDesc();
+        // 메뉴 정보를 저장할 MenuDTO 리스트
+        List<MenuDTO> menuDTOs = new ArrayList<>();
+
+        // recommendedMenus 리스트의 각 메뉴에 대해 반복
+        for (Menu menu : recommendedMenus) {
+            MenuDTO dto = new MenuDTO();
+            // dto에 메뉴 이름과 조회수 정보
+            dto.setMenuName(menu.getMenuName());
+            dto.setViews(menu.getViews());
+            // dto를 menuDTOs 리스트에 추가
+            menuDTOs.add(dto);
+        }
+
+        return menuDTOs;
+    }
+
+
 }

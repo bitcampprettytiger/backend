@@ -54,11 +54,11 @@ public class SecurityConfiguration {
         authorizeHttpRequests((authorizaRequests) -> {
 //                    /요청은 모든 사용자가 이용가능
 
-//    authorizaRequests.requestMatchers("/member/**","/board/**","/api/**", "/menu/**","/waiting/**").permitAll();
-    authorizaRequests.requestMatchers("/member/**","/board/**","/api/**", "/menu/**", "/favorite-Test").permitAll();
-    authorizaRequests.requestMatchers("/vendor/**").permitAll();
-//    authorizaRequests.requestMatchers("/**").hasAuthority("ROLE_VENDOR");
-    authorizaRequests.anyRequest().authenticated();
+    authorizaRequests.requestMatchers("/member/**","/board/**","/api/**", "/menu/**", "/cart/**", "/favorite-Test").permitAll();
+     authorizaRequests.requestMatchers("/vendor/**").permitAll();
+     authorizaRequests.requestMatchers("/**").hasAuthority("ROLE_VENDOR");
+     authorizaRequests.anyRequest().authenticated();
+
 })
 //                로그인 로그아웃 설정
 //                AuthenticationProvider에게 전달할

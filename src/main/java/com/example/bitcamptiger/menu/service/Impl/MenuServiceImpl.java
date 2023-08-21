@@ -153,7 +153,7 @@ public class MenuServiceImpl implements MenuService {
         menu.setMenuType(menuDTO.getMenuType());
 
         //기존 이미지 삭제
-        List<MenuImage> existingImages = menu.getImages();
+        List<MenuImage> existingImages = menuImageRepository.findByMenu_Id(menu.getId());
         Long lastImageId = 1L;
         if(existingImages != null && !existingImages.isEmpty()){
             for(MenuImage menuImage : existingImages){
@@ -167,8 +167,7 @@ public class MenuServiceImpl implements MenuService {
                 //db에서 이미지 삭제
                 menuImageRepository.delete(menuImage);
             }
-            //메뉴 객체에서 이미지 목록 삭제
-            menu.getImages().clear();
+
         }
 
 
@@ -184,6 +183,18 @@ public class MenuServiceImpl implements MenuService {
                 menuImage.setId(lastImageId);
                 uploadFileList.add(menuImage);
             }
+        }
+
+        //menuImage가 등록되지 않았을 경우 기본이미지 설정
+        if(uploadFileList.isEmpty()) {
+            MenuImage defaultMenuImage = fileUtils.getDefaultMenuImage();
+            defaultMenuImage.setMenu(menu);
+
+            //menuImage 객체에 imageId 설정.
+            lastImageId = lastImageId + 1L;
+            defaultMenuImage.setId(lastImageId);
+            uploadFileList.add(defaultMenuImage);
+
         }
 
         //새로운 이미지 객체들을 메뉴이미지 데이터베이스에 저장
@@ -202,7 +213,7 @@ public class MenuServiceImpl implements MenuService {
         Menu menu = menuRepository.findById(menuDTO.getId()).orElseThrow(EntityNotFoundException::new);
 
         //메뉴에 연결된 이미지도 함께 삭제
-        for(MenuImage menuImage : menu.getImages()){
+        for(MenuImage menuImage : menuImageRepository.findByMenu_Id(menu.getId())){
 
             //s3에서 이미지 삭제
             fileUtils.deleteImage("springboot", menuImage.getUrl() + menuImage.getFileName());

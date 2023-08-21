@@ -321,8 +321,6 @@ public class VendorServiceImpl implements VendorService {
 
                 List<VendorImage> uploadFileList = new ArrayList<>();
 
-//                boolean filesExist = false;
-
 
                 if(uploadFiles != null && uploadFiles.length > 0){
 
@@ -392,6 +390,41 @@ public class VendorServiceImpl implements VendorService {
         vendorRepository.save(vendor);
 
 
+        //기존 이미지 삭제
+        List<VendorImage> existingImages = vendorImageRepository.findByVendorId(vendor.getId());
+        if(existingImages != null && !existingImages.isEmpty()){
+            for(VendorImage vendorImage : existingImages){
+                //s3에서 이미지 삭제
+                fileUtils.deleteImage("springboot", vendorImage.getUrl() + vendorImage.getFileName());
+
+                //db에서 이미지 삭제
+                vendorImageRepository.delete(vendorImage);
+            }
+        }
+
+        //새로운 이미지 리스트 업데이트
+        List<VendorImage> uploadFileList = new ArrayList<>();
+        for(MultipartFile file : uploadFiles){
+            if(file.getOriginalFilename() != null && !file.getOriginalFilename().isEmpty()){
+                VendorImage vendorImage = fileUtils.vendorFileInfo(file, attachPath);
+                vendorImage.setVendor(vendor);
+
+                uploadFileList.add(vendorImage);
+            }
+        }
+
+        //vendorImage가 등록되지 않았을 경우 기본이미지 설정
+        if(uploadFileList.isEmpty()){
+            VendorImage defaultVendorImage = fileUtils.getDefaultVendorImage();
+            defaultVendorImage.setVendor(vendor);
+            uploadFileList.add(defaultVendorImage);
+        }
+
+        //새로운 이미지 객체들을 가게이미지 데이터베이스에 저장
+        for(VendorImage vendorImage : uploadFileList){
+            vendorImageRepository.save(vendorImage);
+        }
+
     }
 
     @Override
@@ -399,14 +432,37 @@ public class VendorServiceImpl implements VendorService {
 
         Vendor vendor  =  vendorRepository.findById(vendorDTO.getId()).orElseThrow(EntityNotFoundException::new);
 
+
+        //연결될 이미지도 함께 삭제
+        for(VendorImage vendorImage : vendorImageRepository.findByVendorId(vendor.getId())){
+            //s3에서 이미지 삭제
+            fileUtils.deleteImage("springboot", vendorImage.getUrl() + vendorImage.getFileName());
+
+            //db에서 이미지 삭제
+            vendorImageRepository.delete(vendorImage);
+        }
         vendorRepository.delete(vendor);
     }
 
     @Override
-    public Vendor getVendorDetail(Long id) {
-        Vendor vendorDetail = vendorRepository.findById(id).orElseThrow();
-        return vendorDetail;
+    public VendorDTO getVendorDetail(Long id) {
+        Vendor vendor = vendorRepository.findById(id).orElseThrow();
+        VendorDTO vendorDTO = VendorDTO.of(vendor);
+
+        List<VendorImage> vendorImageList = vendorImageRepository.findByVendor(vendor);
+
+        List<VendorImageDTO> vendorImageDTOList = new ArrayList<>();
+        for(VendorImage vendorImage : vendorImageList){
+            VendorImageDTO vendorImageDTO = VendorImageDTO.of(vendorImage);
+            vendorImageDTOList.add(vendorImageDTO);
+        }
+        vendorDTO.setVendorImageDTOList(vendorImageDTOList);
+
+        return vendorDTO;
     }
+
+
+
 
 
 }

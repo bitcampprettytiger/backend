@@ -45,8 +45,11 @@ public interface VendorService {
     // 가게 정보 삭제
     void deleteVendor(VendorDTO vendorDTO);
 
+
     // 특정 가게의 상세 정보 가져오기
-    Vendor getVendorDetail(Long id);
+    VendorDTO getVendorDetail(Long id);
+
+
 
    List<LocationDto> getNowLocationList(NowLocationDto nowLocationDto);
 }

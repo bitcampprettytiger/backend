@@ -100,9 +100,13 @@ public class VendorRepositoryCustomImpl implements VendorRepositoryCustom {
         return content;
     }
 
+    @Override
+    public List<Vendor> findByReview(Double weightedAverageScore) {
+        BooleanBuilder builder = new BooleanBuilder();
 
-
-
+        
+        return null;
+    }
 
 
     //Query dsl의 메소드

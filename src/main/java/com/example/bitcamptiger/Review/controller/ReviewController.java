@@ -124,6 +124,15 @@ public class ReviewController {
             reviewService.createReview(review, uploadFileList);
             System.out.println("2222222222222222222222222");
 
+            // 좋아요 처리
+            if(reviewDto.isLiked()) {
+                reviewService.likeReview(review.getMember(), review);
+            }
+            // 싫어요 처리
+            if(reviewDto.isDisliked()) {
+                reviewService.disLikeReview(review.getMember(), review);
+            }
+
             Map<String, Object> returnMap =
                     new HashMap<>();
 

@@ -49,9 +49,9 @@ public class Review {
     @Column
     private Integer reviewScore; //별점
     @Column
-    private Integer likeCount; //좋아요 수
+    private Integer likeCount = 0; //좋아요 수
     @Column
-    private Integer disLikeCount; // 싫어요 수
+    private Integer disLikeCount = 0; // 싫어요 수
 
 
     public ReviewDto EntityToDto() {
@@ -63,6 +63,8 @@ public class Review {
                 .reviewContent(this.reviewContent)
                 .reviewRegDate(this.reviewRegDate.toString())
                 .reviewScore(this.reviewScore)
+                .likedCount(this.likeCount)
+                .disLikedCount(this.disLikeCount)
                 .build();
     }
 }

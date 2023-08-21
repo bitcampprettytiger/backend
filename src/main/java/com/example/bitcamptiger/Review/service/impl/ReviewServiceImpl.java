@@ -6,7 +6,8 @@ import com.example.bitcamptiger.Review.dto.ReviewWithFilesDto;
 import com.example.bitcamptiger.Review.entity.Review;
 import com.example.bitcamptiger.Review.entity.ReviewFile;
 import com.example.bitcamptiger.Review.entity.ReviewFileId;
-import com.example.bitcamptiger.Review.entity.UserReivewAction;
+import com.example.bitcamptiger.Review.entity.UserReviewAction;
+import com.example.bitcamptiger.Review.entity.UserReviewAction;
 import com.example.bitcamptiger.Review.repository.ReviewFileRepository;
 import com.example.bitcamptiger.Review.repository.ReviewRepository;
 import com.example.bitcamptiger.Review.repository.UserReviewActionRepository;
@@ -71,6 +72,8 @@ public class ReviewServiceImpl implements ReviewService {
 
             reviewFileRepository.save(reviewFile);
         }
+
+
     }
 
 //        Review save = reviewRepository.save(reviewDto.createReview());
@@ -133,8 +136,20 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public void deleteReview(ReviewDto reviewDto) {
-        // ReviewDto에서 id로 기존의 Review 엔티티를 찾음
-        Review review = reviewRepository.findById(reviewDto.getReviewNum()).orElseThrow(EntityNotFoundException::new);
+        Review review = reviewRepository.findById(reviewDto.getReviewNum())
+                .orElseThrow(() -> new EntityNotFoundException("리뷰를 찾을 수 없습니다."));
+
+        String bucketName = "springboot";
+
+        reviewFileRepository.findByReview(review).forEach(reviewFile -> {
+            String key = reviewFile.getReviewFilePath() + reviewFile.getReviewFileName();
+            reviewFileUtils.deleteImage(bucketName, key);
+
+            // 파일 레코드 삭제
+            reviewFileRepository.delete(reviewFile);
+        });
+
+        // 리뷰 레코드 삭제
         reviewRepository.delete(review);
     }
 
@@ -189,10 +204,10 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public void likeReview(Member member, Review review) {
-        Optional<UserReivewAction> userReivewAction = userReviewActionRepository.findByMemberAndReview(member, review);
+        Optional<UserReviewAction> userReivewAction = userReviewActionRepository.findByMemberAndReview(member, review);
 
         if(userReivewAction.isPresent()) {
-            UserReivewAction action = userReivewAction.get();
+            UserReviewAction action = userReivewAction.get();
             if(!action.isLiked()) {
                 action.setLiked(true);
                 action.setDisliked(false);
@@ -201,7 +216,7 @@ public class ReviewServiceImpl implements ReviewService {
                 reviewRepository.save(review);
             }
         } else  {
-            UserReivewAction newAction = new UserReivewAction();
+            UserReviewAction newAction = new UserReviewAction();
             newAction.setMember(member);
             newAction.setReview(review);
             newAction.setLiked(true);
@@ -214,10 +229,10 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     public void disLikeReview(Member member, Review review) {
-        Optional<UserReivewAction> userReivewAction = userReviewActionRepository.findByMemberAndReview(member, review);
+        Optional<UserReviewAction> userReivewAction = userReviewActionRepository.findByMemberAndReview(member, review);
 
         if(userReivewAction.isPresent()) {
-            UserReivewAction action = userReivewAction.get();
+            UserReviewAction action = userReivewAction.get();
             if(!action.isDisliked()) {
                 action.setDisliked(true);
                 action.setLiked(false);
@@ -226,7 +241,7 @@ public class ReviewServiceImpl implements ReviewService {
                 reviewRepository.save(review);
             }
         } else {
-            UserReivewAction newAction = new UserReivewAction();
+            UserReviewAction newAction = new UserReviewAction();
             newAction.setMember(member);
             newAction.setReview(review);
             newAction.setDisliked(true);

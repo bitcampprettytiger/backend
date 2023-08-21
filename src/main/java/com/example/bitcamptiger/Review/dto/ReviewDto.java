@@ -41,6 +41,14 @@ public class ReviewDto {
                 .build();
         return review;
     }
+
+    public boolean isLiked() {
+        return likedCount > 0;
+    }
+
+    public boolean isDisliked() {
+        return disLikedCount > 0;
+    }
 }
 
 

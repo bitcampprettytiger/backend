@@ -1,5 +1,6 @@
 package com.example.bitcamptiger.userOrder.dto;
 
+import com.example.bitcamptiger.cart.entity.Cart;
 import com.example.bitcamptiger.vendor.dto.VendorDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,6 +23,15 @@ public class UserOrderDTO {
     private int menuTotalAmount; // 메뉴별 합산 금액
     private int totalQuantity; // 주문 메뉴수량을 합산한 총 주문메뉴수량
 
+    private Cart cart;
+
+    public void setCart(Cart cart) {
+        this.cart = cart;
+    }
+
+    public Cart getCart() {
+        return cart;
+    }
 
 
 

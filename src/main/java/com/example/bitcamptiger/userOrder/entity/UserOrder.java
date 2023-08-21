@@ -1,5 +1,6 @@
 package com.example.bitcamptiger.userOrder.entity;
 
+import com.example.bitcamptiger.cart.entity.Cart;
 import com.example.bitcamptiger.member.entity.Member;
 import com.example.bitcamptiger.menu.entity.Menu;
 import com.example.bitcamptiger.vendor.entity.Vendor;
@@ -63,6 +64,11 @@ public class UserOrder {
     public int getTotalQuantity() {
         return totalQuantity;
     }
+
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cart_id")
+    private Cart cart;
 
 
 

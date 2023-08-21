@@ -19,6 +19,7 @@ public class UserOrderServiceImpl implements UserOrderService {
     private final MemberRepository memberRepository;
     private final MenuRepository menuRepository;
 
+
     @Autowired
     public UserOrderServiceImpl(UserOrderRepository userOrderRepository, MemberRepository memberRepository, MenuRepository menuRepository) {
         this.userOrderRepository = userOrderRepository;
@@ -74,6 +75,43 @@ public class UserOrderServiceImpl implements UserOrderService {
             throw new RuntimeException("주문 정보가 존재하지 않습니다.");
         }
     }
+
+    @Override
+    public UserOrderDTO createOrderFromCartItem(Member member, Menu menu, Integer cartQuantity) {
+        try {
+            // 주문을 생성하고 그 결과를 주문 DTO로 받아옴
+            UserOrderDTO orderDTO = new UserOrderDTO();
+            orderDTO.setMemberId(member.getId()); // 주문한 회원 ID
+            orderDTO.setMenuId(menu.getId()); // 주문한 메뉴 ID
+            orderDTO.setQuantity(cartQuantity); // 주문의 메뉴별 수량
+            orderDTO.setPrice(menu.getPrice()); // 주문한 메뉴의 가격
+
+            // 주문 정보를 바탕으로 UserOrder 엔티티 생성
+            UserOrder order = UserOrder.builder()
+                    .member(member)
+                    .menu(menu)
+                    .quantity(cartQuantity)
+                    .price(menu.getPrice())
+                    .build();
+
+            // 총 결제 금액 계산
+            order.calculateTotalAmount();
+
+            // UserOrderDTO에 주문 정보 설정
+            orderDTO.setMenuTotalAmount(order.getMenuTotalAmount()); // 메뉴별 합산 금액
+            orderDTO.setTotalQuantity(cartQuantity); // 총 주문 메뉴 수량
+            orderDTO.setTotalAmount(order.getTotalAmount()); // 총 결제 금액
+
+            // 주문한 메뉴를 제공하는 가게 정보를 VendorDTO로 변환하여 설정
+            orderDTO.setVendor(VendorDTO.of(menu.getVendor()));
+
+            // 생성된 UserOrderDTO 반환
+            return orderDTO;
+        } catch (Exception e) {
+            throw new RuntimeException("주문 생성 오류: " + e.getMessage());
+        }
+    }
+
 
     private UserOrderDTO mapEntityToDTO(UserOrder order) {
         // UserOrder 엔티티를 UserOrderDTO로 변환하는 로직

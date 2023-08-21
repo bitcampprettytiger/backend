@@ -123,7 +123,7 @@ public class VendorServiceImpl implements VendorService {
             }
 
             vendorDTO.setVendorImageDTOList(vendorImageDTOList);
-            vendorDTOList.add(vendorDTO);
+//            vendorDTOList.add(vendorDTO);
 
 
             List<Menu> menuList = menuRepository.findByVendor(vendor);

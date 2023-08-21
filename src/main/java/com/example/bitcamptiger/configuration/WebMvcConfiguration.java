@@ -27,7 +27,7 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
 //    public void addCorsMappings(CorsRegistry registry){
 //
 //        registry.addMapping("/**")
-//                .allowedOrigins("*")
+//                .allowedOrigins("http://localhost:3000")
 //                //허용된 요청방식
 //                .allowedMethods("GET","POST","PUT","DELETE")
 //                //허용될 요청 헤더

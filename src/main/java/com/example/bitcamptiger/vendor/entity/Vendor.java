@@ -2,6 +2,7 @@ package com.example.bitcamptiger.vendor.entity;
 
 import com.example.bitcamptiger.Review.entity.Review;
 import com.example.bitcamptiger.menu.entity.Menu;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -72,7 +73,9 @@ public class Vendor {
     @Column
     private String location;
 
+
     @OneToMany(mappedBy = "vendor", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference   //순환참조 문제를 해결하기 위해 주관리자 명시
     private List<Menu> menuList = new ArrayList<>();
 
 
@@ -94,7 +97,7 @@ public class Vendor {
 
     //리뷰가 생성되거나 수정될 때 vendor 엔티티 업데이트
     //(총 리뷰 점수, 총 리뷰 개수, 평균 리뷰 점수)
-    private void updateVendorReviewScore(Review review) {
+    public void updateVendorReviewScore(Review review) {
 
         if(this.reviewCount == null){
             this.reviewCount = 0L;
@@ -102,7 +105,7 @@ public class Vendor {
         }
         this.reviewCount++;
         this.totalReviewScore += review.getReviewScore();
-        this.weightedAverageScore = this.totalReviewScore / this.reviewCount;
+        this.weightedAverageScore = (this.totalReviewScore) / (this.reviewCount);
 
 
     }

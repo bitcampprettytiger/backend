@@ -59,6 +59,11 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     public void createReview(Review review, List<ReviewFile> uploadFileList) throws IOException {
 
+        Vendor vendor = vendorRepository.findById(review.getVendor().getId()).orElseThrow();
+
+        //리뷰 개수와 총 리뷰 점수 업데이트
+        review.setVendor(vendor);
+        // Review 엔티티 저장
         reviewRepository.save(review);
         //변경사항 커밋 후 저장
         reviewRepository.flush();

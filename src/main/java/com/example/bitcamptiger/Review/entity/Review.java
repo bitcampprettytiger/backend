@@ -67,4 +67,13 @@ public class Review {
                 .disLikedCount(this.disLikeCount)
                 .build();
     }
+
+
+        //리뷰 생성되거나 수정될 때 vendor 엔티티 업데이트
+        public void setVendor(Vendor vendor){
+            this.vendor = vendor;
+            vendor.updateVendorReviewScore(this);
+        }
+
+
 }

@@ -11,6 +11,7 @@ import com.example.bitcamptiger.userOrder.entity.OrderedMenu;
 import com.example.bitcamptiger.userOrder.entity.UserOrder;
 import com.example.bitcamptiger.userOrder.repository.UserOrderRepository;
 import com.example.bitcamptiger.userOrder.service.UserOrderService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,6 +22,7 @@ import java.util.Set;
 
 @RestController
 @RequestMapping("/UserOrders")
+@RequiredArgsConstructor
 public class UserOrderController {
 
     private final UserOrderService userOrderService;
@@ -28,12 +30,6 @@ public class UserOrderController {
     private final MenuRepository menuRepository;
     private final UserOrderRepository userOrderRepository;
 
-    public UserOrderController(UserOrderService userOrderService, CartService cartService, MenuRepository menuRepository, UserOrderRepository userOrderRepository) {
-        this.userOrderService = userOrderService;
-        this.cartService = cartService;
-        this.menuRepository = menuRepository;
-        this.userOrderRepository = userOrderRepository;
-    }
 
     // 장바구니에 담긴 메뉴들로 주문 생성하는 엔드포인트
     @PostMapping("/createOrderByCartItems")
@@ -43,18 +39,16 @@ public class UserOrderController {
 
             List<CartItem> cartItemList = cartService.getCartItemsByMemberId(member.getId()); // 멤버의 ID를 기반으로 장바구니 아이템들을 조회
 
-            Set<OrderedMenu> orderedMenus = new HashSet<>();
+//           List<OrderedMenu> orderedMenuList = new ArrayList<>();
+//            for (CartItem cartItem : cartItemList) {
+//                // CartItemDTO에 있는 menu 속성을 통해 메뉴 정보 가져오기
+//                OrderedMenu orderedMenu = new OrderedMenu();
+//                orderedMenu.setMenu(cartItem.getMenu());
+//                orderedMenu.setQuantity(cartItem.getCartQuantity());
+//                orderedMenuList.add(orderedMenu);
+//            }
 
-            for (CartItem cartItem : cartItemList) {
-                // CartItemDTO에 있는 menu 속성을 통해 메뉴 정보 가져오기
-                OrderedMenu orderedMenu = new OrderedMenu();
-                orderedMenu.setMenu(cartItem.getMenu());
-                orderedMenu.setQuantity(cartItem.getCartQuantity());
-                orderedMenus.add(orderedMenu);
-
-            }
-
-            userOrderService.createOrderFromCartItem(member, orderedMenus);
+            userOrderService.createOrderFromCartItem(member);
 
             return ResponseEntity.ok(orderDTOList);
         } catch (Exception e) {

@@ -125,10 +125,9 @@ public class CartServiceImpl implements CartService {
     public List<CartItem> getCartItemsByMemberId(Long id) {
         try {
             // 멤버의 ID를 기반으로 해당 멤버의 장바구니를 조회
-            Member member = memberRepository.findById(id)
-                    .orElseThrow(() -> new RuntimeException("멤버 정보를 찾을 수 없습니다."));
 
             // 멤버의 장바구니에 담긴 아이템들을 조회
+            //안되면 cart를 meber로 찾아서 cartid로 찾아볼것
             List<CartItem> cartItems = cartItemRepository.findByCartMemberId(id);
 
 

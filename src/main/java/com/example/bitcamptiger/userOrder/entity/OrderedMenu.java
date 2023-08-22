@@ -1,6 +1,7 @@
 package com.example.bitcamptiger.userOrder.entity;
 
 import com.example.bitcamptiger.menu.entity.Menu;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -16,11 +17,12 @@ public class OrderedMenu {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_order_id")
+    @JsonBackReference
     private UserOrder userOrder; // 부모 주문 엔티티와의 관계 설정
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "menu_id")
     private Menu menu; // 주문한 각각의 메뉴
 

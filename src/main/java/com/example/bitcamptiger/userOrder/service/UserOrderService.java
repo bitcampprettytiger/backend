@@ -5,6 +5,7 @@ import com.example.bitcamptiger.menu.entity.Menu;
 import com.example.bitcamptiger.userOrder.dto.UserOrderDTO;
 import com.example.bitcamptiger.userOrder.entity.OrderedMenu;
 
+import java.util.List;
 import java.util.Set;
 
 public interface UserOrderService {
@@ -14,5 +15,5 @@ public interface UserOrderService {
     //주문내역확인
     UserOrderDTO getOrderById(Long orderId);
 
-    void createOrderFromCartItem(Member member, Set<OrderedMenu> orderedMenuSet);
+    void createOrderFromCartItem(Member member, List<OrderedMenu> orderedMenuSet);
 }

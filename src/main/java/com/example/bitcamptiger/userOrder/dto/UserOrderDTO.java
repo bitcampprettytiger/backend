@@ -25,36 +25,7 @@ public class UserOrderDTO {
     private int menuTotalAmount; // 메뉴별 합산 금액 (->같은메뉴별로 얼마나왔는지)
     private int totalQuantity; // 주문 메뉴수량을 합산한 총 주문메뉴수량 (->주문메뉴 총수량)
 
-    private Cart cart;
-
-
     private List<OrderedMenuDTO> orderedMenus;
 
-    public void setCart(Cart cart) {
-        this.cart = cart;
-    }
 
-    public Cart getCart() {
-        return cart;
-    }
-
-    //메뉴 수량과 가격을 곱하여 계산
-    //주문이 생성되거나 수정될 때 호출하면 menuTotalAmount가 자동으로 계산
-    public void calculateMenuTotalAmount() {
-        this.menuTotalAmount = this.quantity * this.price;
-    }
-
-    //수량 또는 가격이 변경되었을 때 호출하면 해당 변경사항을 바탕으로 menuTotalAmount를 갱신
-    public void updateMenuTotalAmount() {
-        if (this.quantity > 0 && this.price > 0) {
-            this.menuTotalAmount = this.quantity * this.price;
-        } else {
-            this.menuTotalAmount = 0;
-        }
-    }
-
-    // 총 결제 금액 계산
-    public void calculateAllTotalAmount() {
-        this.allTotalAmount = this.menuTotalAmount * this.totalQuantity;
-    }
 }

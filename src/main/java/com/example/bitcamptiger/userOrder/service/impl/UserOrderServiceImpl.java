@@ -10,10 +10,12 @@ import com.example.bitcamptiger.userOrder.repository.UserOrderRepository;
 import com.example.bitcamptiger.userOrder.service.UserOrderService;
 import com.example.bitcamptiger.vendor.dto.VendorDTO;
 import com.example.bitcamptiger.vendor.entity.Vendor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.example.bitcamptiger.member.entity.Member;
 import com.example.bitcamptiger.menu.entity.Menu;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -22,19 +24,15 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
+@Transactional
 public class UserOrderServiceImpl implements UserOrderService {
     //실제 주문 생성과 조회 로직을 구현
     private final UserOrderRepository userOrderRepository;
     private final MemberRepository memberRepository;
     private final MenuRepository menuRepository;
 
-
-    @Autowired
-    public UserOrderServiceImpl(UserOrderRepository userOrderRepository, MemberRepository memberRepository, MenuRepository menuRepository) {
-        this.userOrderRepository = userOrderRepository;
-        this.memberRepository = memberRepository;
-        this.menuRepository = menuRepository;
-    }
+    
 
     //주문 정보와 회원, 메뉴 정보를 바탕으로 새로운 주문을 생성
     // 새 주문 생성 로직
@@ -65,9 +63,6 @@ public class UserOrderServiceImpl implements UserOrderService {
 
 
 
-        // 주문한 메뉴의 총 금액 및 수량 계산
-        order.calculateTotalAmount();
-        order.calculateTotalQuantity();
 
         // UserOrder 엔티티 저장
         userOrderRepository.save(order);
@@ -87,15 +82,15 @@ public class UserOrderServiceImpl implements UserOrderService {
 
     // 장바구니 항목에서 주문 생성
     @Override
-    public void createOrderFromCartItem(Member member, Set<OrderedMenu> orderedMenuSet) {
+    public void createOrderFromCartItem(Member member, List<OrderedMenu> orderedMenuSet) {
         try {
+            UserOrder order = UserOrder.builder()
+                    .member(member)
+                    .vendor(Vendor.builder().id(om.getMenu().getVendor().getId()).build()) // Vendor ID만 사용하여 생성
+                    .orderedMenuList(orderedMenuSet)
+                    .build();
             for(OrderedMenu om : orderedMenuSet) {
                 // 주문 정보를 바탕으로 UserOrder 엔티티 생성
-                UserOrder order = UserOrder.builder()
-                        .member(member)
-                        .vendor(Vendor.builder().id(om.getMenu().getVendor().getId()).build()) // Vendor ID만 사용하여 생성
-                        .orderedMenus(orderedMenuSet)
-                        .build();
 
                 // 주문한 메뉴 정보를 OrderedMenu 엔티티로 생성
                 OrderedMenu orderedMenu = OrderedMenu.builder()
@@ -106,11 +101,7 @@ public class UserOrderServiceImpl implements UserOrderService {
                         .build();
 
                 // OrderedMenu를 UserOrder에 설정
-                order.getOrderedMenus().add(orderedMenu);
-
-                // 주문한 메뉴의 총 금액 및 수량 계산
-                order.calculateTotalAmount();
-                order.calculateTotalQuantity();
+                order.getOrderedMenuList().add(orderedMenu);
 
                 // UserOrder 엔티티 저장
                 userOrderRepository.save(order);

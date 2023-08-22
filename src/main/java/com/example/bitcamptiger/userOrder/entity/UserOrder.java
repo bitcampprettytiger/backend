@@ -6,15 +6,13 @@ import com.example.bitcamptiger.menu.entity.Menu;
 import com.example.bitcamptiger.vendor.entity.Vendor;
 import jakarta.persistence.*;
 import jakarta.persistence.metamodel.IdentifiableType;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.HashSet;
 import java.util.Set;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity

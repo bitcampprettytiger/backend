@@ -1,20 +1,19 @@
 package com.example.bitcamptiger.vendor.entity;
 
 import com.example.bitcamptiger.Review.entity.Review;
+import com.example.bitcamptiger.favoritePick.entity.FavoriteVendor;
 import com.example.bitcamptiger.menu.entity.Menu;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
 
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -33,6 +32,9 @@ public class Vendor {
 
     @Column
     private String vendorName;
+
+    @Column
+    private String vendorInfo;  //가게 설명
 
     @Column
 //    @Enumerated(EnumType.STRING)
@@ -73,12 +75,32 @@ public class Vendor {
     @Column
     private String location;
 
+    @Column
+    private String bank;    //은행명
+
+    @Column
+    private String accountOwner;    //계좌주명
+
+    @Column
+    private String accountNumber;   //사장님 계좌번호
+
+    @Column
+    private String toiletInfo;  //화장실 정보
+    
+    @Column
+    private String toiletDistance;  //화장실까지 거리
+
+    @Column
+    private String coolerInfo;  //냉방기기 정보
+
+    @OneToMany(mappedBy = "vendor")
+    @JsonManagedReference
+    private List<FavoriteVendor> favoriteVendors = new ArrayList<>();
+
 
     @OneToMany(mappedBy = "vendor", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference   //순환참조 문제를 해결하기 위해 주관리자 명시
     private List<Menu> menuList = new ArrayList<>();
-
-
 
 
     //리뷰 별점 합계

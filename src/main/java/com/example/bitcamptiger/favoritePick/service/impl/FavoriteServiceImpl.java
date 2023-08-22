@@ -65,4 +65,12 @@ public class FavoriteServiceImpl implements FavoriteService {
                 .map(Map.Entry::getKey) // 가게 정보만 추출
                 .collect(Collectors.toList());
     }
+
+
+    //나의 찜하기 리스트 조회하기
+    @Transactional
+    @Override
+    public List<FavoriteVendor> getMyFavoriteVendor(Long memberId) {
+        return null;
+    }
 }

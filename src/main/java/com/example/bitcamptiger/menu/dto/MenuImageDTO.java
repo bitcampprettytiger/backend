@@ -18,7 +18,6 @@ import org.modelmapper.ModelMapper;
 @Builder
 public class MenuImageDTO {
     private Long id;
-    private Menu menu;
     private String fileName;
     private String url;
     private String originName;

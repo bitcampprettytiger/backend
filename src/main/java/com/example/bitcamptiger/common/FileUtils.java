@@ -6,11 +6,12 @@ import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.example.bitcamptiger.configuration.NaverConfiguration;
 import com.example.bitcamptiger.menu.entity.MenuImage;
-import lombok.RequiredArgsConstructor;
+import com.example.bitcamptiger.vendor.entity.VendorImage;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -105,4 +106,124 @@ public class FileUtils {
 
         return menuImage;
     }
+
+
+    public VendorImage vendorFileInfo(MultipartFile file, String directoryPath) throws IOException {
+        String bucketName = "springboot";
+
+        // 리턴할 BoardDTO 객체 생성
+        VendorImage vendorImage = new VendorImage();
+
+        String boardFileOrigin = file.getOriginalFilename();
+
+        // 같은 파일명 파일이 올라오면 나중에 업로드 된 파일로 덮어써지기 때문에
+        // 파일명을 날짜_랜덤_...
+        SimpleDateFormat formmater =
+                new SimpleDateFormat("yyyyMMddHHmmss");
+        Date nowDate = new Date();
+        String nowDateStr = formmater.format(nowDate);
+
+        UUID uuid = UUID.randomUUID();
+
+        // 실제 db에 저장될 파일명
+        String boardFileName = nowDateStr + "_" + uuid.toString()
+                + "_" + boardFileOrigin;
+
+        String boardFilePath = directoryPath;
+
+        // 이미지인지 아닌지 검사
+        File checkFile = new File(boardFileOrigin);
+        // 파일의 형식 가져오기
+        String type = Files.probeContentType(checkFile.toPath());
+
+        if(type != null) {
+            if(type.startsWith("image")) {
+                vendorImage.setFileCate("image");
+            } else {
+                vendorImage.setFileCate("etc");
+            }
+        } else {
+            vendorImage.setFileCate("etc");
+        }
+
+        // 리턴될 DTO 셋팅
+        vendorImage.setFileName(boardFileName);
+        vendorImage.setOriginName(boardFileOrigin);
+        vendorImage.setUrl(boardFilePath);
+
+        // try 구문안에서만 사용할 객체나 변수를 선언할 수 있다.
+        // 주로 사용후에 close 해줘야되는 객체들을 선언한다.
+        try(InputStream fileInputStream = file.getInputStream()) {
+            ObjectMetadata objectMetadata = new ObjectMetadata();
+            objectMetadata.setContentType(file.getContentType());
+
+            PutObjectRequest putObjectRequest = new PutObjectRequest(
+                    bucketName,
+                    directoryPath + boardFileName,
+                    fileInputStream,
+                    objectMetadata
+            ).withCannedAcl(CannedAccessControlList.PublicRead);
+
+            s3.putObject(putObjectRequest);
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        return vendorImage;
+    }
+
+
+
+
+    public void deleteImage(String bucketName, String key){
+
+        try{
+            s3.deleteObject(new DeleteObjectRequest(bucketName, key));
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+
+    //vendor 기본 이미지 반환 메소드
+    public VendorImage getDefaultVendorImage() {
+        VendorImage defaultVendorImage = new VendorImage();
+
+        String defaultOriginName = "defaultVendorImage.jpg";
+        String defaultUrl = "C:/finalproject/vendorDefaultImage/";
+        String defaultImageUUID = UUID.randomUUID().toString();
+        String defaultFileCate = "defaultImage";
+
+
+        defaultVendorImage.setOriginName(defaultOriginName);
+        defaultVendorImage.setUrl(defaultUrl);
+        defaultVendorImage.setFileName(defaultImageUUID);
+        defaultVendorImage.setFileCate(defaultFileCate);
+
+        return defaultVendorImage;
+
+    }
+
+
+    //menu 기본 이미지 반환 메소드
+    public MenuImage getDefaultMenuImage(){
+        MenuImage defaultMenuImage = new MenuImage();
+
+        String defaultOriginName = "defaultMenuImage.jpg";
+        String defaultUrl = "C:/finalproject/menuDefaultImage/";
+        String defaultImageUUID = UUID.randomUUID().toString();
+        String defaultFileCate = "defaultImage";
+
+        defaultMenuImage.setOriginName(defaultOriginName);
+        defaultMenuImage.setUrl(defaultUrl);
+        defaultMenuImage.setFileName(defaultImageUUID);
+        defaultMenuImage.setFileCate(defaultFileCate);
+
+        return defaultMenuImage;
+
+    }
+
+
+
 }

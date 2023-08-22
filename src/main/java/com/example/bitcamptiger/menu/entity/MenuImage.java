@@ -20,8 +20,6 @@ public class MenuImage {
 
     @Id
     @Column(name = "menu_img_id")
-//    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "menu_image_seq_generator")
-//    @SequenceGenerator(name = "menu_image_seq_generator", sequenceName = "MENU_IMAGE_SEQ", allocationSize = 1)
     private Long id;
 
     @Column
@@ -35,6 +33,8 @@ public class MenuImage {
 
     @Column
     private String fileCate;
+
+
 
 
 }

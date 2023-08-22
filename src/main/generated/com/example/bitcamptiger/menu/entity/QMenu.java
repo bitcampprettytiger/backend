@@ -38,6 +38,8 @@ public class QMenu extends EntityPathBase<Menu> {
 
     public final com.example.bitcamptiger.vendor.entity.QVendor vendor;
 
+    public final NumberPath<Integer> views = createNumber("views", Integer.class);
+
     public QMenu(String variable) {
         this(Menu.class, forVariable(variable), INITS);
     }

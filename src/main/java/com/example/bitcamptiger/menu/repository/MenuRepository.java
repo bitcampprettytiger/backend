@@ -13,6 +13,11 @@ public interface MenuRepository extends JpaRepository<Menu, Long> {
 
     List<Menu> findByVendor(Vendor vendor);
 
+
     List<Menu> findTop5ByOrderByMenuViewsDesc();
+
+    //조회수 높은 메뉴 탑 5 찾기
+    List<Menu> findTop5ByOrderByViewsDesc();
+
 
 }

@@ -42,6 +42,13 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.5'
 
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+
+
+    //직렬화
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-hibernate5:2.12.5'
+    implementation group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310'
+
 
 
     // querydsl-jpa
@@ -49,6 +56,7 @@ dependencies {
     annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jakarta"
     annotationProcessor "jakarta.annotation:jakarta.annotation-api"
     annotationProcessor "jakarta.persistence:jakarta.persistence-api"
+    implementation 'javax.persistence:javax.persistence-api:2.2'
 
     implementation 'org.springframework.boot:spring-boot-starter-validation:3.1.0'
 
@@ -67,7 +75,7 @@ dependencies {
     implementation 'org.modelmapper:modelmapper:3.1.1'
 
 // https://mvnrepository.com/artifact/io.springfox/springfox-boot-starter
-    implementation 'io.springfox:springfox-boot-starter:3.0.0'
+//    implementation 'io.springfox:springfox-boot-starter:3.0.0'
 //// https://mvnrepository.com/artifact/io.springfox/springfox-swagger-ui
 //    implementation 'io.springfox:springfox-swagger-ui:3.0.0'
 // https://mvnrepository.com/artifact/org.springdoc/springdoc-openapi-starter-webmvc-ui
@@ -80,7 +88,11 @@ dependencies {
 // https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-aws
     implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 
+    implementation 'io.awspring.cloud:spring-cloud-starter-aws:2.4.4'
 
+
+    //webSocket
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
 
 }
 
@@ -93,9 +105,9 @@ bootJar {
 //    java.util.jar.Attributes.Name.MAIN_CLASS
 }
 
-//
+
 //    java.util.jar.Attributes.Name.MAIN_CLASS
-//// queryDSL 추가 : QueryDSL 빌드 옵션
+// queryDSL 추가 : QueryDSL 빌드 옵션
 //def querydslDir = 'src/main/generated'
 //
 //querydsl {

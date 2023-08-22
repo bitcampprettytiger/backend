@@ -22,21 +22,23 @@ public class QReview extends EntityPathBase<Review> {
 
     public static final QReview review = new QReview("review");
 
-    public final ListPath<ReviewFile, QReviewFile> images = this.<ReviewFile, QReviewFile>createList("images", ReviewFile.class, QReviewFile.class, PathInits.DIRECT2);
+    public final NumberPath<Integer> disLikeCount = createNumber("disLikeCount", Integer.class);
+
+    public final NumberPath<Integer> likeCount = createNumber("likeCount", Integer.class);
 
     public final com.example.bitcamptiger.member.entity.QMember member;
 
     public final NumberPath<Long> orderNum = createNumber("orderNum", Long.class);
 
-    public final DateTimePath<java.time.LocalDateTime> regDate = createDateTime("regDate", java.time.LocalDateTime.class);
-
     public final StringPath reviewContent = createString("reviewContent");
 
     public final NumberPath<Long> reviewNum = createNumber("reviewNum", Long.class);
 
-    public final NumberPath<Integer> score = createNumber("score", Integer.class);
+    public final DateTimePath<java.time.LocalDateTime> reviewRegDate = createDateTime("reviewRegDate", java.time.LocalDateTime.class);
 
-    public final NumberPath<Long> storeId = createNumber("storeId", Long.class);
+    public final NumberPath<Integer> reviewScore = createNumber("reviewScore", Integer.class);
+
+    public final com.example.bitcamptiger.vendor.entity.QVendor vendor;
 
     public QReview(String variable) {
         this(Review.class, forVariable(variable), INITS);
@@ -57,6 +59,7 @@ public class QReview extends EntityPathBase<Review> {
     public QReview(Class<? extends Review> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.member = inits.isInitialized("member") ? new com.example.bitcamptiger.member.entity.QMember(forProperty("member")) : null;
+        this.vendor = inits.isInitialized("vendor") ? new com.example.bitcamptiger.vendor.entity.QVendor(forProperty("vendor")) : null;
     }
 
 }

@@ -2,9 +2,9 @@ package com.example.bitcamptiger.menu.service.Impl;
 
 import com.example.bitcamptiger.common.FileUtils;
 import com.example.bitcamptiger.menu.dto.MenuDTO;
+import com.example.bitcamptiger.menu.dto.MenuImageDTO;
 import com.example.bitcamptiger.menu.entity.Menu;
 import com.example.bitcamptiger.menu.entity.MenuImage;
-import com.example.bitcamptiger.menu.entity.MenuImageId;
 import com.example.bitcamptiger.menu.entity.MenuSellStatus;
 import com.example.bitcamptiger.menu.repository.MenuImageRepository;
 import com.example.bitcamptiger.menu.repository.MenuRepository;
@@ -35,10 +35,11 @@ public class MenuServiceImpl implements MenuService {
     private final VendorRepository vendorRepository;
     private final FileUtils fileUtils;
 
+
     //메뉴 리스트
     @Override
     public List<MenuDTO> getMenuList(Long vendorId) {
-        //vendor id 찾아오기
+        //1. vendor id 찾아오기
         Optional<Vendor> byId = vendorRepository.findById(vendorId);
 
         List<Menu> menuList = menuRepository.findByVendor(byId.get());
@@ -48,13 +49,28 @@ public class MenuServiceImpl implements MenuService {
         for(Menu menu : menuList){
             //Menu 객체를 MenuDTO 객체로 변환
             MenuDTO menuDTO = MenuDTO.of(menu);
+
+
+            //2. 해당 메뉴에 대한 모든 메뉴 이미지를 검색
+            List<MenuImage> menuImageList = menuImageRepository.findByMenu(menu);
+
+            List<MenuImageDTO> menuImageDTOList = new ArrayList<>();
+            for (MenuImage  menuImage: menuImageList){
+                //MenuImage 객체를 MenuImageDTO 객체로 변환
+                MenuImageDTO menuImageDTO = MenuImageDTO.of(menuImage);
+                menuImageDTOList.add(menuImageDTO);
+            }
+
+            // MenuDTO 객체에 메뉴 이미지 리스트를 설정
+            menuDTO.setMenuImageList(menuImageDTOList);
             menuDTOList.add(menuDTO);
+
         }
         return menuDTOList;
     }
 
 
-    @Value("${file.path}")
+    @Value("${menuFile.path}")
     String attachPath;
 
 
@@ -80,23 +96,40 @@ public class MenuServiceImpl implements MenuService {
         //메뉴 이미지 아이디 저장할 변수를 초기화
         Long imageId = 1L;
 
-        //파일 처리
-        for(MultipartFile file : uploadFiles){
 
-            if(file.getOriginalFilename() != null && !file.getOriginalFilename().isEmpty()){
-                MenuImage menuImage = fileUtils.parseFileInfo(file, attachPath);
+        if(uploadFiles != null && uploadFiles.length > 0) {
 
-                //이전에 저장된 메뉴 정보를 설정.
-                menuImage.setMenu(save);
-                //menuImage 객체에 imageId 설정.
-                menuImage.setId(imageId);
+            //파일 처리
+            for (MultipartFile file : uploadFiles) {
 
-                uploadFileList.add(menuImage);
-                //다음 이미지에 사용될 id값 증가.
-                imageId = imageId + 1L;
+                if (file != null && !file.isEmpty() && file.getOriginalFilename() != null && !file.getOriginalFilename().isEmpty()) {
+                    MenuImage menuImage = fileUtils.parseFileInfo(file, attachPath);
+
+                    //이전에 저장된 메뉴 정보를 설정.
+                    menuImage.setMenu(save);
+                    //menuImage 객체에 imageId 설정.
+                    menuImage.setId(imageId);
+
+                    uploadFileList.add(menuImage);
+                    //다음 이미지에 사용될 id값 증가.
+                    imageId = imageId + 1L;
+                }
+
             }
-
         }
+
+        //menuImage가 등록되지 않았을 경우 기본이미지 설정
+        if(uploadFileList.isEmpty()) {
+            MenuImage defaultMenuImage = fileUtils.getDefaultMenuImage();
+            defaultMenuImage.setMenu(save);
+            //menuImage 객체에 imageId 설정.
+            defaultMenuImage.setId(imageId);
+            uploadFileList.add(defaultMenuImage);
+
+            //다음 이미지에 사용될 id값 증가.
+            imageId = imageId + 1;
+        }
+
 
         for(MenuImage menuImage : uploadFileList){
             menuImageRepository.save(menuImage);
@@ -110,12 +143,8 @@ public class MenuServiceImpl implements MenuService {
     @Override
     public void updateMenu(MenuDTO menuDTO, MultipartFile[] uploadFiles) throws IOException {
 
-
         // MenuDTO에서 id로 기존의 Menu 엔티티를 찾음
         Menu menu = menuRepository.findById(menuDTO.getId()).orElseThrow(EntityNotFoundException::new);
-
-        // VendorDTO에서 Vendor 엔티티로 변환
-        Vendor vendor = vendorRepository.findById(menuDTO.getVendor().getId()).orElseThrow(EntityNotFoundException::new);
 
         //수정 가능한 필드만 업데이트
         menu.setMenuName(menuDTO.getMenuName());
@@ -125,20 +154,54 @@ public class MenuServiceImpl implements MenuService {
         menu.setMenuType(menuDTO.getMenuType());
 
         //기존 이미지 삭제
-//        menu.getImages().clear();
+        List<MenuImage> existingImages = menuImageRepository.findByMenu_Id(menu.getId());
+        Long lastImageId = 1L;
+        if(existingImages != null && !existingImages.isEmpty()){
+            for(MenuImage menuImage : existingImages){
+                //가장 큰 menu_img_id 값을 찾는다.
+                if(menuImage.getId() > lastImageId){
+                    lastImageId = menuImage.getId();
+                }
+                //s3에서 이미지 삭제
+                fileUtils.deleteImage("springboot", menuImage.getUrl() + menuImage.getFileName());
 
-        //이미지 리스트 업데이트
+                //db에서 이미지 삭제
+                menuImageRepository.delete(menuImage);
+            }
+
+        }
+
+
+        //새로운 이미지 리스트 업데이트
         List<MenuImage> uploadFileList = new ArrayList<>();
         for(MultipartFile file : uploadFiles){
             if(file.getOriginalFilename() != null && !file.getOriginalFilename().isEmpty()){
                 MenuImage menuImage = fileUtils.parseFileInfo(file, attachPath);
                 menuImage.setMenu(menu);
+
+                //새로운 menuImage 객체에 imageId 설정
+                lastImageId = lastImageId + 1L;
+                menuImage.setId(lastImageId);
                 uploadFileList.add(menuImage);
             }
         }
-//        menu.getImages().addAll(uploadFileList);
 
-        menuRepository.save(menu);
+        //menuImage가 등록되지 않았을 경우 기본이미지 설정
+        if(uploadFileList.isEmpty()) {
+            MenuImage defaultMenuImage = fileUtils.getDefaultMenuImage();
+            defaultMenuImage.setMenu(menu);
+
+            //menuImage 객체에 imageId 설정.
+            lastImageId = lastImageId + 1L;
+            defaultMenuImage.setId(lastImageId);
+            uploadFileList.add(defaultMenuImage);
+
+        }
+
+        //새로운 이미지 객체들을 메뉴이미지 데이터베이스에 저장
+        for(MenuImage menuImage : uploadFileList){
+            menuImageRepository.save(menuImage);
+        }
 
     }
 
@@ -146,24 +209,23 @@ public class MenuServiceImpl implements MenuService {
     //메뉴 삭제
     @Override
     public void deleteMenu(MenuDTO menuDTO) {
-//        MenuId menuId = new MenuId();
-//        menuId.setId(menuDTO.getId());
-//        menuId.setVendor(menuDTO.getVendor().getId());
 
+        // MenuDTO에서 id로 기존의 Menu 엔티티를 찾음
         Menu menu = menuRepository.findById(menuDTO.getId()).orElseThrow(EntityNotFoundException::new);
 
         //메뉴에 연결된 이미지도 함께 삭제
-//        for(MenuImage menuImage : menu.getImages()){
-//            menuImageRepository.delete(menuImage);
-//        }
+        for(MenuImage menuImage : menuImageRepository.findByMenu_Id(menu.getId())){
 
-        //메뉴에 연결된 이미지도 함께 삭제
-//        for(MenuImage menuImage : menu.getImages()){
-//            menuImageRepository.delete(menuImage);
-//        }
+            //s3에서 이미지 삭제
+            fileUtils.deleteImage("springboot", menuImage.getUrl() + menuImage.getFileName());
+            //db에서 이미지 삭제
+            menuImageRepository.delete(menuImage);
+
+        }
 
         menuRepository.delete(menu);
     }
+
 
 
     //추천메뉴 : 조회수 탑 5 만 표출 하는 기능
@@ -183,5 +245,28 @@ public class MenuServiceImpl implements MenuService {
         // 정렬된 DTO 리스트 반환
         return recommendedMenuDTOList;
     }
+
+
+    //메뉴조회수순 탑5
+    //조회수가 높은 순서대로 상위 5개의 메뉴 정보를 추천
+    public List<MenuDTO> getRecommendedMenus() {
+        List<Menu> recommendedMenus = menuRepository.findTop5ByOrderByViewsDesc();
+        // 메뉴 정보를 저장할 MenuDTO 리스트
+        List<MenuDTO> menuDTOs = new ArrayList<>();
+
+        // recommendedMenus 리스트의 각 메뉴에 대해 반복
+        for (Menu menu : recommendedMenus) {
+            MenuDTO dto = new MenuDTO();
+            // dto에 메뉴 이름과 조회수 정보
+            dto.setMenuName(menu.getMenuName());
+            dto.setViews(menu.getViews());
+            // dto를 menuDTOs 리스트에 추가
+            menuDTOs.add(dto);
+        }
+
+        return menuDTOs;
+    }
+
+
 
 }

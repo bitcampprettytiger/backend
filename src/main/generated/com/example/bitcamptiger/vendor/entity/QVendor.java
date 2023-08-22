@@ -30,7 +30,7 @@ public class QVendor extends EntityPathBase<Vendor> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
-    public final StringPath menu = createString("menu");
+    public final StringPath location = createString("location");
 
     public final ListPath<com.example.bitcamptiger.menu.entity.Menu, com.example.bitcamptiger.menu.entity.QMenu> menuList = this.<com.example.bitcamptiger.menu.entity.Menu, com.example.bitcamptiger.menu.entity.QMenu>createList("menuList", com.example.bitcamptiger.menu.entity.Menu.class, com.example.bitcamptiger.menu.entity.QMenu.class, PathInits.DIRECT2);
 
@@ -38,15 +38,21 @@ public class QVendor extends EntityPathBase<Vendor> {
 
     public final StringPath perNo = createString("perNo");
 
+    public final NumberPath<Long> reviewCount = createNumber("reviewCount", Long.class);
+
     public final StringPath rlAppiNm = createString("rlAppiNm");
 
     public final StringPath tel = createString("tel");
 
+    public final NumberPath<Double> totalReviewScore = createNumber("totalReviewScore", Double.class);
+
     public final StringPath vendorName = createString("vendorName");
 
-    public final EnumPath<VendorOpenStatus> vendorOpenStatus = createEnum("vendorOpenStatus", VendorOpenStatus.class);
+    public final StringPath vendorOpenStatus = createString("vendorOpenStatus");
 
     public final StringPath vendorType = createString("vendorType");
+
+    public final NumberPath<Double> weightedAverageScore = createNumber("weightedAverageScore", Double.class);
 
     public final StringPath x = createString("x");
 

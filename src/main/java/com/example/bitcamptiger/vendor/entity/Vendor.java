@@ -1,6 +1,8 @@
 package com.example.bitcamptiger.vendor.entity;
 
+import com.example.bitcamptiger.Review.entity.Review;
 import com.example.bitcamptiger.menu.entity.Menu;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -33,8 +35,8 @@ public class Vendor {
     private String vendorName;
 
     @Column
-    @Enumerated(EnumType.STRING)
-    private VendorOpenStatus vendorOpenStatus;
+//    @Enumerated(EnumType.STRING)
+    private String vendorOpenStatus;
 
     @Column
     private String address;
@@ -60,9 +62,6 @@ public class Vendor {
     private LocalTime close;
 
     @Column
-    private String menu;
-
-    @Column
     private String b_no;        //사업자 번호
 
     @Column
@@ -71,7 +70,45 @@ public class Vendor {
     @Column
     private String rlAppiNm;        //신청인명
 
+    @Column
+    private String location;
+
+
     @OneToMany(mappedBy = "vendor", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference   //순환참조 문제를 해결하기 위해 주관리자 명시
     private List<Menu> menuList = new ArrayList<>();
+
+
+
+
+    //리뷰 별점 합계
+    @Column
+    private Double totalReviewScore;
+
+    //리뷰 개수
+    @Column
+    private Long reviewCount;
+
+    //리뷰 가중평균점수(리뷰별점 + 리뷰갯수)
+    @Column
+    private Double weightedAverageScore;
+
+
+
+    //리뷰가 생성되거나 수정될 때 vendor 엔티티 업데이트
+    //(총 리뷰 점수, 총 리뷰 개수, 평균 리뷰 점수)
+    public void updateVendorReviewScore(Review review) {
+
+        if(this.reviewCount == null){
+            this.reviewCount = 0L;
+            this.totalReviewScore = 0.0;
+        }
+        this.reviewCount++;
+        this.totalReviewScore += review.getReviewScore();
+        this.weightedAverageScore = (this.totalReviewScore) / (this.reviewCount);
+
+
+    }
+
 
 }

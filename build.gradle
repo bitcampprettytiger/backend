@@ -41,8 +41,14 @@ dependencies {
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.5'
+
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+
+
     //직렬화
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-hibernate5:2.12.5'
+    implementation group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310'
+
 
 
     // querydsl-jpa
@@ -85,6 +91,8 @@ dependencies {
     implementation 'io.awspring.cloud:spring-cloud-starter-aws:2.4.4'
 
 
+    //webSocket
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
 
 }
 
@@ -97,9 +105,9 @@ bootJar {
 //    java.util.jar.Attributes.Name.MAIN_CLASS
 }
 
-//
+
 //    java.util.jar.Attributes.Name.MAIN_CLASS
-//// queryDSL 추가 : QueryDSL 빌드 옵션
+// queryDSL 추가 : QueryDSL 빌드 옵션
 //def querydslDir = 'src/main/generated'
 //
 //querydsl {

@@ -20,7 +20,6 @@ public class MenuImage {
 
     @Id
     @Column(name = "menu_img_id")
-
     private Long id;
 
     @Column

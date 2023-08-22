@@ -18,4 +18,6 @@ public interface MenuImageRepository extends JpaRepository<MenuImage, MenuImageI
 
     List<MenuImage> findByMenu(Menu menu);
 
+    List<MenuImage> findByMenu_Id(Long menuId);
+
 }

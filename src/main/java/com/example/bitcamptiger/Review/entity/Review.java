@@ -48,6 +48,10 @@ public class Review {
     private LocalDateTime reviewRegDate = LocalDateTime.now(); //리뷰작성일자
     @Column
     private Integer reviewScore; //별점
+    @Column
+    private Integer likeCount = 0; //좋아요 수
+    @Column
+    private Integer disLikeCount = 0; // 싫어요 수
 
 
     public ReviewDto EntityToDto() {
@@ -57,8 +61,10 @@ public class Review {
                 .memberId(this.member.getId())
                 .vendorId(this.vendor.getId())
                 .reviewContent(this.reviewContent)
-                .reviewRegDate(this.reviewRegDate)
+                .reviewRegDate(this.reviewRegDate.toString())
                 .reviewScore(this.reviewScore)
+                .likedCount(this.likeCount)
+                .disLikedCount(this.disLikeCount)
                 .build();
     }
 

@@ -2,10 +2,15 @@ package com.example.bitcamptiger.Review.service.impl;
 
 import com.example.bitcamptiger.Review.dto.ReviewDto;
 import com.example.bitcamptiger.Review.dto.ReviewFileDto;
+import com.example.bitcamptiger.Review.dto.ReviewWithFilesDto;
 import com.example.bitcamptiger.Review.entity.Review;
 import com.example.bitcamptiger.Review.entity.ReviewFile;
+import com.example.bitcamptiger.Review.entity.ReviewFileId;
+import com.example.bitcamptiger.Review.entity.UserReviewAction;
+import com.example.bitcamptiger.Review.entity.UserReviewAction;
 import com.example.bitcamptiger.Review.repository.ReviewFileRepository;
 import com.example.bitcamptiger.Review.repository.ReviewRepository;
+import com.example.bitcamptiger.Review.repository.UserReviewActionRepository;
 import com.example.bitcamptiger.Review.service.ReviewService;
 import com.example.bitcamptiger.common.reviewFileUtils;
 import com.example.bitcamptiger.member.entity.Member;
@@ -13,8 +18,9 @@ import com.example.bitcamptiger.member.reposiitory.MemberRepository;
 import com.example.bitcamptiger.menu.entity.MenuImage;
 import com.example.bitcamptiger.vendor.entity.Vendor;
 import com.example.bitcamptiger.vendor.repository.VendorRepository;
-import jakarta.persistence.EntityNotFoundException;
-import lombok.RequiredArgsConstructor;
+import jakarta.persistence.*;
+import lombok.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,24 +45,8 @@ public class ReviewServiceImpl implements ReviewService {
     private final VendorRepository vendorRepository;
     private final ReviewFileRepository reviewFileRepository;
     private final reviewFileUtils reviewFileUtils;
+    private final UserReviewActionRepository userReviewActionRepository;
 
-    @Override
-    public List<ReviewDto> getReviewList() {
-        List<Review> reviews = reviewRepository.findAll();
-        return reviews.stream()
-                .map(review -> {
-                    ReviewDto reviewDto = ReviewDto.entityToDto(review);
-                    return reviewDto;
-                })
-                .collect(Collectors.toList());
-    }
-
-
-//    @Override
-//    public List<ReviewFileDto> findReviewFilesByReviewNum(Long reviewNum) {
-//        List<ReviewFile> reviewFiles = reviewFileRepository.findByReviewNum(reviewNum);
-//        return reviewFiles.stream().map(reviewFile -> ReviewFileDto.entityToDto(reviewFile)).collect(Collectors.toList());
-//    }
 
     @Override
     public Review getReview(Long reviewNum) {
@@ -67,7 +57,7 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public void createReview(Review review, List<ReviewFile> uploadFileList ) throws IOException {
+    public void createReview(Review review, List<ReviewFile> uploadFileList) throws IOException {
 
         Vendor vendor = vendorRepository.findById(review.getVendor().getId()).orElseThrow();
 
@@ -82,11 +72,13 @@ public class ReviewServiceImpl implements ReviewService {
             reviewFile.setReview(review);
             System.out.println(reviewFile + "========================================");
             System.out.println("========================================================>" + review.getReviewNum());
-            long reviewFileNo = reviewFileRepository.findMaxFileNo();
+            long reviewFileNo = reviewFileRepository.findMaxFileNo(review.getReviewNum());
             reviewFile.setReviewFileNo(reviewFileNo);
 
             reviewFileRepository.save(reviewFile);
         }
+
+
     }
 
 //        Review save = reviewRepository.save(reviewDto.createReview());
@@ -122,42 +114,148 @@ public class ReviewServiceImpl implements ReviewService {
 //            reviewFileRepository.save(reviewFile);
 //        }
 
-        @Override
-        public void updateReview (Review review, List < ReviewFile > ufileList){
-            reviewRepository.save(review);
+    @Override
+    public void updateReview(Review review, List<ReviewFile> ufileList) {
+        reviewRepository.save(review);
 
-            if (ufileList.size() > 0) {
-                for (int i = 0; i < ufileList.size(); i++) {
-                    if (ufileList.get(i).getReviewFileStatus().equals("U")) {
-                        reviewFileRepository.save(ufileList.get(i));
-                    } else if (ufileList.get(i).getReviewFileStatus().equals("D")) {
-                        reviewFileRepository.delete(ufileList.get(i));
-                    } else if (ufileList.get(i).getReviewFileStatus().equals("I")) {
-                        //추가한 파일들은 reviewNum은 가지고 있지만 reviewFileNo가 없는 상태라
-                        //reviewFileNo를 추가
-                        Long reviewFileNo = reviewFileRepository.findMaxFileNo();
+        if (ufileList.size() > 0) {
+            for (int i = 0; i < ufileList.size(); i++) {
+                if (ufileList.get(i).getReviewFileStatus().equals("U")) {
+                    reviewFileRepository.save(ufileList.get(i));
+                } else if (ufileList.get(i).getReviewFileStatus().equals("D")) {
+                    reviewFileRepository.delete(ufileList.get(i));
+                } else if (ufileList.get(i).getReviewFileStatus().equals("I")) {
+                    //추가한 파일들은 reviewNum은 가지고 있지만 reviewFileNo가 없는 상태라
+                    //reviewFileNo를 추가
+                    Long reviewFileNo = reviewFileRepository.findMaxFileNo(
+                            ufileList.get(i).getReview().getReviewNum());
 
-                        ufileList.get(i).setReviewFileNo(reviewFileNo);
+                    ufileList.get(i).setReviewFileNo(reviewFileNo);
 
-                        reviewFileRepository.save(ufileList.get(i));
-                    }
+                    reviewFileRepository.save(ufileList.get(i));
                 }
             }
         }
+    }
 
 
-            @Override
-            public void deleteReview (ReviewDto reviewDto){
-                // ReviewDto에서 id로 기존의 Review 엔티티를 찾음
-                Review review = reviewRepository.findById(reviewDto.getReviewNum()).orElseThrow(EntityNotFoundException::new);
+    @Override
+    public void deleteReview(ReviewDto reviewDto) {
+        Review review = reviewRepository.findById(reviewDto.getReviewNum())
+                .orElseThrow(() -> new EntityNotFoundException("리뷰를 찾을 수 없습니다."));
 
+        String bucketName = "springboot";
 
-                reviewRepository.delete(review);
+        reviewFileRepository.findByReview(review).forEach(reviewFile -> {
+            String key = reviewFile.getReviewFilePath() + reviewFile.getReviewFileName();
+            reviewFileUtils.deleteImage(bucketName, key);
+
+            // 파일 레코드 삭제
+            reviewFileRepository.delete(reviewFile);
+        });
+
+        // 리뷰 레코드 삭제
+        reviewRepository.delete(review);
+    }
+
+    @Override
+    public List<ReviewFile> getReviewFileList(Long reviewNum) {
+        return reviewFileRepository.findByReviewReviewNum(reviewNum);
+    }
+
+//    @Override
+//    public List<ReviewDto> getAllReviewsWithFiles() {
+//        List<Review> reviews = reviewRepository.findAll(); // 모든 리뷰 조회
+//
+//        return reviews.stream()
+//                .map(review -> {
+//
+//                    review.getReviewFiles().size();
+//
+//                    List<ReviewFileDto> reviewFiles = review.getReviewFiles().stream()
+//                            .map(ReviewFile::EntitytoDto)
+//                            .collect(Collectors.toList());
+//
+//                    ReviewDto reviewDto = review.EntityToDto();
+//                    reviewDto.setReviewFiles(reviewFiles);
+//
+//                    return reviewDto;
+//                })
+//                .collect(Collectors.toList());
+//    }
+
+    @Override
+    @Transactional
+    public List<ReviewDto> getAllReviewsWithFiles() {
+        List<ReviewDto> reviewDtos = new ArrayList<>();
+
+        List<Object[]> results = reviewRepository.findAllReviewsWithFiles();
+        for (Object[] result : results) {
+            Review review = (Review) result[0];
+            ReviewDto reviewDto = review.EntityToDto();
+
+            // 리뷰 파일 관련 정보 추가
+            if (result[1] != null) {
+                ReviewFile reviewFile = (ReviewFile) result[1];
+                ReviewFileDto reviewFileDto = reviewFile.EntitytoDto();
+                reviewDto.setReviewFile(reviewFileDto);
             }
 
-            @Override
-            public List<ReviewFile> getReviewFileList (Long reviewNum){
-                return reviewFileRepository.findByReviewReviewNum(reviewNum);
-            }
-
+            reviewDtos.add(reviewDto);
         }
+
+        return reviewDtos;
+    }
+
+    @Override
+    public void likeReview(Member member, Review review) {
+        Optional<UserReviewAction> userReivewAction = userReviewActionRepository.findByMemberAndReview(member, review);
+
+        if(userReivewAction.isPresent()) {
+            UserReviewAction action = userReivewAction.get();
+            if(!action.isLiked()) {
+                action.setLiked(true);
+                action.setDisliked(false);
+                review.setLikeCount(review.getLikeCount() + 1);
+                userReviewActionRepository.save(action);
+                reviewRepository.save(review);
+            }
+        } else  {
+            UserReviewAction newAction = new UserReviewAction();
+            newAction.setMember(member);
+            newAction.setReview(review);
+            newAction.setLiked(true);
+            newAction.setDisliked(false);
+            userReviewActionRepository.save(newAction);
+
+            review.setLikeCount(review.getLikeCount() + 1);
+            reviewRepository.save(review);
+        }
+    }
+
+    public void disLikeReview(Member member, Review review) {
+        Optional<UserReviewAction> userReivewAction = userReviewActionRepository.findByMemberAndReview(member, review);
+
+        if(userReivewAction.isPresent()) {
+            UserReviewAction action = userReivewAction.get();
+            if(!action.isDisliked()) {
+                action.setDisliked(true);
+                action.setLiked(false);
+                review.setDisLikeCount(review.getDisLikeCount() + 1);
+                userReviewActionRepository.save(action);
+                reviewRepository.save(review);
+            }
+        } else {
+            UserReviewAction newAction = new UserReviewAction();
+            newAction.setMember(member);
+            newAction.setReview(review);
+            newAction.setDisliked(true);
+            newAction.setLiked(false);
+            userReviewActionRepository.save(newAction);
+
+            review.setDisLikeCount(review.getDisLikeCount() + 1);
+            reviewRepository.save(review);
+        }
+    }
+}
+

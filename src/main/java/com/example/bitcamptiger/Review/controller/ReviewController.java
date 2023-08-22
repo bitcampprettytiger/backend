@@ -1,6 +1,6 @@
 package com.example.bitcamptiger.Review.controller;
 
-import com.example.bitcamptiger.Review.dto.ReviewResponseDto;
+import com.example.bitcamptiger.Review.dto.ReviewWithFilesDto;
 import com.example.bitcamptiger.Review.repository.ReviewRepository;
 import com.example.bitcamptiger.common.reviewFileUtils;
 import com.example.bitcamptiger.Review.dto.ReviewDto;
@@ -25,10 +25,8 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import java.io.File;
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/reviews")
@@ -45,14 +43,15 @@ public class ReviewController {
     String attachPath;
 
 
-    @GetMapping("review-list")
+    @GetMapping("/review-list")
     public ResponseEntity<?> getReviewList() {
         ResponseDTO<ReviewDto> responseDTO = new ResponseDTO<>();
         try {
-            List<ReviewDto> reviewDtos = reviewService.getReviewList();
+            List<ReviewDto> reviewsWithFiles = reviewService.getAllReviewsWithFiles();
 
-            responseDTO.setItemlist(reviewDtos);
+            responseDTO.setItemlist(reviewsWithFiles);
             responseDTO.setStatusCode(HttpStatus.OK.value());
+
 
             return ResponseEntity.ok().body(responseDTO);
         } catch (Exception e) {
@@ -66,13 +65,8 @@ public class ReviewController {
     @PostMapping(value = "/review", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> createReview(ReviewDto reviewDto,
                                           MultipartHttpServletRequest mphsRequest) {
-        ResponseDTO<Review> responseDTO = new ResponseDTO<>();
+        ResponseDTO<Map<String, Object>> responseDTO = new ResponseDTO<>();
 
-        File directory = new File(attachPath);
-
-        if(!directory.exists()) {
-            directory.mkdir();
-        }
 
         List<ReviewFile> uploadFileList = new ArrayList<>();
 
@@ -84,7 +78,7 @@ public class ReviewController {
                     .reviewScore(reviewDto.getReviewScore())
                     .reviewRegDate(LocalDateTime.now())
                     .build();
-           System.out.println("=================" + review.getReviewRegDate());
+            System.out.println("=================" + review.getReviewRegDate());
 
             // vendorId 값으로 Vendor 엔티티를 조회합니다.
             Optional<Vendor> optionalVendor = vendorRepository.findById(reviewDto.getVendorId());
@@ -130,12 +124,22 @@ public class ReviewController {
             reviewService.createReview(review, uploadFileList);
             System.out.println("2222222222222222222222222");
 
-            Map<String, String> returnMap =
+            // 좋아요 처리
+            if(reviewDto.isLiked()) {
+                reviewService.likeReview(review.getMember(), review);
+            }
+            // 싫어요 처리
+            if(reviewDto.isDisliked()) {
+                reviewService.disLikeReview(review.getMember(), review);
+            }
+
+            Map<String, Object> returnMap =
                     new HashMap<>();
 
             returnMap.put("msg", "정상적으로 저장되었습니다.");
+            returnMap.put("review", uploadFileList);
 
-            responseDTO.setItem(review);
+            responseDTO.setItem(returnMap);
 
             return ResponseEntity.ok().body(responseDTO);
         } catch (Exception e) {
@@ -188,15 +192,8 @@ public class ReviewController {
         List<ReviewFile> uFileList = new ArrayList<>();
 
         try {
-            Review review = Review.builder()
-                    .reviewNum(reviewDto.getReviewNum())
-                    .orderNum(reviewDto.getOrderNum())
-                    .vendor(Vendor.builder().id(reviewDto.getVendorId()).build())
-                    .member(Member.builder().id(reviewDto.getMemberId()).build())
-                    .reviewContent(reviewDto.getReviewContent())
-                    .reviewRegDate(reviewDto.getReviewRegDate())
-                    .reviewScore(reviewDto.getReviewScore())
-                    .build();
+            Review review = reviewDto.DtoToEntity();
+            System.out.println(reviewDto);
             if (originFiles != null) {
                 //파일처리
                 for (int i = 0; i < originFiles.size(); i++) {

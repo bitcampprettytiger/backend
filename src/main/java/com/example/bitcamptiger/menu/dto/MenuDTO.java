@@ -3,6 +3,7 @@ package com.example.bitcamptiger.menu.dto;
 import com.example.bitcamptiger.menu.entity.Menu;
 import com.example.bitcamptiger.menu.entity.MenuImage;
 import com.example.bitcamptiger.vendor.entity.Vendor;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -27,7 +28,9 @@ public class MenuDTO {
     //메뉴 조회수
     private int views;
 
+    @JsonIgnore
     private Vendor vendor;
+
     private List<MenuImageDTO> menuImageList;
 
     private static ModelMapper modelMapper = new ModelMapper();

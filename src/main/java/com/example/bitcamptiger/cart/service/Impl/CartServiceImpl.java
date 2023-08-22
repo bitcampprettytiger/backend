@@ -8,19 +8,17 @@ import com.example.bitcamptiger.cart.repository.CartRepository;
 import com.example.bitcamptiger.cart.service.CartService;
 import com.example.bitcamptiger.member.entity.Member;
 import com.example.bitcamptiger.member.reposiitory.MemberRepository;
-import com.example.bitcamptiger.menu.dto.MenuDTO;
 import com.example.bitcamptiger.menu.dto.MenuImageDTO;
 import com.example.bitcamptiger.menu.entity.Menu;
 import com.example.bitcamptiger.menu.entity.MenuImage;
 import com.example.bitcamptiger.menu.repository.MenuImageRepository;
 import com.example.bitcamptiger.menu.repository.MenuRepository;
+import com.example.bitcamptiger.userOrder.dto.UserOrderDTO;
+import com.example.bitcamptiger.userOrder.service.UserOrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PathVariable;
 
-import javax.persistence.EntityExistsException;
-import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,7 +32,7 @@ public class CartServiceImpl implements CartService {
     private final MenuRepository menuRepository;
     private final MenuImageRepository menuImageRepository;
     private final CartItemRepository cartItemRepository;
-
+    private final UserOrderService userOrderService;
 
 
     //처음 장바구니에 상품을 담을 때는 해당 member의 장바구니를 생성해야 함.
@@ -43,15 +41,13 @@ public class CartServiceImpl implements CartService {
 //        cartRepository.save(cart);
 //    }
 
-
-
     //장바구니에 menu 추가
     @Override
     public Cart addCart(Member member, Menu menu, int cartQuantity) {
 
-       Cart cart = cartRepository.findByMemberId(member.getId());
+        Cart cart = cartRepository.findByMemberId(member.getId());
 
-       //cart가 비어있으면 생성.
+        //cart가 비어있으면 생성.
         if(cart == null){
             cart = Cart.createCart(member);
             Cart save = cartRepository.save(cart);
@@ -72,6 +68,9 @@ public class CartServiceImpl implements CartService {
         }
         return  cart;
     }
+
+
+
 
     //장바구니 조회
     @Override
@@ -122,8 +121,22 @@ public class CartServiceImpl implements CartService {
 
     }
 
+    @Override
+    public List<CartItem> getCartItemsByMemberId(Long id) {
+        try {
+            // 멤버의 ID를 기반으로 해당 멤버의 장바구니를 조회
+            Member member = memberRepository.findById(id)
+                    .orElseThrow(() -> new RuntimeException("멤버 정보를 찾을 수 없습니다."));
+
+            // 멤버의 장바구니에 담긴 아이템들을 조회
+            List<CartItem> cartItems = cartItemRepository.findByCartMemberId(id);
 
 
+            return cartItems;
+        } catch (Exception e) {
+            throw new RuntimeException("장바구니 아이템 조회 오류: " + e.getMessage());
+        }
+    }
 
 
 

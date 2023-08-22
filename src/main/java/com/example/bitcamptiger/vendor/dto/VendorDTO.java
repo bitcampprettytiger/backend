@@ -3,13 +3,13 @@ package com.example.bitcamptiger.vendor.dto;
 
 import com.example.bitcamptiger.menu.dto.MenuDTO;
 import com.example.bitcamptiger.vendor.entity.Vendor;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.modelmapper.ModelMapper;
 
-import java.time.LocalTime;
 import java.util.List;
 
 @Data
@@ -37,7 +37,9 @@ public class VendorDTO {
     private Long reviewCount;
     private Double weightedAverageScore;
 
+
     private List<VendorImageDTO> vendorImageDTOList;
+
     private List<MenuDTO> menuDTOList;
 
 

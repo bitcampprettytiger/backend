@@ -18,7 +18,7 @@ public class RegistrationController {
 
     //사업자번호 조회 관련 컨트롤러
     private final VendorAPIService vendorAPIService;
-//    private final VendorValidationService vendorValidationService;
+    private final VendorValidationService vendorValidationService;
 
 
 
@@ -34,28 +34,31 @@ public class RegistrationController {
     }
 
     //사업자번호와 진위확인 여부 (사업자이름, 상호명, 주소 등등)
-//    @PostMapping("/isValidBusinessInfo")
-//    public ResponseEntity<?> isValidBusinessInfo(@RequestBody VendorValidationDto vendorValidationDto) throws JsonProcessingException, JSONException {
-//        System.out.println(vendorValidationDto);
-//        // VendorValidationService 사용하여 비즈니스 유효성 검사 API 호출
-//        ValidationResponseDto responseDto = vendorValidationService.isValidBusinessInfo(vendorValidationDto);
-//
-//        // API 호출 결과를 반환
-//        return ResponseEntity.ok(responseDto);
-//    }
+    //테스트시,
+    //1) YYYYMMDD 포맷의 날짜로 입력('-' 등의 기호 반드시 제거 후 호출)
+    //2) 사업자등록증에 표기된 개업연월일 날짜로 입력
+    @PostMapping("/isValidBusinessInfo")
+    public ResponseEntity<?> isValidBusinessInfo(@RequestBody VendorValidationDto vendorValidationDto) throws JsonProcessingException, JSONException {
+        System.out.println(vendorValidationDto);
+        // VendorValidationService 사용하여 비즈니스 유효성 검사 API 호출
+        ValidationResponseDto responseDto = vendorValidationService.isValidBusinessInfo(vendorValidationDto);
+
+        // API 호출 결과를 반환
+        return ResponseEntity.ok(responseDto);
+    }
 
 
-    // JSON 데이터를 매핑하기 위한 POJO 클래스를 정의합니다.
-//    public static class BusinessData {
-//        private String[] b_no;
-//
-//        public String[] getB_no() {
-//            return b_no;
-//        }
-//
-//        public void setB_no(String[] b_no) {
-//            this.b_no = b_no;
-//        }
-//    }
+     //JSON 데이터를 매핑하기 위한 POJO 클래스를 정의합니다.
+    public static class BusinessData {
+        private String[] b_no;
+
+        public String[] getB_no() {
+            return b_no;
+        }
+
+        public void setB_no(String[] b_no) {
+            this.b_no = b_no;
+        }
+    }
 }
 

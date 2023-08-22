@@ -183,10 +183,8 @@ public class VendorController {
 
 
     //메뉴 타입별 가게 정보 조회
-
     @GetMapping("/menuType/{menuType}")
-    public ResponseEntity<?> getVendorByMenuType(
-            @PathVariable String menuType){
+    public ResponseEntity<?> getVendorByMenuType(@PathVariable String menuType){
 
         ResponseDTO<VendorDTO> response = new ResponseDTO<>();
 
@@ -204,11 +202,30 @@ public class VendorController {
         }
     }
 
+    //리뷰 가장 많은 순 / 별점 높은 순 정렬
+    @GetMapping("/review/weightedAverageScore")
+    public ResponseEntity<?> getVendorByReview(Double weightedAverageScore){
+        ResponseDTO<VendorDTO> response = new ResponseDTO<>();
+
+        try{
+            List<VendorDTO> vendorDTOList = vendorService.getVendorByReview(weightedAverageScore);
+
+            response.setItemlist(vendorDTOList);
+            response.setStatusCode(HttpStatus.OK.value());
+
+            return ResponseEntity.ok().body(response);
+        }catch(Exception e) {
+            response.setErrorMessage(e.getMessage());
+            response.setStatusCode(HttpStatus.BAD_REQUEST.value());
+            return ResponseEntity.badRequest().body(response);
+        }
+    }
+
 
 
     //개별 상점 상세 정보 확인
     @GetMapping("/infoDetail/{id}")
-    public Vendor getVendorInfoDetail(@PathVariable Long id){
+    public VendorDTO getVendorInfoDetail(@PathVariable Long id){
         return vendorService.getVendorDetail(id);
     }
 
@@ -257,7 +274,6 @@ public class VendorController {
 
             List<VendorDTO> vendorDTOList = vendorService.getVendorList();
 
-
             response.setItemlist(vendorDTOList);
             response.setStatusCode(HttpStatus.OK.value());
 
@@ -280,7 +296,6 @@ public class VendorController {
             vendorService.deleteVendor(vendorDTO);
 
             List<VendorDTO> vendorDTOList = vendorService.getVendorList();
-
 
             response.setItemlist(vendorDTOList);
             response.setStatusCode(HttpStatus.OK.value());

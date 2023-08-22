@@ -53,7 +53,7 @@ public class FavoritePickController {
 
         List<VendorDTO> top8VendorDTOs = new ArrayList<>();
         for (Vendor vendor : top8Vendors) {
-            VendorDTO vendorDTO = VendorDTO.of(vendorService.getVendorDetail(vendor.getId()));
+            VendorDTO vendorDTO = vendorService.getVendorDetail(vendor.getId());
             top8VendorDTOs.add(vendorDTO);
         }
 

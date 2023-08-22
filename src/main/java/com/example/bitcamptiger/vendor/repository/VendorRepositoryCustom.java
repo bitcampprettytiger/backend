@@ -12,5 +12,6 @@ public interface VendorRepositoryCustom {
 
     List<Vendor> findMenuByCategory(String menuType);
 
+    List<Vendor> findByReview(Double weightedAverageScore);
 
 }

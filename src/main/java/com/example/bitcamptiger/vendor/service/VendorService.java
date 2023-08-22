@@ -21,9 +21,11 @@ public interface VendorService {
     // 영업 중인 가게 목록 가져오기
     List<VendorDTO> getOpenList(String vendorOpenStatus);
 
-
     // 주소에 따른 가게 목록 가져오기
     List<VendorDTO> getVendorByAddressCategory(String address);
+
+    //리뷰 가장 많은 순 / 별점 높은 순 정렬
+    List<VendorDTO> getVendorByReview(Double weightedAverageScore);
 
     // 가게 정보 추가
     void insertVendor(VendorDTO vendorDTO) throws JsonProcessingException;
@@ -45,8 +47,11 @@ public interface VendorService {
     // 가게 정보 삭제
     void deleteVendor(VendorDTO vendorDTO);
 
+
     // 특정 가게의 상세 정보 가져오기
-    Vendor getVendorDetail(Long id);
+    VendorDTO getVendorDetail(Long id);
+
+
 
    List<LocationDto> getNowLocationList(NowLocationDto nowLocationDto);
 }

@@ -4,6 +4,7 @@ import com.example.bitcamptiger.dto.ResponseDTO;
 import com.example.bitcamptiger.jwt.JwtService;
 import com.example.bitcamptiger.jwt.JwtTokenProvider;
 import com.example.bitcamptiger.member.dto.MemberDTO;
+import com.example.bitcamptiger.member.entity.CustomUserDetails;
 import com.example.bitcamptiger.member.entity.Member;
 import com.example.bitcamptiger.member.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -14,9 +15,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -74,6 +77,80 @@ public class MemberController {
         }
     }
 
+    @Operation(summary = "Add member", description = "멤버 회원가입")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "통과"),
+            @ApiResponse(responseCode = "400", description = "실패")
+    })
+    @PutMapping("/member/join")
+    public ResponseEntity<?> updatemember(
+//    RequestBody 안에있는 Member을 가져온다.
+            @RequestBody @Valid MemberDTO member, BindingResult bindingResult
+            , @AuthenticationPrincipal CustomUserDetails customUserDetails
+            ) {
+        if (bindingResult.hasErrors()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(bindingResult.getAllErrors());
+        }
+        member.setPassword(passwordEncoder.encode(member.getPassword()));
+        ResponseDTO<MemberDTO> responseDTO = new ResponseDTO<>();
+        try {
+            System.out.println(member.getPassword());
+
+//            회원가입(MemberEntity 리턴하도록)
+            MemberDTO returnMember = memberService.updatemember(member);
+
+            System.out.println(member);
+//            DTO로 변환(비밀번호는 "")
+//            MemberDTO memberDTO =  member.toMemberDTO();
+//            System.out.println(memberDTO);
+            responseDTO.setStatusCode(HttpStatus.OK.value());
+//            ResponsEntity에 DTO 담아서 전송
+            return ResponseEntity.ok().body(returnMember);
+        } catch (Exception exception) {
+            responseDTO.setErrorMessage(exception.getMessage());
+            responseDTO.setStatusCode(HttpStatus.BAD_REQUEST.value());
+            return ResponseEntity.badRequest().body(responseDTO);
+        }
+    }
+
+//    @Operation(summary = "Add member", description = "멤버 회원가입")
+//    @ApiResponses({
+//            @ApiResponse(responseCode = "200", description = "통과"),
+//            @ApiResponse(responseCode = "400", description = "실패")
+//    })
+//    @PostMapping("/member/join")
+//    public ResponseEntity<?> join(
+////    RequestBody 안에있는 Member을 가져온다.
+//            @RequestBody @Valid MemberDTO member, BindingResult bindingResult
+//    ) {
+//
+//
+//        if (bindingResult.hasErrors()) {
+//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(bindingResult.getAllErrors());
+//        }
+//
+//        System.out.println(member);
+//        ResponseDTO<MemberDTO> responseDTO = new ResponseDTO<>();
+//        try {
+////            비밀번호 암호화
+//            member.setPassword(passwordEncoder.encode(member.getPassword()));
+//            System.out.println(member.getPassword());
+////            회원가입(MemberEntity 리턴하도록)
+//            MemberDTO returnMember = memberService.join(member);
+//            System.out.println(member);
+////            DTO로 변환(비밀번호는 "")
+////            MemberDTO memberDTO =  member.toMemberDTO();
+////            System.out.println(memberDTO);
+//            responseDTO.setStatusCode(HttpStatus.OK.value());
+////            ResponsEntity에 DTO 담아서 전송
+//            return ResponseEntity.ok().body(returnMember);
+//        } catch (Exception exception) {
+//            responseDTO.setErrorMessage(exception.getMessage());
+//            responseDTO.setStatusCode(HttpStatus.BAD_REQUEST.value());
+//            return ResponseEntity.badRequest().body(responseDTO);
+//        }
+//    }
+
 
     @Operation(summary = "Add member", description = "멤버 로그인")
     @ApiResponses({
@@ -121,6 +198,7 @@ public class MemberController {
         }
 
     }
+
 
     @PostMapping("/refresh")
     public ResponseEntity<?> validateRefreshToken(@RequestBody @Valid MemberDTO member) {

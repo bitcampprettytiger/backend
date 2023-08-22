@@ -122,7 +122,7 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public List<CartItemDTO> getCartItemsByMemberId(Long id) {
+    public List<CartItem> getCartItemsByMemberId(Long id) {
         try {
             // 멤버의 ID를 기반으로 해당 멤버의 장바구니를 조회
             Member member = memberRepository.findById(id)
@@ -131,15 +131,8 @@ public class CartServiceImpl implements CartService {
             // 멤버의 장바구니에 담긴 아이템들을 조회
             List<CartItem> cartItems = cartItemRepository.findByCartMemberId(id);
 
-            List<CartItemDTO> cartItemDTOList = new ArrayList<>();
 
-            // 조회된 각 장바구니 아이템을 DTO로 변환하여 리스트에 추가
-            for (CartItem cartItem : cartItems) {
-                CartItemDTO cartItemDTO = CartItemDTO.of(cartItem);
-                cartItemDTOList.add(cartItemDTO);
-            }
-
-            return cartItemDTOList;
+            return cartItems;
         } catch (Exception e) {
             throw new RuntimeException("장바구니 아이템 조회 오류: " + e.getMessage());
         }

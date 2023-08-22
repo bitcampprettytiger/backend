@@ -28,13 +28,7 @@ public class QUserOrder extends EntityPathBase<UserOrder> {
 
     public final com.example.bitcamptiger.member.entity.QMember member;
 
-    public final com.example.bitcamptiger.menu.entity.QMenu menu;
-
-    public final NumberPath<Integer> menuTotalAmount = createNumber("menuTotalAmount", Integer.class);
-
-    public final NumberPath<Integer> price = createNumber("price", Integer.class);
-
-    public final NumberPath<Integer> quantity = createNumber("quantity", Integer.class);
+    public final SetPath<OrderedMenu, QOrderedMenu> orderedMenus = this.<OrderedMenu, QOrderedMenu>createSet("orderedMenus", OrderedMenu.class, QOrderedMenu.class, PathInits.DIRECT2);
 
     public final NumberPath<Integer> totalAmount = createNumber("totalAmount", Integer.class);
 
@@ -62,7 +56,6 @@ public class QUserOrder extends EntityPathBase<UserOrder> {
         super(type, metadata, inits);
         this.cart = inits.isInitialized("cart") ? new com.example.bitcamptiger.cart.entity.QCart(forProperty("cart"), inits.get("cart")) : null;
         this.member = inits.isInitialized("member") ? new com.example.bitcamptiger.member.entity.QMember(forProperty("member")) : null;
-        this.menu = inits.isInitialized("menu") ? new com.example.bitcamptiger.menu.entity.QMenu(forProperty("menu"), inits.get("menu")) : null;
         this.vendor = inits.isInitialized("vendor") ? new com.example.bitcamptiger.vendor.entity.QVendor(forProperty("vendor")) : null;
     }
 

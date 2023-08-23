@@ -1,4 +1,4 @@
-package com.example.bitcamptiger.userOrder.entity;
+package com.example.bitcamptiger.order.entity;
 
 import static com.querydsl.core.types.PathMetadataFactory.*;
 
@@ -14,7 +14,7 @@ import com.querydsl.core.types.dsl.PathInits;
  * QOrderedMenu is a Querydsl query type for OrderedMenu
  */
 @Generated("com.querydsl.codegen.DefaultEntitySerializer")
-public class QOrderedMenu extends EntityPathBase<OrderedMenu> {
+public class QOrderedMenu extends EntityPathBase<OrderMenu> {
 
     private static final long serialVersionUID = 2079491320L;
 
@@ -33,10 +33,10 @@ public class QOrderedMenu extends EntityPathBase<OrderedMenu> {
     public final QUserOrder userOrder;
 
     public QOrderedMenu(String variable) {
-        this(OrderedMenu.class, forVariable(variable), INITS);
+        this(OrderMenu.class, forVariable(variable), INITS);
     }
 
-    public QOrderedMenu(Path<? extends OrderedMenu> path) {
+    public QOrderedMenu(Path<? extends OrderMenu> path) {
         this(path.getType(), path.getMetadata(), PathInits.getFor(path.getMetadata(), INITS));
     }
 
@@ -45,10 +45,10 @@ public class QOrderedMenu extends EntityPathBase<OrderedMenu> {
     }
 
     public QOrderedMenu(PathMetadata metadata, PathInits inits) {
-        this(OrderedMenu.class, metadata, inits);
+        this(OrderMenu.class, metadata, inits);
     }
 
-    public QOrderedMenu(Class<? extends OrderedMenu> type, PathMetadata metadata, PathInits inits) {
+    public QOrderedMenu(Class<? extends OrderMenu> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.menu = inits.isInitialized("menu") ? new com.example.bitcamptiger.menu.entity.QMenu(forProperty("menu"), inits.get("menu")) : null;
         this.userOrder = inits.isInitialized("userOrder") ? new QUserOrder(forProperty("userOrder"), inits.get("userOrder")) : null;

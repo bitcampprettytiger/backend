@@ -13,8 +13,7 @@ import com.example.bitcamptiger.menu.entity.Menu;
 import com.example.bitcamptiger.menu.entity.MenuImage;
 import com.example.bitcamptiger.menu.repository.MenuImageRepository;
 import com.example.bitcamptiger.menu.repository.MenuRepository;
-import com.example.bitcamptiger.userOrder.dto.UserOrderDTO;
-import com.example.bitcamptiger.userOrder.service.UserOrderService;
+import com.example.bitcamptiger.order.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,12 +26,9 @@ import java.util.List;
 @Transactional
 public class CartServiceImpl implements CartService {
 
-    private final MemberRepository memberRepository;
     private final CartRepository cartRepository;
-    private final MenuRepository menuRepository;
     private final MenuImageRepository menuImageRepository;
     private final CartItemRepository cartItemRepository;
-    private final UserOrderService userOrderService;
 
 
     //처음 장바구니에 상품을 담을 때는 해당 member의 장바구니를 생성해야 함.
@@ -74,15 +70,15 @@ public class CartServiceImpl implements CartService {
 
     //장바구니 조회
     @Override
-    public List<CartItemDTO> getCartList(Cart cart) {
-        List<CartItem> cartItems = cartItemRepository.findByCart(cart);
+    public List<CartItemDTO> getCartList(Member member) {
+        List<CartItem> cartItems = cartItemRepository.findByCartMember(member);
         List<CartItemDTO> cartItemDTOList = new ArrayList<>();
 
         for(CartItem cartItem : cartItems){
             CartItemDTO cartItemDTO = CartItemDTO.of(cartItem);
             Menu menu = cartItem.getMenu();
             cartItemDTO.setMenu(menu);
-            cartItemDTO.setCart(cart);
+            cartItemDTO.setCart(cartItem.getCart());
 
             //해당 메뉴 이미지 조회
             List<MenuImage> menuImageList = menuImageRepository.findByMenu(menu);
@@ -97,6 +93,8 @@ public class CartServiceImpl implements CartService {
         }
         return cartItemDTOList;
     }
+
+
 
 
     //장바구니 수량 수정
@@ -115,27 +113,25 @@ public class CartServiceImpl implements CartService {
     //장바구니 menu 전체 삭제
     @Override
     public void deleteCart(CartItemDTO cartItemDTO) {
-        List<CartItem> cartItemList = cartItemRepository.findByCart(cartItemDTO.getCart());
+        List<CartItem> cartItemList = cartItemRepository.findByCartMember(cartItemDTO.getCart().getMember());
 
         cartItemRepository.deleteAll(cartItemList);
 
     }
 
-    @Override
-    public List<CartItem> getCartItemsByMemberId(Long id) {
-        try {
-            // 멤버의 ID를 기반으로 해당 멤버의 장바구니를 조회
+    // 주문 완료 후 장바구니 비우기
+    public void clearCart(Long memberId){
+        // 해당 회원의 ID로 장바구니 아이템들을 조회
+        List<CartItem> cartItemList = cartItemRepository.findByCartMemberId(memberId);
 
-            // 멤버의 장바구니에 담긴 아이템들을 조회
-            //안되면 cart를 meber로 찾아서 cartid로 찾아볼것
-            List<CartItem> cartItems = cartItemRepository.findByCartMemberId(id);
+        // 해당 아이템들을 삭제
+        cartItemRepository.deleteAll(cartItemList);
 
-
-            return cartItems;
-        } catch (Exception e) {
-            throw new RuntimeException("장바구니 아이템 조회 오류: " + e.getMessage());
-        }
     }
+
+
+
+
 
 
 

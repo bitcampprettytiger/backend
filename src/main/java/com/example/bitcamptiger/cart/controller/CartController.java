@@ -1,6 +1,5 @@
 package com.example.bitcamptiger.cart.controller;
 
-import com.example.bitcamptiger.cart.dto.CartDTO;
 import com.example.bitcamptiger.cart.dto.CartItemDTO;
 import com.example.bitcamptiger.cart.entity.Cart;
 import com.example.bitcamptiger.cart.repository.CartItemRepository;
@@ -11,7 +10,6 @@ import com.example.bitcamptiger.member.entity.Member;
 import com.example.bitcamptiger.member.reposiitory.MemberRepository;
 import com.example.bitcamptiger.menu.entity.Menu;
 import com.example.bitcamptiger.menu.repository.MenuRepository;
-import com.example.bitcamptiger.userOrder.dto.UserOrderDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,13 +30,13 @@ public class CartController {
 
     //내 장바구니 조회
     @GetMapping("/member/{memberId}")
-    public ResponseEntity<?> getMyCart(@PathVariable Long memberId){
+    public ResponseEntity<?> getMyCart(@PathVariable Member memberId){
         ResponseDTO<CartItemDTO> response = new ResponseDTO<>();
         try{
-            Member member = memberRepository.findById(memberId).orElseThrow();
+            Member member = memberRepository.findById(memberId.getId()).orElseThrow();
             Cart cart = cartRepository.findByMemberId(member.getId());
 
-            List<CartItemDTO> cartItemDTOList = cartService.getCartList(cart);
+            List<CartItemDTO> cartItemDTOList = cartService.getCartList(memberId);
 
             response.setItemlist(cartItemDTOList);
             response.setStatusCode(HttpStatus.OK.value());
@@ -53,7 +51,7 @@ public class CartController {
 
 
     // 장바구니에 메뉴 추가
-    @PostMapping("/addCart")
+    @PostMapping("/info")
     public ResponseEntity<ResponseDTO<CartItemDTO>> addMenuToCart(@RequestBody CartItemDTO cartItemDTO) {
         ResponseDTO<CartItemDTO> response = new ResponseDTO<>();
 
@@ -66,7 +64,7 @@ public class CartController {
             // 회원과 메뉴 정보를 이용하여 장바구니에 메뉴를 추가하고 업데이트된 장바구니 정보를 가져옴.
             Cart updatedCart = cartService.addCart(member, menu, cartItemDTO.getCartQuantity());
             // 업데이트된 장바구니 정보로부터 장바구니에 담긴 메뉴들을 조회
-            List<CartItemDTO> cartItemDTOList = cartService.getCartList(updatedCart);
+            List<CartItemDTO> cartItemDTOList = cartService.getCartList(updatedCart.getMember());
 
             response.setItemlist(cartItemDTOList);
             response.setStatusCode(HttpStatus.OK.value());
@@ -92,7 +90,7 @@ public class CartController {
         try{
             cartService.deleteCartItem(cartItemDTO.getCart().getId(), cartItemDTO.getMenu().getId());
 
-            List<CartItemDTO> cartItemDTOList = cartService.getCartList(cartItemDTO.getCart());
+            List<CartItemDTO> cartItemDTOList = cartService.getCartList(cartItemDTO.getCart().getMember());
 
             response.setItemlist(cartItemDTOList);
             response.setStatusCode(HttpStatus.OK.value());

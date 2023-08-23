@@ -1,4 +1,4 @@
-package com.example.bitcamptiger.userOrder.entity;
+package com.example.bitcamptiger.order.entity;
 
 import com.example.bitcamptiger.menu.entity.Menu;
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -11,16 +11,17 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class OrderedMenu {
+public class OrderMenu {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "order_menu_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_order_id")
+    @JoinColumn(name = "order_id")
     @JsonBackReference
-    private UserOrder userOrder; // 부모 주문 엔티티와의 관계 설정
+    private Orders order; // 부모 주문 엔티티와의 관계 설정
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "menu_id")
@@ -29,9 +30,18 @@ public class OrderedMenu {
     private int quantity; // 주문한 메뉴 각각의 수량
     private int price; // 주문한 메뉴각각의 가격
 
-    // 메뉴별 총 금액 계산
-    public int getTotalAmount() {
-        return quantity * price;
+
+    public static OrderMenu createOrderMenu(Menu menu, int quantity){
+        OrderMenu orderMenu = new OrderMenu();
+        orderMenu.setMenu(menu);
+        orderMenu.setQuantity(quantity);
+        orderMenu.setPrice(menu.getPrice());
+        return orderMenu;
+    }
+
+
+    public int getMenuPrice(){
+        return price * quantity;
     }
 
 }

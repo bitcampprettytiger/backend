@@ -1,7 +1,6 @@
 package com.example.bitcamptiger.cart.entity;
 
 import com.example.bitcamptiger.member.entity.Member;
-import com.example.bitcamptiger.userOrder.entity.UserOrder;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
@@ -39,8 +38,6 @@ public class Cart {
         return cart;
     }
 
-    @OneToOne(mappedBy = "cart", cascade = CascadeType.ALL)
-    private UserOrder userOrder;
 
 
 

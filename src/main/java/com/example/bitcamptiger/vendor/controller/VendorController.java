@@ -40,9 +40,6 @@ public class VendorController {
         System.out.println(nowLocationDto);
         ResponseDTO<LocationDto> response = new ResponseDTO<>();
         try{
-
-
-
             List<LocationDto> nowLocationList = vendorService.getNowLocationList(nowLocationDto);
             if(nowLocationList.isEmpty()){
                return new BaseResponse<>(RESPONSE_ERROR);
@@ -240,24 +237,18 @@ public class VendorController {
             @ApiResponse(responseCode = "400", description = "실패")
     })
     @PostMapping("/info")
-    public ResponseEntity<?> insertVendorInfo(@RequestBody VendorDTO vendorDTO, @RequestBody MemberDTO memberDTO, @RequestParam(required = false, value = "file")MultipartFile[] uploadFiles){
+    public ResponseEntity<?> insertVendorInfo(@RequestBody VendorDTO vendorDTO, @RequestParam(required = false, value = "file")MultipartFile[] uploadFiles){
         System.out.println(vendorDTO);
-        System.out.println(memberDTO);
-
 //        vendorDTO null 일때 vaildation
         if(vendorDTO.equals(null)){
             new BaseResponse<>(VENDORDTO_NUTNULL);
         }
         ResponseDTO<VendorDTO> response = new ResponseDTO<>();
-
         try{
             vendorService.insertVendor(vendorDTO, uploadFiles);
-
             List<VendorDTO> vendorDTOList = vendorService.getVendorList();
-
             response.setItemlist(vendorDTOList);
             response.setStatusCode(HttpStatus.OK.value());
-
             return ResponseEntity.ok().body(response);
         }catch(Exception e) {
             response.setErrorMessage(e.getMessage());

@@ -39,6 +39,8 @@ public class MemberController {
 
     private final JwtService jwtService;
 
+
+//    로컬 로그인 로직
     @Operation(summary = "Add member", description = "멤버 회원가입")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "통과"),
@@ -49,20 +51,21 @@ public class MemberController {
 //    RequestBody 안에있는 Member을 가져온다.
             @RequestBody @Valid MemberDTO member, BindingResult bindingResult
     ) {
-
-
         if (bindingResult.hasErrors()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(bindingResult.getAllErrors());
         }
 
         System.out.println(member);
         ResponseDTO<MemberDTO> responseDTO = new ResponseDTO<>();
+
         try {
 //            비밀번호 암호화
             member.setPassword(passwordEncoder.encode(member.getPassword()));
+
             System.out.println(member.getPassword());
-//            회원가입(MemberEntity 리턴하도록)
+//           회원가입(MemberEntity 리턴하도록)
             MemberDTO returnMember = memberService.join(member);
+
             System.out.println(member);
 //            DTO로 변환(비밀번호는 "")
 //            MemberDTO memberDTO =  member.toMemberDTO();
@@ -76,6 +79,9 @@ public class MemberController {
             return ResponseEntity.badRequest().body(responseDTO);
         }
     }
+
+
+
 
     @Operation(summary = "Add member", description = "멤버 회원가입")
     @ApiResponses({

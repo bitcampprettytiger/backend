@@ -2,6 +2,8 @@ package com.example.bitcamptiger.vendor.controller;
 
 
 import com.example.bitcamptiger.dto.ResponseDTO;
+import com.example.bitcamptiger.member.dto.MemberDTO;
+import com.example.bitcamptiger.member.entity.Member;
 import com.example.bitcamptiger.response.BaseResponse;
 import com.example.bitcamptiger.vendor.dto.LocationDto;
 import com.example.bitcamptiger.vendor.dto.NowLocationDto;
@@ -238,8 +240,10 @@ public class VendorController {
             @ApiResponse(responseCode = "400", description = "실패")
     })
     @PostMapping("/info")
-    public ResponseEntity<?> insertVendorInfo(VendorDTO vendorDTO, @RequestParam(required = false, value = "file")MultipartFile[] uploadFiles){
+    public ResponseEntity<?> insertVendorInfo(@RequestBody VendorDTO vendorDTO, @RequestBody MemberDTO memberDTO, @RequestParam(required = false, value = "file")MultipartFile[] uploadFiles){
         System.out.println(vendorDTO);
+        System.out.println(memberDTO);
+
 //        vendorDTO null 일때 vaildation
         if(vendorDTO.equals(null)){
             new BaseResponse<>(VENDORDTO_NUTNULL);
@@ -278,6 +282,7 @@ public class VendorController {
             response.setStatusCode(HttpStatus.OK.value());
 
             return ResponseEntity.ok().body(response);
+
         }catch(Exception e) {
             response.setErrorMessage(e.getMessage());
             response.setStatusCode(HttpStatus.BAD_REQUEST.value());

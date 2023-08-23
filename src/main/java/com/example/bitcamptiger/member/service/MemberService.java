@@ -50,4 +50,9 @@ public class MemberService {
     }
 
 
+    public MemberDTO updatemember(MemberDTO member) {
+
+        return null;
+
+    }
 }

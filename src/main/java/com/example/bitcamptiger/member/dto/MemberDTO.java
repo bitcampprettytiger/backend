@@ -22,6 +22,11 @@ public class MemberDTO {
     @Size(min = 8,message = "8자 이상입력하세요.")
     private String password;
 
+//   휴대폰 번호
+    private String tel;
+
+//
+
     private String role;
 
     private String accessToken;

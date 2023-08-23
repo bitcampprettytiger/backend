@@ -2,16 +2,16 @@ package com.example.bitcamptiger.gyeongGiApi.service.impl;
 
 
 import com.example.bitcamptiger.gyeongGiApi.dto.RowDTO;
+import com.example.bitcamptiger.gyeongGiApi.entity.GyeonggiVenders;
+import com.example.bitcamptiger.gyeongGiApi.repository.GyeonggiVendersRepository;
 import com.example.bitcamptiger.gyeongGiApi.service.GyeongGiApiService;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 @Service
+@Transactional
 public class GyeongGiApiServiceImpl implements GyeongGiApiService {
 
     @Value("${api.url}")
@@ -32,47 +33,11 @@ public class GyeongGiApiServiceImpl implements GyeongGiApiService {
     @Value("${api.serviceKey}")
     private String apiKey;
 
-//    @Override
-//    public List<GGStreetVendorResponseDTO.Row> getAllStreetVendorInfo() throws JsonProcessingException {
-//        List<GGStreetVendorResponseDTO.Row> allData = new ArrayList<>();
-//        int currentPage = 1; // 시작 페이지
-//
-//        while (true) {
-//            // API 호출을 위한 URL 생성
-//            String url = apiUrl + "?key=" + apiKey + "&type=json" + "&pIndex=" + currentPage + "&pSize=100";
-//
-//            // RestTemplate을 사용하여 GET 요청 보내기
-//            RestTemplate restTemplate = new RestTemplate();
-//            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, null, String.class);
-//            String jsonResponse = response.getBody();
-//
-//            // ObjectMapper 객체 생성
-//            ObjectMapper objectMapper = new ObjectMapper();
-//
-//            // JSON 응답을 GGStreetVendorResponseDTO 객체로 변환
-//            GGStreetVendorResponseDTO responseDto = objectMapper.readValue(jsonResponse, GGStreetVendorResponseDTO.class);
-//
-//            // API 호출 결과에 대한 유효성 검사
-//            if (responseDto != null && responseDto.getHeadRowWrapperList() != null) {
-//                List<GGStreetVendorResponseDTO.Row> rowList = responseDto.getHeadRowWrapperList().get(0).getRowList();
-//                if (rowList != null && rowList.size() > 0) {
-//                    allData.addAll(rowList); // 현재 페이지의 데이터를 전체 데이터 리스트에 추가
-//
-//                    if (rowList.size() < 100) {
-//                        break; // 페이지 데이터 수가 100개 미만이면 마지막 페이지이므로 반복 종료
-//                    }
-//                }
-//            } else {
-//                System.out.println("데이터가 확인되지 않습니다. API 응답을 확인해주세요.");
-//                break;
-//            }
-//
-//            currentPage++; // 다음 페이지로 이동
-//        }
-//
-//        return allData;
-//    }
+    private final GyeonggiVendersRepository gyeonggiVendersRepository;
 
+    public GyeongGiApiServiceImpl(GyeonggiVendersRepository gyeonggiVendersRepository) {
+        this.gyeonggiVendersRepository = gyeonggiVendersRepository;
+    }
 
 
     @Override
@@ -125,9 +90,39 @@ public class GyeongGiApiServiceImpl implements GyeongGiApiService {
 
                 rowList.add(rowDTO);
             }
+            // rowList가 DTO 리스트이므로 여기에서 엔터티로 변환하고 저장
+            // 엔터티를 저장할 리스트
+            List<GyeonggiVenders> entityList = new ArrayList<>();
+
+            for (RowDTO dto : rowList) {
+                if (dto.getInduTypeNm() != null && dto.getInduTypeNm().endsWith("가게")) {
+                    GyeonggiVenders entity = new GyeonggiVenders();
+                    entity.setPrmsnNm(dto.getPrmsnNm());
+                    entity.setRefineLotnoAddr(dto.getRefineLotnoAddr());
+                    entity.setRefineZipno(dto.getRefineZipno());
+                    entity.setInduTypeNm(dto.getInduTypeNm());
+                    entity.setLicensgDe(dto.getLicensgDe());
+                    entity.setSigunNm(dto.getSigunNm());
+                    entity.setOccupTnAr(dto.getOccupTnAr());
+                    entity.setRefineRoadnmAddr(dto.getRefineRoadnmAddr());
+                    entity.setRefineWgs84Lat(dto.getRefineWgs84Lat());
+                    entity.setStoreNm(dto.getStoreNm());
+                    entity.setClsbizYn(dto.getClsbizYn());
+                    entity.setRefineWgs84Logt(dto.getRefineWgs84Logt());
+
+                    entityList.add(entity);
+                }
+            }
+            // 엔터티 리스트가 비어있지 않은 경우에만 저장 수행
+            if (!entityList.isEmpty()) {
+                gyeonggiVendersRepository.saveAll(entityList); // 저장
+
+                System.out.println("Saved " + entityList.size() + " entities.");
+            }
             System.out.println("rowList.size(): " + rowList.size());
             return rowList;
 
+            // 이후 예외 처리 코드...
         } catch (HttpServerErrorException.InternalServerError ex) {
             System.out.println("API 호출 중에 내부 서버 오류가 발생했습니다.");
             ex.printStackTrace();

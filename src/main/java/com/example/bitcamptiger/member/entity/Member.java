@@ -25,17 +25,31 @@ public class Member {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+
+
     @Column(nullable = false)
     private String username;
+
+
 
     @Column(nullable = false)
     private String password;
 
+
+//  별명
+    private String nickname;
+
+
+//  판매자,관리자,사용자.
     private String role;
+
+//  가입 타입
+    private String local;
+
+
 
     public MemberDTO toMemberDTO() {
         return MemberDTO.builder()
-                .id(this.id)
                 .username(this.username)
                 .password("") // 비밀번호는 빈 문자열로 설정 (DTO에 비밀번호를 담지 않기 위함)
                 .role(this.role)

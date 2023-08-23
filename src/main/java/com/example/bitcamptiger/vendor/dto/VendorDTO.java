@@ -40,14 +40,18 @@ public class VendorDTO {
     private String businessDay;
 // 영업오픈시간
     private String open;
-//
+// 영업닫는시간
     private String close;
+//사업자 번호
+    private String b_no;
+//도로 점유증 허가 번호
+    private String perNo;
+
+
+
     private String x;
     private String y;
-    private String b_no;        //사업자 번호
-    private String perNo;       //도로 점유증 허가 번호
     private String rlAppiNm;        //신청인명
-
     private String location;
     private Double totalReviewScore;
     private Long reviewCount;

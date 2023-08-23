@@ -1,6 +1,8 @@
 package com.example.bitcamptiger.jwt;
 
+import com.example.bitcamptiger.common.exception.BaseException;
 import com.example.bitcamptiger.member.entity.Member;
+import com.example.bitcamptiger.response.BaseResponseStatus;
 import com.nimbusds.oauth2.sdk.token.RefreshToken;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -90,8 +92,18 @@ public class JwtTokenProvider {
                 .parseClaimsJws(token)
                 .getBody();
 
-        System.out.println(claims);
 
+        try {
+            // 검증
+            //refresh 토큰의 만료시간이 지나지 않았을 경우, 새로운 access 토큰을 생성합니다.
+            if (!claims.getExpiration().before(new Date())) {
+                throw new BaseException(BaseResponseStatus.EMPTY_JWT);
+            }
+        }catch (Exception e) {
+
+            //refresh 토큰이 만료되었을 경우, 로그인이 필요합니다.
+            return null;
+        }
 //     subject에 담겨있는 username을 리턴
         return claims.getSubject();
 
@@ -119,7 +131,6 @@ public class JwtTokenProvider {
 
             //refresh 토큰이 만료되었을 경우, 로그인이 필요합니다.
             return null;
-
         }
 
         return null;

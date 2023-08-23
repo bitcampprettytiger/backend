@@ -78,8 +78,8 @@ public class GyeongGiApiServiceImpl implements GyeongGiApiService {
     @Override
     public List<RowDTO> getAllStreetVendorInfo() {
         // 첫 번째 페이지 호출을 위한 URL 생성
-        String url = apiUrl + "?key=" + apiKey + "&type=json" + "&pIndex=1" + "&pSize=100"; // 페이지 크기를 10으로 설정
-
+        String url = apiUrl + "?key=341f55ed9a614bf5ada6255bc7465615" + "&type=json" + "&pIndex=1" + "&pSize=1000"; // 페이지 크기를 10으로 설정
+        //String url = "https://openapi.gg.go.kr/GGSTREETVENDSTM?key=341f55ed9a614bf5ada6255bc7465615&type=json&pIndex=1&pSize=1000";
         // RestTemplate을 사용하여 GET 요청 보내기
         RestTemplate restTemplate = new RestTemplate();
 
@@ -87,9 +87,7 @@ public class GyeongGiApiServiceImpl implements GyeongGiApiService {
             BufferedReader bf;
             URL requestUrl = new URL(url);
             bf = new BufferedReader(new InputStreamReader(requestUrl.openStream(), "UTF-8"));
-
             String result = bf.readLine();
-
             JSONParser jsonParser = new JSONParser();
             JSONObject jsonObject = (JSONObject)jsonParser.parse(result);
 
@@ -117,7 +115,7 @@ public class GyeongGiApiServiceImpl implements GyeongGiApiService {
                         .induTypeNm((String) data.get("INDUTYPE_NM"))
                         .licensgDe((String) data.get("LICENSG_DE"))
                         .sigunNm((String) data.get("SIGUN_NM"))
-                        .occupTnAr((double) data.get("OCCUPTN_AR"))
+                        .occupTnAr(Double.parseDouble(String.valueOf(data.get("OCCUPTN_AR") != null ? data.get("OCCUPTN_AR") : 0)))
                         .refineRoadnmAddr((String) data.get("REFINE_ROADNM_ADDR"))
                         .refineWgs84Lat((String) data.get("REFINE_WGS84_LAT"))
                         .storeNm((String) data.get("STORE_NM"))

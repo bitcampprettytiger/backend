@@ -39,6 +39,7 @@ public class MenuServiceImpl implements MenuService {
 
     //메뉴 리스트
     @Override
+    @Transactional(readOnly = true)
     public List<MenuDTO> getMenuList(Long vendorId) {
         //1. vendor id 찾아오기
         Optional<Vendor> byId = vendorRepository.findById(vendorId);

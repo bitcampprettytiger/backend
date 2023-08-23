@@ -43,24 +43,24 @@ public class S3Controller {
     public String downloadFile(@PathVariable String fileName,
                              HttpServletResponse response) throws IOException {
 
-//        System.out.println(fileName);
-        S3Object s3Object = s3.getObject("springboot", fileName);
-        S3ObjectInputStream inputStream = s3Object.getObjectContent();
+////        System.out.println(fileName);
+//        S3Object s3Object = s3.getObject("springboot", fileName);
+//        S3ObjectInputStream inputStream = s3Object.getObjectContent();
+//
+//        // 파일 다운로드를 위한 헤더 설정
+//        response.setContentType(s3Object.getObjectMetadata().getContentType());
+//        response.setHeader("Content-Disposition", "attachment; filename=" + fileName);
+//
+//        // 파일 스트림을 response의 출력 스트림으로 복사
+//        byte[] buffer = new byte[1024];
+//        int bytesRead;
+//        while ((bytesRead = inputStream.read(buffer)) != -1) {
+//            response.getOutputStream().write(buffer, 0, bytesRead);
+//        }
+//
+//        inputStream.close();
+//        response.getOutputStream().flush();
 
-        // 파일 다운로드를 위한 헤더 설정
-        response.setContentType(s3Object.getObjectMetadata().getContentType());
-        response.setHeader("Content-Disposition", "attachment; filename=" + fileName);
-
-        // 파일 스트림을 response의 출력 스트림으로 복사
-        byte[] buffer = new byte[1024];
-        int bytesRead;
-        while ((bytesRead = inputStream.read(buffer)) != -1) {
-            response.getOutputStream().write(buffer, 0, bytesRead);
-        }
-
-        inputStream.close();
-        response.getOutputStream().flush();
-
-        return s3.getUrl("springboot",fileName).toString();
+        return s3.getUrl("springboot","C:/finalproject/vendorImages/20230823173458_fd424e7f-386f-4cd8-ae87-f5a91ac271e6_도로점용 허가증.png").toString();
     }
 }

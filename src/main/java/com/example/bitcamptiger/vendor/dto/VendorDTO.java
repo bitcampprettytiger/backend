@@ -47,7 +47,7 @@ public class VendorDTO {
 //도로 점유증 허가 번호
     private String perNo;
 
-
+    private String primaryimgurl;
 
     private String x;
     private String y;

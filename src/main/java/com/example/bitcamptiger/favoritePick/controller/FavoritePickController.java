@@ -1,11 +1,13 @@
 package com.example.bitcamptiger.favoritePick.controller;
 
 import com.example.bitcamptiger.favoritePick.service.FavoriteService;
+import com.example.bitcamptiger.member.entity.CustomUserDetails;
 import com.example.bitcamptiger.member.entity.Member;
 import com.example.bitcamptiger.vendor.dto.VendorDTO;
 import com.example.bitcamptiger.vendor.entity.Vendor;
 import com.example.bitcamptiger.vendor.service.VendorService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -25,10 +27,11 @@ public class FavoritePickController {
     }
 
     //해당 유저와 가게 정보를 받아와서 찜하기를 추가
-    @PostMapping("/{memberId}/add/{vendorId}")
-    public void addFavorite(@PathVariable Long memberId, @PathVariable Long vendorId) {
+    @PostMapping("/add/{vendorId}")
+    public void addFavorite(@AuthenticationPrincipal CustomUserDetails customUserDetails,@PathVariable Long vendorId) {
+
         Member member = new Member();
-        member.setId(memberId);
+        member.setId(customUserDetails.getUser().getId());
 
         Vendor vendor = favoriteService.getVendorById(vendorId);
 

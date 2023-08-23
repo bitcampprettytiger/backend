@@ -195,6 +195,7 @@ public class VendorServiceImpl implements VendorService {
     // 해당 검색어를 포함한 모든 가게 조회.
     // 주소, 메뉴명, 가게명
     @Override
+    @Transactional(readOnly = true)
     public List<VendorDTO> getVendorByCategory(String address, String menuName, String vendorName){
         List<Vendor> vendorList = vendorRepository.findVendorByCategory(address, menuName, vendorName);
 
@@ -202,8 +203,16 @@ public class VendorServiceImpl implements VendorService {
 
         //vendorList의 각 요소에 대해 반복하며, 각각의 Vendor 객체를 반복 변수인 "vendor"에 할당
         for(Vendor vendor : vendorList) {
+
+            List<VendorImage> byVendor = vendorImageRepository.findByVendor(vendor);
+
+            String geturl = new String();
             //Vendor 객체를 VendorDTO 객체로 변환
             VendorDTO vendorDTO = VendorDTO.of(vendor);
+            if(!byVendor.isEmpty()) {
+                geturl = s3UploadService.geturl(byVendor.get(0).getUrl() + byVendor.get(0).getFileName());
+                vendorDTO.setPrimaryimgurl(geturl);
+            }
 
             List<Menu> menuList = menuRepository.findByVendor(vendor);
 

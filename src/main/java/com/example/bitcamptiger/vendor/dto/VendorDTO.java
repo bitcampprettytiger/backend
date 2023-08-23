@@ -53,8 +53,10 @@ public class VendorDTO {
     private Long reviewCount;
     private Double weightedAverageScore;
 
+    @JsonIgnore
     private List<VendorImageDTO> vendorImageDTOList;
 
+    @JsonIgnore
     private List<MenuDTO> menuDTOList;
 
 

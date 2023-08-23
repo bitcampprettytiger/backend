@@ -37,14 +37,19 @@ public class Member {
 
 
 //  별명
+    @Column(nullable = false)
     private String nickname;
 
+    @Column(nullable = false)
+    private boolean privacy;
 
-//  판매자,관리자,사용자.
+    private boolean isOAuth;
+
+    //  판매자,관리자,사용자.
     private String role;
 
 //  가입 타입
-    private String local;
+    private String type;
 
 
 
@@ -53,6 +58,9 @@ public class Member {
                 .username(this.username)
                 .password("") // 비밀번호는 빈 문자열로 설정 (DTO에 비밀번호를 담지 않기 위함)
                 .role(this.role)
+                .privacy(this.privacy)
+                .AccountNonExpired(true)
+                .NonLocked(true)
                 .build();
     }
 }

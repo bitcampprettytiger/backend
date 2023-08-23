@@ -25,6 +25,9 @@ public class MemberDTO {
     //  휴대폰 번호
     private int tel;
 
+    //  개인정보 동의
+    private boolean privacy;
+
     //  별명
     private String nickname;
 
@@ -41,18 +44,19 @@ public class MemberDTO {
     //  계정의 차단 여부 조회
     private boolean NonLocked;
 
-    //  개인정보 동의
-    private boolean privacy;
-
-
     private String accessToken;
 
     private String refreshToken;
+
+
     public Member toMemberEntity(){
         return Member.builder()
                 .username(this.username)
                 .password(this.password)
                 .role(this.role)
+                .privacy(this.privacy)
+                .isOAuth(true)
+                .type("local")
                 .build();
     }
 }

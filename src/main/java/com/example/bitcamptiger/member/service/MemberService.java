@@ -21,6 +21,8 @@ public class MemberService {
         if(member == null || member.getUsername() ==null){
             throw new RuntimeException("Invalid Argument");
         }
+
+
        Member joinmember = member.toMemberEntity();
 
         //username 중복체크

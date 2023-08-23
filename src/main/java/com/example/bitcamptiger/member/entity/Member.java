@@ -32,7 +32,6 @@ public class Member {
     private String username;
 
 
-
     @Column(nullable = false)
     private String password;
 
@@ -47,9 +46,12 @@ public class Member {
 
     private boolean isOAuth;
 
+    @Column
+    private String local;
+    @Column
     //  판매자,관리자,사용자.
     private String role;
-
+    @Column
 //  가입 타입
     private String type;
 

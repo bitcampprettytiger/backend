@@ -1,5 +1,6 @@
 package com.example.bitcamptiger.menu.controller;
 
+import com.example.bitcamptiger.common.service.S3UploadService;
 import com.example.bitcamptiger.dto.ResponseDTO;
 import com.example.bitcamptiger.menu.dto.MenuDTO;
 import com.example.bitcamptiger.menu.repository.MenuRepository;
@@ -18,6 +19,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MenuController {
 
+    public  final S3UploadService s3UploadService;
     public final MenuService menuService;
 
     public final MenuRepository menuRepository;
@@ -31,6 +33,8 @@ public class MenuController {
         ResponseDTO<MenuDTO> response = new ResponseDTO<>();
         try{
             List<MenuDTO> menuDTOList = menuService.getMenuList(vendorId);
+
+
 
             response.setItemlist(menuDTOList);
             response.setStatusCode(HttpStatus.OK.value());

@@ -1,6 +1,7 @@
 package com.example.bitcamptiger.vendor.service.Impl;
 
 import com.example.bitcamptiger.common.FileUtils;
+import com.example.bitcamptiger.common.service.S3UploadService;
 import com.example.bitcamptiger.menu.dto.MenuDTO;
 import com.example.bitcamptiger.menu.dto.MenuImageDTO;
 import com.example.bitcamptiger.menu.entity.Menu;
@@ -48,6 +49,7 @@ public class VendorServiceImpl implements VendorService {
     private final FileUtils fileUtils;
     private final VendorImageRepository vendorImageRepository;
     private final NowLocationRepository nowLocationRepository;
+    public  final S3UploadService s3UploadService;
 
 //    public final GeoService geoService;
     @Override
@@ -475,6 +477,8 @@ public class VendorServiceImpl implements VendorService {
 
         List<VendorImageDTO> vendorImageDTOList = new ArrayList<>();
         for(VendorImage vendorImage : vendorImageList){
+            String geturl = s3UploadService.geturl(vendorImage.getUrl() + vendorImage.getFileName());
+            vendorImage.setUrl(geturl);
             VendorImageDTO vendorImageDTO = VendorImageDTO.of(vendorImage);
             vendorImageDTOList.add(vendorImageDTO);
         }

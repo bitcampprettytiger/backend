@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class MemberDTO {
+public class VendorMemberDTO {
 
     @Email(message = "이메일 형식으로 입력하세요")
     //  아이디
@@ -55,7 +55,7 @@ public class MemberDTO {
                 .password(this.password)
                 .nickname(this.nickname)
                 .tel(this.tel)
-                .role("ROLE_BASIC")
+                .role("ROLE_VENDOR")
                 .privacy(this.privacy)
                 .isOAuth(false)
                 .type("local")

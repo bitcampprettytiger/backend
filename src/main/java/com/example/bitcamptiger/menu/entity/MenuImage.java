@@ -3,7 +3,8 @@ package com.example.bitcamptiger.menu.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -17,6 +18,7 @@ public class MenuImage {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "menu_id", referencedColumnName = "menu_id")
     private Menu menu;
+
 
     @Id
     @Column(name = "menu_img_id")

@@ -67,6 +67,7 @@ public class RoadOccuCertiServiceImpl implements RoadOccuCertiService {
 
             // JSON 데이터를 파싱하여 리스트로 변환
             List<RoadOcuuCertiData> dataList = jsonParserUtil.parseData(resultBuffer.toString());
+            System.out.println(dataList);
             return dataList;
 
         } catch (IOException | ParseException e) {

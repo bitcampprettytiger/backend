@@ -25,21 +25,42 @@ public class Member {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+
+
     @Column(nullable = false)
     private String username;
+
+
 
     @Column(nullable = false)
     private String password;
 
 
+//  별명
+    @Column(nullable = false)
+    private String nickname;
+
+    @Column(nullable = false)
+    private boolean privacy;
+
+    private boolean isOAuth;
+
+    //  판매자,관리자,사용자.
     private String role;
+
+//  가입 타입
+    private String type;
+
+
 
     public MemberDTO toMemberDTO() {
         return MemberDTO.builder()
-                .id(this.id)
                 .username(this.username)
                 .password("") // 비밀번호는 빈 문자열로 설정 (DTO에 비밀번호를 담지 않기 위함)
                 .role(this.role)
+                .privacy(this.privacy)
+                .AccountNonExpired(true)
+                .NonLocked(true)
                 .build();
     }
 }

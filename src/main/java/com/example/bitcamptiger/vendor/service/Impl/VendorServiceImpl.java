@@ -330,7 +330,8 @@ public class VendorServiceImpl implements VendorService {
 
 
                 Vendor vendor = vendorDTO.createVendor();
-
+                vendor.setClose(vendorDTO.getClose());
+                vendor.setOpen(vendorDTO.getOpen());
                 Vendor savedVendor = vendorRepository.save(vendor);
 
                 List<Randmark> randmarkBydistinct = nowLocationRepository.findRandmarkBydistinct(vendor);
@@ -406,8 +407,8 @@ public class VendorServiceImpl implements VendorService {
         vendor.setAddress(vendorDTO.getAddress());
         vendor.setTel(vendorDTO.getTel());
         vendor.setBusinessDay(vendorDTO.getBusinessDay());
-        vendor.setOpen(LocalTime.parse(vendorDTO.getOpen()));
-        vendor.setClose(LocalTime.parse(vendorDTO.getClose()));
+        vendor.setOpen(vendorDTO.getOpen());
+        vendor.setClose(vendorDTO.getClose());
 
         //주소가 변경된 경우에만 경도와 위도를 업데이트
         if(!vendor.getAddress().equals(vendorDTO.getAddress())){

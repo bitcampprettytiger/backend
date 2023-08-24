@@ -2,10 +2,12 @@ package com.example.bitcamptiger.menu.controller;
 
 import com.example.bitcamptiger.common.service.S3UploadService;
 import com.example.bitcamptiger.dto.ResponseDTO;
+import com.example.bitcamptiger.member.dto.VendorMemberDTO;
 import com.example.bitcamptiger.menu.dto.MenuDTO;
 import com.example.bitcamptiger.menu.repository.MenuRepository;
 import com.example.bitcamptiger.menu.service.Impl.MenuServiceImpl;
 import com.example.bitcamptiger.menu.service.MenuService;
+import com.example.bitcamptiger.vendor.dto.VendorMenuDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -69,6 +71,24 @@ public class MenuController {
         }
     }
 
+
+
+    @PostMapping("/UpdateVendor")
+    public ResponseEntity<?> vendorupdateMenu(VendorMenuDto vendorMenuDto){
+        ResponseDTO<String> response = new ResponseDTO<>();
+        System.out.println(vendorMenuDto);
+
+        try{
+            response.setItem("수정완료");
+            response.setStatusCode(HttpStatus.OK.value());
+
+            return ResponseEntity.ok().body(response);
+        }catch(Exception e) {
+            response.setErrorMessage(e.getMessage());
+            response.setStatusCode(HttpStatus.BAD_REQUEST.value());
+            return ResponseEntity.badRequest().body(response);
+        }
+    }
     // 메뉴 수정
     @PutMapping("/info")
     public ResponseEntity<?> updateMenu(MenuDTO menuDTO, @RequestParam(required = false, value = "file") MultipartFile[] uploadFiles){

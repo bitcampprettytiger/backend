@@ -31,10 +31,11 @@ public class MenuDTO {
 
     private String menuType;
 
+
+
     //메뉴 조회수
     private int views;
 
-    @JsonIgnore
     private Vendor vendor;
 
 

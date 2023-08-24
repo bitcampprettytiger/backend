@@ -56,6 +56,7 @@ public class MemberDTO {
                 .nickname(this.nickname)
                 .tel(this.tel)
                 .role("ROLE_BASIC")
+                .local("local")
                 .privacy(this.privacy)
                 .isOAuth(false)
                 .type("local")

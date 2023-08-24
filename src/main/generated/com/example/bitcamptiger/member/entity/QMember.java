@@ -23,6 +23,8 @@ public class QMember extends EntityPathBase<Member> {
 
     public final BooleanPath isOAuth = createBoolean("isOAuth");
 
+    public final StringPath local = createString("local");
+
     public final StringPath nickname = createString("nickname");
 
     public final StringPath password = createString("password");

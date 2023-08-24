@@ -55,7 +55,7 @@ public class SecurityConfiguration {
 //                    /요청은 모든 사용자가 이용가능
 
 
-    authorizaRequests.requestMatchers("/member/**","/board/**","/api/**", "/menu/**", "/favorite-Test/**","/businessApi/**","/API/**").permitAll();
+     authorizaRequests.requestMatchers("/member/**","/board/**","/api/**", "/menu/**", "/favorite-Test/**","/businessApi/**","/API/**").permitAll();
      authorizaRequests.requestMatchers("/vendor/**","/reviews/**").permitAll();
      authorizaRequests.requestMatchers("/**").hasAuthority("ROLE_VENDOR");
      authorizaRequests.anyRequest().authenticated();

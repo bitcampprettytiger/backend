@@ -22,8 +22,6 @@ public class OrderDTO {
 
     private Member member;
 
-    private Menu menu;
-
     private String orderDate;   //주문한 날짜
 
 //    private int quantity;   // 주문 메뉴별 수량
@@ -34,6 +32,7 @@ public class OrderDTO {
     private int totalPrice; // 총 결제 금액
 
     private List<OrderMenuDTO> orderedMenuDTOList = new ArrayList<>();
+
 
     private static ModelMapper modelMapper = new ModelMapper();
 

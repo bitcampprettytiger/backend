@@ -75,10 +75,26 @@ public class OrderController {
 
     //주문 상세 내역 확인
 
+    @GetMapping("/orderDetail/{orderId}")
+    public ResponseEntity<?> getOrderDetail(@PathVariable Long orderId){
+        ResponseDTO<OrderDTO> response = new ResponseDTO<>();
+
+        try{
+            OrderDTO orderDTO = orderService.getOrderDetail(orderId);
+
+            response.setItem(orderDTO);
+            response.setStatusCode(HttpStatus.OK.value());
+
+            return ResponseEntity.ok(response);
+        }catch (Exception e) {
+            response.setErrorMessage(e.getMessage());
+            response.setStatusCode(HttpStatus.BAD_REQUEST.value());
+            return ResponseEntity.badRequest().body(response);
+        }
+    }
 
 
     //주문 취소
-
 
 
 

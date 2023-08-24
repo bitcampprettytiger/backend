@@ -29,7 +29,7 @@ public class CartItem {
 
     //카드에 담긴 메뉴의 수량
     @Column
-    private Integer cartQuantity;
+    private int cartQuantity;
 
 
     //장바구니에 담을 상품 엔티티를 생성하는 메소드

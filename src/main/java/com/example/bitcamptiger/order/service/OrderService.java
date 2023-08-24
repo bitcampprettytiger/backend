@@ -13,6 +13,7 @@ public interface OrderService {
     List<OrderDTO> getOrderList(Long memberId);
 
     //특정 주문내역 상세 확인
+    OrderDTO getOrderDetail(Long orderId);
 
 
 //    void createOrderFromCartItem(Member member, List<OrderMenu> orderedMenuSet);

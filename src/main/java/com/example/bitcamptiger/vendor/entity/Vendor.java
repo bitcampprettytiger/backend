@@ -37,7 +37,6 @@ public class Vendor {
     private String vendorInfo;  //가게 설명
 
     @Column
-//    @Enumerated(EnumType.STRING)
     private String vendorOpenStatus;
 
     @Column

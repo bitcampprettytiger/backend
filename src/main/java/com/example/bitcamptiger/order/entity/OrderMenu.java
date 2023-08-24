@@ -23,7 +23,7 @@ public class OrderMenu {
     @JsonBackReference
     private Orders order; // 부모 주문 엔티티와의 관계 설정
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "menu_id")
     private Menu menu; // 주문한 각각의 메뉴
 

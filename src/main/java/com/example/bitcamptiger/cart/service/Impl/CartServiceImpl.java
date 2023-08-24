@@ -119,17 +119,6 @@ public class CartServiceImpl implements CartService {
 
     }
 
-    // 주문 완료 후 장바구니 비우기
-    public void clearCart(Long memberId){
-        // 해당 회원의 ID로 장바구니 아이템들을 조회
-        List<CartItem> cartItemList = cartItemRepository.findByCartMemberId(memberId);
-
-        // 해당 아이템들을 삭제
-        cartItemRepository.deleteAll(cartItemList);
-
-    }
-
-
 
 
 

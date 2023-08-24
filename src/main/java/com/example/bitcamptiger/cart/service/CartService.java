@@ -24,6 +24,4 @@ public interface CartService {
     void deleteCart(CartItemDTO cartItemDTO);
 
 
-    //주문 완료된 메뉴 장바구니에서 삭제
-    void clearCart(Long menuId);
 }

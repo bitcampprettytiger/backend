@@ -33,5 +33,8 @@ public class VendorImage {
     @Column
     private String fileCate;
 
+    @Column
+    private String S3url;
+
 
 }

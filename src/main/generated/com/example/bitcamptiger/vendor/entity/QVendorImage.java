@@ -30,6 +30,8 @@ public class QVendorImage extends EntityPathBase<VendorImage> {
 
     public final StringPath originName = createString("originName");
 
+    public final StringPath S3url = createString("S3url");
+
     public final StringPath url = createString("url");
 
     public final QVendor vendor;

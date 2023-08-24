@@ -2,6 +2,8 @@ package com.example.bitcamptiger.vendor.controller;
 
 
 import com.example.bitcamptiger.dto.ResponseDTO;
+import com.example.bitcamptiger.member.dto.MemberDTO;
+import com.example.bitcamptiger.member.entity.Member;
 import com.example.bitcamptiger.response.BaseResponse;
 import com.example.bitcamptiger.vendor.dto.LocationDto;
 import com.example.bitcamptiger.vendor.dto.NowLocationDto;
@@ -38,9 +40,6 @@ public class VendorController {
         System.out.println(nowLocationDto);
         ResponseDTO<LocationDto> response = new ResponseDTO<>();
         try{
-
-
-
             List<LocationDto> nowLocationList = vendorService.getNowLocationList(nowLocationDto);
             if(nowLocationList.isEmpty()){
                return new BaseResponse<>(RESPONSE_ERROR);
@@ -140,8 +139,10 @@ public class VendorController {
             @RequestParam(required = false) String address,
             @RequestParam(required = false) String menuName,
             @RequestParam(required = false) String vendorName){
+        System.out.println(address);
+        System.out.println(menuName);
+        System.out.println(vendorName);
         ResponseDTO<VendorDTO> response = new ResponseDTO<>();
-
         try{
             List<VendorDTO> vendorDTOList = vendorService.getVendorByCategory(address, menuName, vendorName);
 
@@ -224,7 +225,7 @@ public class VendorController {
 
 
     //개별 상점 상세 정보 확인
-    @GetMapping("/infoDetail/{id}")
+    @GetMapping("/infoDetaild/{i}")
     public VendorDTO getVendorInfoDetail(@PathVariable Long id){
         return vendorService.getVendorDetail(id);
     }
@@ -238,22 +239,18 @@ public class VendorController {
             @ApiResponse(responseCode = "400", description = "실패")
     })
     @PostMapping("/info")
-    public ResponseEntity<?> insertVendorInfo(VendorDTO vendorDTO, @RequestParam(required = false, value = "file")MultipartFile[] uploadFiles){
+    public ResponseEntity<?> insertVendorInfo(@RequestBody VendorDTO vendorDTO, @RequestParam(required = false, value = "file")MultipartFile[] uploadFiles){
         System.out.println(vendorDTO);
 //        vendorDTO null 일때 vaildation
         if(vendorDTO.equals(null)){
             new BaseResponse<>(VENDORDTO_NUTNULL);
         }
         ResponseDTO<VendorDTO> response = new ResponseDTO<>();
-
         try{
             vendorService.insertVendor(vendorDTO, uploadFiles);
-
             List<VendorDTO> vendorDTOList = vendorService.getVendorList();
-
             response.setItemlist(vendorDTOList);
             response.setStatusCode(HttpStatus.OK.value());
-
             return ResponseEntity.ok().body(response);
         }catch(Exception e) {
             response.setErrorMessage(e.getMessage());
@@ -278,6 +275,7 @@ public class VendorController {
             response.setStatusCode(HttpStatus.OK.value());
 
             return ResponseEntity.ok().body(response);
+
         }catch(Exception e) {
             response.setErrorMessage(e.getMessage());
             response.setStatusCode(HttpStatus.BAD_REQUEST.value());

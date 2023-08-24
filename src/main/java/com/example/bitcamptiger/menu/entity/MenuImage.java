@@ -21,6 +21,7 @@ public class MenuImage {
     @JsonBackReference
     private Menu menu;
 
+
     @Id
     @Column(name = "menu_img_id")
     private Long id;

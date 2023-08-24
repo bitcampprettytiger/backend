@@ -1,6 +1,7 @@
 package com.example.bitcamptiger.vendor.service.Impl;
 
 import com.example.bitcamptiger.common.FileUtils;
+import com.example.bitcamptiger.common.service.S3UploadService;
 import com.example.bitcamptiger.menu.dto.MenuDTO;
 import com.example.bitcamptiger.menu.dto.MenuImageDTO;
 import com.example.bitcamptiger.menu.entity.Menu;
@@ -48,6 +49,7 @@ public class VendorServiceImpl implements VendorService {
     private final FileUtils fileUtils;
     private final VendorImageRepository vendorImageRepository;
     private final NowLocationRepository nowLocationRepository;
+    public  final S3UploadService s3UploadService;
 
 //    public final GeoService geoService;
     @Override
@@ -193,6 +195,7 @@ public class VendorServiceImpl implements VendorService {
     // 해당 검색어를 포함한 모든 가게 조회.
     // 주소, 메뉴명, 가게명
     @Override
+    @Transactional(readOnly = true)
     public List<VendorDTO> getVendorByCategory(String address, String menuName, String vendorName){
         List<Vendor> vendorList = vendorRepository.findVendorByCategory(address, menuName, vendorName);
 
@@ -200,8 +203,16 @@ public class VendorServiceImpl implements VendorService {
 
         //vendorList의 각 요소에 대해 반복하며, 각각의 Vendor 객체를 반복 변수인 "vendor"에 할당
         for(Vendor vendor : vendorList) {
+
+            List<VendorImage> byVendor = vendorImageRepository.findByVendor(vendor);
+
+            String geturl = new String();
             //Vendor 객체를 VendorDTO 객체로 변환
             VendorDTO vendorDTO = VendorDTO.of(vendor);
+            if(!byVendor.isEmpty()) {
+                geturl = s3UploadService.geturl(byVendor.get(0).getUrl() + byVendor.get(0).getFileName());
+                vendorDTO.setPrimaryimgurl(geturl);
+            }
 
             List<Menu> menuList = menuRepository.findByVendor(vendor);
 
@@ -319,7 +330,8 @@ public class VendorServiceImpl implements VendorService {
 
 
                 Vendor vendor = vendorDTO.createVendor();
-
+                vendor.setClose(vendorDTO.getClose());
+                vendor.setOpen(vendorDTO.getOpen());
                 Vendor savedVendor = vendorRepository.save(vendor);
 
                 List<Randmark> randmarkBydistinct = nowLocationRepository.findRandmarkBydistinct(vendor);
@@ -395,8 +407,8 @@ public class VendorServiceImpl implements VendorService {
         vendor.setAddress(vendorDTO.getAddress());
         vendor.setTel(vendorDTO.getTel());
         vendor.setBusinessDay(vendorDTO.getBusinessDay());
-        vendor.setOpen(LocalTime.parse(vendorDTO.getOpen()));
-        vendor.setClose(LocalTime.parse(vendorDTO.getClose()));
+        vendor.setOpen(vendorDTO.getOpen());
+        vendor.setClose(vendorDTO.getClose());
 
         //주소가 변경된 경우에만 경도와 위도를 업데이트
         if(!vendor.getAddress().equals(vendorDTO.getAddress())){
@@ -475,6 +487,8 @@ public class VendorServiceImpl implements VendorService {
 
         List<VendorImageDTO> vendorImageDTOList = new ArrayList<>();
         for(VendorImage vendorImage : vendorImageList){
+            String geturl = s3UploadService.geturl(vendorImage.getUrl() + vendorImage.getFileName());
+            vendorImage.setUrl(geturl);
             VendorImageDTO vendorImageDTO = VendorImageDTO.of(vendorImage);
             vendorImageDTOList.add(vendorImageDTO);
         }

@@ -37,7 +37,7 @@ public class Review {
     private Vendor vendor;//상점번호
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "id", referencedColumnName = "id")
     private Member member;
 
     @Column
@@ -61,8 +61,8 @@ public class Review {
                 .reviewContent(this.reviewContent)
                 .reviewRegDate(this.reviewRegDate.toString())
                 .reviewScore(this.reviewScore)
-                .likedCount(this.likeCount)
-                .disLikedCount(this.disLikeCount)
+                .likedCount(this.likeCount != null ? this.likeCount : 0)
+                .disLikedCount(this.disLikeCount != null ? this.disLikeCount : 0)
                 .build();
     }
 
@@ -72,6 +72,4 @@ public class Review {
             this.vendor = vendor;
             vendor.updateVendorReviewScore(this);
         }
-
-
 }

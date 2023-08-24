@@ -57,10 +57,10 @@ public class Vendor {
     private String businessDay;
 
     @Column
-    private LocalTime open;
+    private String open;
 
     @Column
-    private LocalTime close;
+    private String close;
 
     @Column
     private String b_no;        //사업자 번호

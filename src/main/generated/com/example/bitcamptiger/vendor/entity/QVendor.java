@@ -32,7 +32,7 @@ public class QVendor extends EntityPathBase<Vendor> {
 
     public final StringPath businessDay = createString("businessDay");
 
-    public final TimePath<java.time.LocalTime> close = createTime("close", java.time.LocalTime.class);
+    public final StringPath close = createString("close");
 
     public final StringPath coolerInfo = createString("coolerInfo");
 
@@ -44,7 +44,7 @@ public class QVendor extends EntityPathBase<Vendor> {
 
     public final ListPath<com.example.bitcamptiger.menu.entity.Menu, com.example.bitcamptiger.menu.entity.QMenu> menuList = this.<com.example.bitcamptiger.menu.entity.Menu, com.example.bitcamptiger.menu.entity.QMenu>createList("menuList", com.example.bitcamptiger.menu.entity.Menu.class, com.example.bitcamptiger.menu.entity.QMenu.class, PathInits.DIRECT2);
 
-    public final TimePath<java.time.LocalTime> open = createTime("open", java.time.LocalTime.class);
+    public final StringPath open = createString("open");
 
     public final StringPath perNo = createString("perNo");
 

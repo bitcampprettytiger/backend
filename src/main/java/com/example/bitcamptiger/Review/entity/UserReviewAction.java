@@ -15,11 +15,11 @@ public class UserReviewAction {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
+    @JoinColumn(name = "member_id") //멤버 id 조인
     private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "reviewNum")
+    @JoinColumn(name = "reviewNum") //리뷰 id 조인
     private Review review;
 
     private boolean liked;

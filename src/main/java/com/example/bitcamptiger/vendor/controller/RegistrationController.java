@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/businessApi")
 public class RegistrationController {
 
     //사업자번호 조회 관련 컨트롤러

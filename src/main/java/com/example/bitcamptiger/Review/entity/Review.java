@@ -63,8 +63,8 @@ public class Review {
                 .reviewContent(this.reviewContent)
                 .reviewRegDate(this.reviewRegDate.toString())
                 .reviewScore(this.reviewScore)
-                .likedCount(this.likeCount)
-                .disLikedCount(this.disLikeCount)
+                .likedCount(this.likeCount != null ? this.likeCount : 0)
+                .disLikedCount(this.disLikeCount != null ? this.disLikeCount : 0)
                 .build();
     }
 
@@ -74,6 +74,4 @@ public class Review {
             this.vendor = vendor;
             vendor.updateVendorReviewScore(this);
         }
-
-
 }

@@ -26,7 +26,7 @@ public interface ReviewService {
     List<ReviewFile> getReviewFileList(Long reviewNum);
 
     @Transactional
-    List<ReviewDto> getAllReviewsWithFiles();
+    List<ReviewDto> getAllReviewsWithFiles(Long vendorId);
 
     void likeReview(Member member, Review review);
 

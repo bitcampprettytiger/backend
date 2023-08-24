@@ -1,14 +1,11 @@
 package com.example.bitcamptiger.seoulApi.controller;
 
 import com.example.bitcamptiger.seoulApi.dto.DongJakAPIDTO;
-import com.example.bitcamptiger.seoulApi.dto.DongJakAPIResponseDTO;
 import com.example.bitcamptiger.seoulApi.service.DongJakAPIService;
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.example.bitcamptiger.seoulApi.service.userValidaionService.UserValiService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -16,9 +13,10 @@ import java.util.List;
 @RequestMapping("/API/DongJak")
 public class DongJakAPIController {
     private final DongJakAPIService dongJakAPIService;
-
-    public DongJakAPIController(DongJakAPIService dongJakAPIService) {
+    private final UserValiService userValiService;
+    public DongJakAPIController(DongJakAPIService dongJakAPIService, UserValiService userValiService) {
         this.dongJakAPIService = dongJakAPIService;
+        this.userValiService = userValiService;
     }
 
 
@@ -43,4 +41,58 @@ public class DongJakAPIController {
         }
     }
 
+
+
+    @PostMapping("/dongJak")
+    public ResponseEntity<String> validateDongJakInfo(
+            @RequestBody DongJakAPIDTO dongJakAPIDTO) {
+        String storeName = dongJakAPIDTO.get거리가게명();
+        String location = dongJakAPIDTO.get위치();
+        System.out.println(storeName + location);
+        String validationMessage = userValiService.signUpForDongJak(storeName, location);
+
+        if ("정보가 일치합니다.".equals(validationMessage)) {
+            // 정보가 일치하는 경우, 다음 단계로 진행
+            return ResponseEntity.ok(validationMessage);
+        } else {
+            // 정보가 일치하지 않는 경우, 에러 처리
+            return ResponseEntity.badRequest().body(validationMessage);
+        }
+    }
+
+    //사용자가 "노량진"을 선택하고 호점 정보를 입력한 경우에 대한 검증 로직
+    //사용자가 입력한 호점 정보를 추출하여 "노량진"이 구분에 포함되는 엔티티 중 호점 정보와 일치하는 것이 있는지 확인하고,
+    // 그에 따라 적절한 응답을 반환하는 것
+    @PostMapping("/NoRyangJin")
+    public ResponseEntity<String> validateNoRyangJinInfo(
+            @RequestBody DongJakAPIDTO dongJakAPIDTO) {
+        String location = dongJakAPIDTO.get위치();
+        // 사용자가 입력한 호점 정보를 추출하여 검증합니다.
+        String 호점 = extract호점FromLocation(location);
+
+        String validationMessage = userValiService.signUpForNoRyangJin(호점);
+
+        if ("정보가 일치합니다.".equals(validationMessage)) {
+            // 정보가 일치하는 경우, 다음 단계로 진행
+            return ResponseEntity.ok(validationMessage);
+        } else {
+            // 정보가 일치하지 않는 경우, 에러 처리
+            return ResponseEntity.badRequest().body(validationMessage);
+        }
+    }
+
+    private String extract호점FromLocation(String location) {
+        String[] tokens = location.split(" "); // 위치 문자열을 공백을 기준으로 분리
+
+        for (String token : tokens) {
+            if (token.endsWith("호점")) { // "호점"으로 끝나는 토큰
+                String 호점 = token.replace("호점", ""); // "호점"을 제거한 숫자추출
+                if (호점.matches("\\d+")) { // 추출한 숫자가 숫자로만 이루어진 경우에만 반환
+                    return 호점;
+                }
+            }
+        }
+
+        return null; // 호점을 찾지 못한 경우에는 null을 반환
+    }
 }

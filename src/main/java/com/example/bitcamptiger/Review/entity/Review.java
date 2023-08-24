@@ -4,10 +4,7 @@ import com.example.bitcamptiger.Review.dto.ReviewDto;
 import com.example.bitcamptiger.member.entity.Member;
 import com.example.bitcamptiger.vendor.entity.Vendor;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -21,7 +18,8 @@ import java.util.List;
         initialValue = 1,
         allocationSize = 1
 )
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder

@@ -317,16 +317,16 @@ public class VendorServiceImpl implements VendorService {
         vendorDTO.setY(point.get("y").toString());
 
         //사업자 유효성 검사 인증 완료 후, 사업자등록 번호 꺼내오기
-        BusinessResponseDto responseDto = vendorAPIService.checkBusiness(vendorDTO.getB_no());
-        if (responseDto != null && responseDto.getData().length > 0) {
-            vendorDTO.setB_no(responseDto.getData()[0].getB_no());
-
-
-            //도로 점유증 유효성 검사 인증 완료 후, 도로 점유증 허가 번호/신청인명 꺼내오기
-            RoadOcuuCertiData roadOcuuCertiData = roadOccuCertiService.authenticateAndReturnMessage(vendorDTO.getPerNo(), vendorDTO.getRlAppiNm());
-            if (roadOcuuCertiData != null) {
-                vendorDTO.setPerNo(roadOcuuCertiData.getPerNo());
-                vendorDTO.setRlAppiNm(roadOcuuCertiData.getRlAppiNm());
+//        BusinessResponseDto responseDto = vendorAPIService.checkBusiness(vendorDTO.getB_no());
+//        if (responseDto != null && responseDto.getData().length > 0) {
+//            vendorDTO.setB_no(responseDto.getData()[0].getB_no());
+//
+//
+//            //도로 점유증 유효성 검사 인증 완료 후, 도로 점유증 허가 번호/신청인명 꺼내오기
+//            RoadOcuuCertiData roadOcuuCertiData = roadOccuCertiService.authenticateAndReturnMessage(vendorDTO.getPerNo(), vendorDTO.getRlAppiNm());
+//            if (roadOcuuCertiData != null) {
+//                vendorDTO.setPerNo(roadOcuuCertiData.getPerNo());
+//                vendorDTO.setRlAppiNm(roadOcuuCertiData.getRlAppiNm());
 
 
                 Vendor vendor = vendorDTO.createVendor();
@@ -385,13 +385,13 @@ public class VendorServiceImpl implements VendorService {
                     vendorImageRepository.save(vendorImage);
                 }
 
-            } else {
-                throw new RuntimeException("도로 점유증 유효성 검사에 실패하였습니다.");
-            }
-
-        } else {
-            throw new RuntimeException("사업자 유효성 검사에 실패하였습니다.");
-        }
+//            } else {
+//                throw new RuntimeException("도로 점유증 유효성 검사에 실패하였습니다.");
+//            }
+//
+//        } else {
+//            throw new RuntimeException("사업자 유효성 검사에 실패하였습니다.");
+//        }
 
     }
 

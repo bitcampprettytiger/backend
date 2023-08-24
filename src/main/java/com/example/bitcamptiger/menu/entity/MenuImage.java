@@ -1,5 +1,6 @@
 package com.example.bitcamptiger.menu.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -17,6 +18,7 @@ public class MenuImage {
     @Id
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "menu_id", referencedColumnName = "menu_id")
+    @JsonBackReference
     private Menu menu;
 
 

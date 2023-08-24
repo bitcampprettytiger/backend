@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/API/DongJak")
+@RequestMapping("/API/dongJak")
 public class DongJakAPIController {
     private final DongJakAPIService dongJakAPIService;
     private final UserValiService userValiService;
@@ -43,7 +43,7 @@ public class DongJakAPIController {
 
 
 
-    @PostMapping("/dongJak")
+    @PostMapping("/validateDongJak")
     public ResponseEntity<String> validateDongJakInfo(
             @RequestBody DongJakAPIDTO dongJakAPIDTO) {
         String storeName = dongJakAPIDTO.get거리가게명();

@@ -2,8 +2,10 @@ package com.example.bitcamptiger.seoulApi.service.userValidaionService;
 
 import com.example.bitcamptiger.seoulApi.entity.DongJakVenders;
 import com.example.bitcamptiger.seoulApi.entity.GangNamVenders;
+import com.example.bitcamptiger.seoulApi.entity.GangseoguVenders;
 import com.example.bitcamptiger.seoulApi.repository.DongJakVendersRepository;
 import com.example.bitcamptiger.seoulApi.repository.GangNamVendersRepository;
+import com.example.bitcamptiger.seoulApi.repository.GangseoguVendersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +18,8 @@ public class UserValiService {
     private GangNamVendersRepository gangNamVendersRepository;
     @Autowired
     private DongJakVendersRepository dongJakVendersRepository;
+    @Autowired
+    private GangseoguVendersRepository gangseoguVendersRepository;
 
 //    public String APIValidateSignUp(String userSelectedArea, String userAddress) {
 //        if ("강남구".equals(userSelectedArea)) {
@@ -68,4 +72,18 @@ public class UserValiService {
             return "정보가 일치하지 않습니다. 다시 확인해주세요.";
         }
     }
+
+
+    public String signUpForGangseo(String 위치,String 판매품목){
+        GangseoguVenders existingEntity = gangseoguVendersRepository.findBy위치And판매품목(위치, 판매품목);
+
+        if(existingEntity != null){
+            return "정보가 일치합니다.";
+        }else{
+            return "정보가 일치하지 않습니다. 다시 확인해주세ㅐ요.";
+        }
+    }
+
+
+
 }

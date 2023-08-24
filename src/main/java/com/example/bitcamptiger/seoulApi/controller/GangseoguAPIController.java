@@ -1,13 +1,11 @@
 package com.example.bitcamptiger.seoulApi.controller;
 
-import com.example.bitcamptiger.seoulApi.dto.GangNamAPIDTO;
 import com.example.bitcamptiger.seoulApi.dto.GangseoguAPIDTO;
 import com.example.bitcamptiger.seoulApi.service.GangseoguAPIService;
+import com.example.bitcamptiger.seoulApi.service.userValidaionService.UserValiService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -16,9 +14,11 @@ import java.util.List;
 public class GangseoguAPIController {
 
     private final GangseoguAPIService gangseoguAPIService;
+    private final UserValiService userValiService;
 
-    public GangseoguAPIController(GangseoguAPIService gangseoguAPIService) {
+    public GangseoguAPIController(GangseoguAPIService gangseoguAPIService, UserValiService userValiService) {
         this.gangseoguAPIService = gangseoguAPIService;
+        this.userValiService = userValiService;
     }
 
 
@@ -42,4 +42,26 @@ public class GangseoguAPIController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+    
+    
+    @PostMapping("/validateGangseo")
+    public ResponseEntity<?> validateGangseoInfo(
+            @RequestBody GangseoguAPIDTO gangseoguAPIDTO){
+        String 위치 = gangseoguAPIDTO.get위치();
+        String 판매품목 = gangseoguAPIDTO.get판매품목();
+        String validationMessage = userValiService.signUpForGangseo(위치, 판매품목);
+        
+        if("정보가 일치합니다.".equals(validationMessage)){
+            //정보가 일치하는 경우, 다음 단계로 진행
+            return ResponseEntity.ok(validationMessage);
+        }else{
+            //정보가 일치하지 않는 경우, 에러 처리
+            return ResponseEntity.badRequest().body(validationMessage);
+        }
+    }
+
+    
+    
+    
+    
 }

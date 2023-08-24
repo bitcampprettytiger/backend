@@ -1,9 +1,9 @@
 package com.example.bitcamptiger.seoulApi.controller;
 
-import com.example.bitcamptiger.seoulApi.dto.DongJakAPIDTO;
-import com.example.bitcamptiger.seoulApi.dto.DongJakAPIResponseDTO;
-import com.example.bitcamptiger.seoulApi.service.DongJakAPIService;
+import com.example.bitcamptiger.seoulApi.dto.DobongguAPIDTO;
+import com.example.bitcamptiger.seoulApi.service.DobongguAPIService;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,20 +13,17 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/API/DongJak")
-public class DongJakAPIController {
-    private final DongJakAPIService dongJakAPIService;
+@RequestMapping("/API/dobonggu")
+public class DobongguAPIController {
 
-    public DongJakAPIController(DongJakAPIService dongJakAPIService) {
-        this.dongJakAPIService = dongJakAPIService;
-    }
+    @Autowired
+    private DobongguAPIService dobongguAPIService;
 
-
-    @GetMapping("/DongJakData")
-    public ResponseEntity<List<DongJakAPIDTO>> getExtractedDongJakData() {
+    @GetMapping("/DobongguData")
+    public ResponseEntity<List<DobongguAPIDTO>> getExtractDobongguData() throws JsonProcessingException {
         try {
-            // DongJakAPIService를 이용해 데이터 추출
-            List<DongJakAPIDTO> extractedDataList = dongJakAPIService.extractDongJakData();
+            // DobongguAPIService를 이용해 데이터 추출
+            List<DobongguAPIDTO> extractedDataList = dobongguAPIService.extractDobongguData();
 
             // 추출한 데이터가 비어있지 않은 경우
             if (extractedDataList != null && !extractedDataList.isEmpty()) {
@@ -42,5 +39,4 @@ public class DongJakAPIController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
-
 }

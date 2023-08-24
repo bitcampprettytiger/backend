@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import net.minidev.json.annotate.JsonIgnore;
 import org.modelmapper.ModelMapper;
 
 import java.util.List;
@@ -17,17 +18,26 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class MenuDTO {
+
     private Long id;
+
     private String menuName;
+
     private int price;
+
     private String menuContent;
+
     private String menuSellStatus;
+
     private String menuType;
 
     //메뉴 조회수
     private int views;
 
+    @JsonIgnore
     private Vendor vendor;
+
+
     private List<MenuImageDTO> menuImageList;
 
     private static ModelMapper modelMapper = new ModelMapper();

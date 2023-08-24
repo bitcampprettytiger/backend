@@ -17,9 +17,13 @@ import lombok.NoArgsConstructor;
 public class ReviewFile {
     @Id
     private Long reviewFileNo; //파일번호
+
     private String reviewFileOrigin;// 원본 파일명
+
     private String reviewFileName; // 저장된 파일 명
+
     private String reviewFilePath;// 파일 저장 경로
+
     private String reviewFileCate;
     @Transient
     private String reviewFileStatus;

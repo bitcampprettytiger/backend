@@ -1,16 +1,21 @@
 package com.example.bitcamptiger.member.service;
 
 import com.example.bitcamptiger.member.dto.MemberDTO;
+import com.example.bitcamptiger.member.dto.VendorMemberDTO;
 import com.example.bitcamptiger.member.entity.Member;
 import com.example.bitcamptiger.member.reposiitory.MemberRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class MemberService {
 
     private final MemberRepository memberRepository;
@@ -21,6 +26,8 @@ public class MemberService {
         if(member == null || member.getUsername() ==null){
             throw new RuntimeException("Invalid Argument");
         }
+
+
        Member joinmember = member.toMemberEntity();
 
         //username 중복체크
@@ -31,6 +38,22 @@ public class MemberService {
         return memberRepository.save(joinmember).toMemberDTO();
     }
 
+
+    public VendorMemberDTO vendorjoin(VendorMemberDTO member ) {
+        if(member == null || member.getUsername() ==null){
+            throw new RuntimeException("Invalid Argument");
+        }
+
+
+        Member joinmember = member.toMemberEntity();
+
+        //username 중복체크
+        if(memberRepository.existsByUsername(member.getUsername())){
+
+            throw new RuntimeException("already exist username");
+        }
+        return memberRepository.save(joinmember).toVendorMemberDTO();
+    }
     public Optional<Member> login(Member member) {
         System.out.println(member.getUsername());
         Optional<Member> loginMember = memberRepository.findByUsername(member.getUsername());
@@ -50,4 +73,22 @@ public class MemberService {
     }
 
 
+    public MemberDTO updatemember(MemberDTO member) {
+
+        Member findmember = memberRepository.findByUsername(member.getUsername()).orElseThrow(EntityNotFoundException::new);
+
+        findmember.setNickname(member.getNickname());
+
+        MemberDTO memberDTO = findmember.toMemberDTO();
+
+        return memberDTO;
+
+    }
+
+    public void deletemember(MemberDTO member) {
+
+        Member findmember = memberRepository.findByUsername(member.getUsername()).orElseThrow(EntityNotFoundException::new);
+
+        memberRepository.delete(findmember);
+    }
 }

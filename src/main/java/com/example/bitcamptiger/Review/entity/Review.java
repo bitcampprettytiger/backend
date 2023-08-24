@@ -39,7 +39,7 @@ public class Review {
     private Vendor vendor;//상점번호
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "id", referencedColumnName = "id")
     private Member member;
 
     @Column

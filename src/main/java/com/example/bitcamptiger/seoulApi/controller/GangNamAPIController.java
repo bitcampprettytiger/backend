@@ -1,14 +1,12 @@
 package com.example.bitcamptiger.seoulApi.controller;
 
 import com.example.bitcamptiger.seoulApi.dto.GangNamAPIDTO;
-import com.example.bitcamptiger.seoulApi.service.DongdaemunAPIService;
 import com.example.bitcamptiger.seoulApi.service.GangNamAPIService;
+import com.example.bitcamptiger.seoulApi.service.userValidaionService.UserValiService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -16,10 +14,13 @@ import java.util.List;
 @RequestMapping("/API/gangNam")
 public class GangNamAPIController {
     private final GangNamAPIService gangNamAPIService;
+    private final UserValiService userValiService;
 
     @Autowired
-    public GangNamAPIController(GangNamAPIService gangNamAPIService) {
+    public GangNamAPIController(GangNamAPIService gangNamAPIService, UserValiService userValiService) {
         this.gangNamAPIService = gangNamAPIService;
+        this.userValiService = userValiService;
+
     }
 
     @GetMapping("/gangNamData")
@@ -42,5 +43,22 @@ public class GangNamAPIController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+
+
+    @PostMapping("/vali/gangNam")
+    public ResponseEntity<String> validateUserAddress(@RequestBody GangNamAPIDTO gangNamAPIDTO) {
+        String validationMessage = userValiService.signUpForGangNam(gangNamAPIDTO.get소재지지번주소());
+        System.out.println("userAddress: " + gangNamAPIDTO.get소재지지번주소());
+        if ("주소가 일치합니다.".equals(validationMessage)) {
+            // 주소가 일치하는 경우, 회원 가입 다음 단계로 진행
+            return ResponseEntity.ok(validationMessage);
+        } else {
+            // 주소가 일치하지 않는 경우, 에러 처리
+            return ResponseEntity.badRequest().body(validationMessage);
+        }
+    }
+
+
+
 
 }

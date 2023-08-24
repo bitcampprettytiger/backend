@@ -22,7 +22,7 @@ public class CartDTO {
     private Menu menu;
     private Member member;
 
-    private List<MenuImage> menuImageList;
+//    private List<MenuImage> menuImageList;
 
     private static ModelMapper modelMapper = new ModelMapper();
 

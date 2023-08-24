@@ -11,20 +11,30 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.nio.ByteBuffer;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 @Transactional
 public class MemberService {
+    private final static int LENGTH_10_INT_RADIX = 6;
 
     private final MemberRepository memberRepository;
 
     private final PasswordEncoder passwordEncoder;
 
     public MemberDTO join(MemberDTO member ) {
+
         if(member == null || member.getUsername() ==null){
             throw new RuntimeException("Invalid Argument");
+        }
+
+        if(member.getNickname()==null){
+            String uuid = parseToShortUUID(UUID.randomUUID().toString().replace("-",""));
+
+            member.setNickname(uuid);
         }
 
 
@@ -43,6 +53,11 @@ public class MemberService {
         if(member == null || member.getUsername() ==null){
             throw new RuntimeException("Invalid Argument");
         }
+        if(member.getNickname()==null){
+            String uuid = parseToShortUUID(UUID.randomUUID().toString().replace("-",""));
+
+            member.setNickname(uuid);
+        }
 
 
         Member joinmember = member.toMemberEntity();
@@ -55,7 +70,7 @@ public class MemberService {
         return memberRepository.save(joinmember).toVendorMemberDTO();
     }
     public Optional<Member> login(Member member) {
-        System.out.println(member.getUsername());
+
         Optional<Member> loginMember = memberRepository.findByUsername(member.getUsername());
         System.out.println(loginMember.get());
         if(loginMember.isEmpty()){
@@ -91,4 +106,10 @@ public class MemberService {
 
         memberRepository.delete(findmember);
     }
+
+    public static String parseToShortUUID(String uuid) {
+        int l = ByteBuffer.wrap(uuid.getBytes()).getInt();
+        return Integer.toString(l, LENGTH_10_INT_RADIX);
+    }
+
 }

@@ -4,10 +4,7 @@ import com.example.bitcamptiger.Review.dto.ReviewDto;
 import com.example.bitcamptiger.member.entity.Member;
 import com.example.bitcamptiger.vendor.entity.Vendor;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -21,7 +18,8 @@ import java.util.List;
         initialValue = 1,
         allocationSize = 1
 )
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -39,7 +37,7 @@ public class Review {
     private Vendor vendor;//상점번호
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "id", referencedColumnName = "id")
     private Member member;
 
     @Column
@@ -63,8 +61,8 @@ public class Review {
                 .reviewContent(this.reviewContent)
                 .reviewRegDate(this.reviewRegDate.toString())
                 .reviewScore(this.reviewScore)
-                .likedCount(this.likeCount)
-                .disLikedCount(this.disLikeCount)
+                .likedCount(this.likeCount != null ? this.likeCount : 0)
+                .disLikedCount(this.disLikeCount != null ? this.disLikeCount : 0)
                 .build();
     }
 
@@ -74,6 +72,4 @@ public class Review {
             this.vendor = vendor;
             vendor.updateVendorReviewScore(this);
         }
-
-
 }

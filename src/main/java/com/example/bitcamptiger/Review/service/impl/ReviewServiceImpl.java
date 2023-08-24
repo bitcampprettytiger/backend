@@ -186,20 +186,21 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     @Transactional
-    public List<ReviewDto> getAllReviewsWithFiles() {
+    public List<ReviewDto> getAllReviewsWithFiles(Long vendorId) {
         List<ReviewDto> reviewDtos = new ArrayList<>();
 
-        List<Object[]> results = reviewRepository.findAllReviewsWithFiles();
+        List<Object[]> results = reviewRepository.findByVendorId(vendorId);
         for (Object[] result : results) {
             Review review = (Review) result[0];
             ReviewDto reviewDto = review.EntityToDto();
 
             // 리뷰 파일 관련 정보 추가
+            ReviewFileDto reviewFileDto = null;
             if (result[1] != null) {
                 ReviewFile reviewFile = (ReviewFile) result[1];
-                ReviewFileDto reviewFileDto = reviewFile.EntitytoDto();
-                reviewDto.setReviewFile(reviewFileDto);
+                reviewFileDto = reviewFile.EntitytoDto();
             }
+            reviewDto.setReviewFile(reviewFileDto);
 
             reviewDtos.add(reviewDto);
         }

@@ -2,14 +2,12 @@ package com.example.bitcamptiger.Review.entity;
 
 import com.example.bitcamptiger.Review.dto.ReviewFileDto;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Table(name = "REVIEW_FILE")
-@Data
+@Getter
+@Setter
 @IdClass(ReviewFileId.class)
 @NoArgsConstructor
 @AllArgsConstructor

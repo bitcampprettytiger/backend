@@ -139,8 +139,10 @@ public class VendorController {
             @RequestParam(required = false) String address,
             @RequestParam(required = false) String menuName,
             @RequestParam(required = false) String vendorName){
+        System.out.println(address);
+        System.out.println(menuName);
+        System.out.println(vendorName);
         ResponseDTO<VendorDTO> response = new ResponseDTO<>();
-
         try{
             List<VendorDTO> vendorDTOList = vendorService.getVendorByCategory(address, menuName, vendorName);
 
@@ -221,7 +223,7 @@ public class VendorController {
     }
 
 
-
+    
     //개별 상점 상세 정보 확인
     @GetMapping("/infoDetail/{id}")
     public VendorDTO getVendorInfoDetail(@PathVariable Long id){

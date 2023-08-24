@@ -1,6 +1,7 @@
 package com.example.bitcamptiger.menu.service.Impl;
 
 import com.example.bitcamptiger.common.FileUtils;
+import com.example.bitcamptiger.common.service.S3UploadService;
 import com.example.bitcamptiger.menu.dto.MenuDTO;
 import com.example.bitcamptiger.menu.dto.MenuImageDTO;
 import com.example.bitcamptiger.menu.entity.Menu;
@@ -33,10 +34,12 @@ public class MenuServiceImpl implements MenuService {
     private final MenuImageRepository menuImageRepository;
     private final VendorRepository vendorRepository;
     private final FileUtils fileUtils;
+//    public  final S3UploadService s3UploadService;
 
 
     //메뉴 리스트
     @Override
+    @Transactional(readOnly = true)
     public List<MenuDTO> getMenuList(Long vendorId) {
         //1. vendor id 찾아오기
         Optional<Vendor> byId = vendorRepository.findById(vendorId);
@@ -55,6 +58,8 @@ public class MenuServiceImpl implements MenuService {
 
             List<MenuImageDTO> menuImageDTOList = new ArrayList<>();
             for (MenuImage  menuImage: menuImageList){
+//                String geturl = s3UploadService.geturl(menuImage.getUrl() + menuImage.getFileName());
+//                menuImage.setUrl(geturl);
                 //MenuImage 객체를 MenuImageDTO 객체로 변환
                 MenuImageDTO menuImageDTO = MenuImageDTO.of(menuImage);
                 menuImageDTOList.add(menuImageDTO);
@@ -157,6 +162,7 @@ public class MenuServiceImpl implements MenuService {
         Long lastImageId = 1L;
         if(existingImages != null && !existingImages.isEmpty()){
             for(MenuImage menuImage : existingImages){
+
                 //가장 큰 menu_img_id 값을 찾는다.
                 if(menuImage.getId() > lastImageId){
                     lastImageId = menuImage.getId();

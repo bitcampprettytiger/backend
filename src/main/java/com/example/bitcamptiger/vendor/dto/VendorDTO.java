@@ -10,7 +10,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.modelmapper.ModelMapper;
 
-import java.time.LocalTime;
 import java.util.List;
 
 
@@ -47,7 +46,7 @@ public class VendorDTO {
 //도로 점유증 허가 번호
     private String perNo;
 
-
+    private String primaryimgurl;
 
     private String x;
     private String y;
@@ -57,10 +56,8 @@ public class VendorDTO {
     private Long reviewCount;
     private Double weightedAverageScore;
 
-    @JsonIgnore
     private List<VendorImageDTO> vendorImageDTOList;
 
-    @JsonIgnore
     private List<MenuDTO> menuDTOList;
 
 

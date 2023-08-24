@@ -20,13 +20,23 @@ public class QVendor extends EntityPathBase<Vendor> {
 
     public static final QVendor vendor = new QVendor("vendor");
 
+    public final StringPath accountNumber = createString("accountNumber");
+
+    public final StringPath accountOwner = createString("accountOwner");
+
     public final StringPath address = createString("address");
 
     public final StringPath b_no = createString("b_no");
 
+    public final StringPath bank = createString("bank");
+
     public final StringPath businessDay = createString("businessDay");
 
-    public final TimePath<java.time.LocalTime> close = createTime("close", java.time.LocalTime.class);
+    public final StringPath close = createString("close");
+
+    public final StringPath coolerInfo = createString("coolerInfo");
+
+    public final ListPath<com.example.bitcamptiger.favoritePick.entity.FavoriteVendor, com.example.bitcamptiger.favoritePick.entity.QFavoriteVendor> favoriteVendors = this.<com.example.bitcamptiger.favoritePick.entity.FavoriteVendor, com.example.bitcamptiger.favoritePick.entity.QFavoriteVendor>createList("favoriteVendors", com.example.bitcamptiger.favoritePick.entity.FavoriteVendor.class, com.example.bitcamptiger.favoritePick.entity.QFavoriteVendor.class, PathInits.DIRECT2);
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
@@ -34,7 +44,7 @@ public class QVendor extends EntityPathBase<Vendor> {
 
     public final ListPath<com.example.bitcamptiger.menu.entity.Menu, com.example.bitcamptiger.menu.entity.QMenu> menuList = this.<com.example.bitcamptiger.menu.entity.Menu, com.example.bitcamptiger.menu.entity.QMenu>createList("menuList", com.example.bitcamptiger.menu.entity.Menu.class, com.example.bitcamptiger.menu.entity.QMenu.class, PathInits.DIRECT2);
 
-    public final TimePath<java.time.LocalTime> open = createTime("open", java.time.LocalTime.class);
+    public final StringPath open = createString("open");
 
     public final StringPath perNo = createString("perNo");
 
@@ -44,7 +54,13 @@ public class QVendor extends EntityPathBase<Vendor> {
 
     public final StringPath tel = createString("tel");
 
+    public final StringPath toiletDistance = createString("toiletDistance");
+
+    public final StringPath toiletInfo = createString("toiletInfo");
+
     public final NumberPath<Double> totalReviewScore = createNumber("totalReviewScore", Double.class);
+
+    public final StringPath vendorInfo = createString("vendorInfo");
 
     public final StringPath vendorName = createString("vendorName");
 

@@ -8,19 +8,16 @@ import com.example.bitcamptiger.cart.repository.CartRepository;
 import com.example.bitcamptiger.cart.service.CartService;
 import com.example.bitcamptiger.member.entity.Member;
 import com.example.bitcamptiger.member.reposiitory.MemberRepository;
-import com.example.bitcamptiger.menu.dto.MenuDTO;
 import com.example.bitcamptiger.menu.dto.MenuImageDTO;
 import com.example.bitcamptiger.menu.entity.Menu;
 import com.example.bitcamptiger.menu.entity.MenuImage;
 import com.example.bitcamptiger.menu.repository.MenuImageRepository;
 import com.example.bitcamptiger.menu.repository.MenuRepository;
+import com.example.bitcamptiger.order.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PathVariable;
 
-import javax.persistence.EntityExistsException;
-import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,12 +26,9 @@ import java.util.List;
 @Transactional
 public class CartServiceImpl implements CartService {
 
-    private final MemberRepository memberRepository;
     private final CartRepository cartRepository;
-    private final MenuRepository menuRepository;
     private final MenuImageRepository menuImageRepository;
     private final CartItemRepository cartItemRepository;
-
 
 
     //처음 장바구니에 상품을 담을 때는 해당 member의 장바구니를 생성해야 함.
@@ -43,15 +37,13 @@ public class CartServiceImpl implements CartService {
 //        cartRepository.save(cart);
 //    }
 
-
-
     //장바구니에 menu 추가
     @Override
     public Cart addCart(Member member, Menu menu, int cartQuantity) {
 
-       Cart cart = cartRepository.findByMemberId(member.getId());
+        Cart cart = cartRepository.findByMemberId(member.getId());
 
-       //cart가 비어있으면 생성.
+        //cart가 비어있으면 생성.
         if(cart == null){
             cart = Cart.createCart(member);
             Cart save = cartRepository.save(cart);
@@ -73,17 +65,20 @@ public class CartServiceImpl implements CartService {
         return  cart;
     }
 
+
+
+
     //장바구니 조회
     @Override
-    public List<CartItemDTO> getCartList(Cart cart) {
-        List<CartItem> cartItems = cartItemRepository.findByCart(cart);
+    public List<CartItemDTO> getCartList(Member member) {
+        List<CartItem> cartItems = cartItemRepository.findByCartMember(member);
         List<CartItemDTO> cartItemDTOList = new ArrayList<>();
 
         for(CartItem cartItem : cartItems){
             CartItemDTO cartItemDTO = CartItemDTO.of(cartItem);
             Menu menu = cartItem.getMenu();
             cartItemDTO.setMenu(menu);
-            cartItemDTO.setCart(cart);
+            cartItemDTO.setCart(cartItem.getCart());
 
             //해당 메뉴 이미지 조회
             List<MenuImage> menuImageList = menuImageRepository.findByMenu(menu);
@@ -98,6 +93,8 @@ public class CartServiceImpl implements CartService {
         }
         return cartItemDTOList;
     }
+
+
 
 
     //장바구니 수량 수정
@@ -116,7 +113,7 @@ public class CartServiceImpl implements CartService {
     //장바구니 menu 전체 삭제
     @Override
     public void deleteCart(CartItemDTO cartItemDTO) {
-        List<CartItem> cartItemList = cartItemRepository.findByCart(cartItemDTO.getCart());
+        List<CartItem> cartItemList = cartItemRepository.findByCartMember(cartItemDTO.getCart().getMember());
 
         cartItemRepository.deleteAll(cartItemList);
 

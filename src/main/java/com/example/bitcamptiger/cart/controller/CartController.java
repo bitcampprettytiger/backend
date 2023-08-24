@@ -1,6 +1,5 @@
 package com.example.bitcamptiger.cart.controller;
 
-import com.example.bitcamptiger.cart.dto.CartDTO;
 import com.example.bitcamptiger.cart.dto.CartItemDTO;
 import com.example.bitcamptiger.cart.entity.Cart;
 import com.example.bitcamptiger.cart.repository.CartItemRepository;
@@ -31,13 +30,13 @@ public class CartController {
 
     //내 장바구니 조회
     @GetMapping("/member/{memberId}")
-    public ResponseEntity<?> getMyCart(@PathVariable Long memberId){
+    public ResponseEntity<?> getMyCart(@PathVariable Member memberId){
         ResponseDTO<CartItemDTO> response = new ResponseDTO<>();
         try{
-            Member member = memberRepository.findById(memberId).orElseThrow();
+            Member member = memberRepository.findById(memberId.getId()).orElseThrow();
             Cart cart = cartRepository.findByMemberId(member.getId());
 
-            List<CartItemDTO> cartItemDTOList = cartService.getCartList(cart);
+            List<CartItemDTO> cartItemDTOList = cartService.getCartList(memberId);
 
             response.setItemlist(cartItemDTOList);
             response.setStatusCode(HttpStatus.OK.value());
@@ -51,25 +50,27 @@ public class CartController {
     }
 
 
-    //장바구니에 메뉴 추가
+    // 장바구니에 메뉴 추가
     @PostMapping("/info")
-    public ResponseEntity<?> addCart(@RequestBody CartItemDTO cartItemDTO){
+    public ResponseEntity<ResponseDTO<CartItemDTO>> addMenuToCart(@RequestBody CartItemDTO cartItemDTO) {
         ResponseDTO<CartItemDTO> response = new ResponseDTO<>();
 
-        try{
-            Member member = memberRepository.findById(cartItemDTO.getCart().getMember().getId()).orElseThrow();
+        try {
+            Member member = memberRepository.findById(cartItemDTO.getCart().getMember().getId())
+                    .orElseThrow(() -> new RuntimeException("회원 정보를 찾을 수 없습니다."));
+            Menu menu = menuRepository.findById(cartItemDTO.getMenu().getId())
+                    .orElseThrow(() -> new RuntimeException("메뉴 정보를 찾을 수 없습니다."));
 
-            Menu menu = menuRepository.findById(cartItemDTO.getMenu().getId()).orElseThrow();
-
-            Cart cart = cartService.addCart(member, menu, cartItemDTO.getCartQuantity());
-
-            List<CartItemDTO> cartItemDTOList = cartService.getCartList(cart);
+            // 회원과 메뉴 정보를 이용하여 장바구니에 메뉴를 추가하고 업데이트된 장바구니 정보를 가져옴.
+            Cart updatedCart = cartService.addCart(member, menu, cartItemDTO.getCartQuantity());
+            // 업데이트된 장바구니 정보로부터 장바구니에 담긴 메뉴들을 조회
+            List<CartItemDTO> cartItemDTOList = cartService.getCartList(updatedCart.getMember());
 
             response.setItemlist(cartItemDTOList);
             response.setStatusCode(HttpStatus.OK.value());
 
             return ResponseEntity.ok().body(response);
-        }catch(Exception e) {
+        } catch (Exception e) {
             response.setErrorMessage(e.getMessage());
             response.setStatusCode(HttpStatus.BAD_REQUEST.value());
             return ResponseEntity.badRequest().body(response);
@@ -89,7 +90,7 @@ public class CartController {
         try{
             cartService.deleteCartItem(cartItemDTO.getCart().getId(), cartItemDTO.getMenu().getId());
 
-            List<CartItemDTO> cartItemDTOList = cartService.getCartList(cartItemDTO.getCart());
+            List<CartItemDTO> cartItemDTOList = cartService.getCartList(cartItemDTO.getCart().getMember());
 
             response.setItemlist(cartItemDTOList);
             response.setStatusCode(HttpStatus.OK.value());

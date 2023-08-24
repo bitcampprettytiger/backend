@@ -43,11 +43,11 @@ public class ReviewController {
     String attachPath;
 
 
-    @GetMapping("/review-list")
-    public ResponseEntity<?> getReviewList() {
+    @GetMapping("/review-list/{vendorId}")
+    public ResponseEntity<?> getReviewList(@PathVariable(name = "vendorId") Long vendorId) {
         ResponseDTO<ReviewDto> responseDTO = new ResponseDTO<>();
         try {
-            List<ReviewDto> reviewsWithFiles = reviewService.getAllReviewsWithFiles();
+            List<ReviewDto> reviewsWithFiles = reviewService.getAllReviewsWithFiles(vendorId);
 
             responseDTO.setItemlist(reviewsWithFiles);
             responseDTO.setStatusCode(HttpStatus.OK.value());
@@ -244,6 +244,13 @@ public class ReviewController {
                         uFileList.add(reviewFile);
                     }
                 }
+            }
+
+            if(reviewDto.isLiked()) {
+                reviewService.likeReview(review.getMember(), review);
+            }
+            if(reviewDto.isDisliked()) {
+                reviewService.disLikeReview(review.getMember(), review);
             }
 
             reviewService.updateReview(review, uFileList);

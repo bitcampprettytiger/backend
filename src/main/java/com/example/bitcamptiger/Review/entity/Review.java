@@ -4,10 +4,7 @@ import com.example.bitcamptiger.Review.dto.ReviewDto;
 import com.example.bitcamptiger.member.entity.Member;
 import com.example.bitcamptiger.vendor.entity.Vendor;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -15,21 +12,15 @@ import java.util.List;
 
 @Entity
 @Table(name = "Review")
-@SequenceGenerator(
-        name = "ReviewSeqGenerator",
-        sequenceName = "REVIEW_SEQ",
-        initialValue = 1,
-        allocationSize = 1
-)
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class Review {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE,
-                    generator = "ReviewSeqGenerator")
-    @Column(name = "reviewNum")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "review_ID")
     private Long reviewNum; //리뷰번호
 
     private Long orderNum; //포장번호
@@ -40,7 +31,7 @@ public class Review {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id", referencedColumnName = "id")
-    private Member member;
+    private Member member; //멤버 닉네임
 
     @Column
     private String reviewContent; //리뷰내용
@@ -56,12 +47,12 @@ public class Review {
 
     public ReviewDto EntityToDto() {
         return ReviewDto.builder()
-                .reviewNum(this.reviewNum)
+                .reviewId(this.reviewNum)
                 .orderNum(this.orderNum)
                 .memberId(this.member.getId())
                 .vendorId(this.vendor.getId())
                 .reviewContent(this.reviewContent)
-                .reviewRegDate(this.reviewRegDate.toString())
+                .reviewRegDate(this.reviewRegDate)
                 .reviewScore(this.reviewScore)
                 .likedCount(this.likeCount != null ? this.likeCount : 0)
                 .disLikedCount(this.disLikeCount != null ? this.disLikeCount : 0)

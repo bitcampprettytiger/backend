@@ -38,6 +38,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class ReviewServiceImpl implements ReviewService {
 
     private final ReviewRepository reviewRepository;
@@ -56,6 +57,7 @@ public class ReviewServiceImpl implements ReviewService {
         return reviewRepository.findById(reviewNum).get();
     }
 
+    //리뷰 등록하기
     @Override
     public void createReview(Review review, List<ReviewFile> uploadFileList) throws IOException {
 
@@ -77,8 +79,6 @@ public class ReviewServiceImpl implements ReviewService {
 
             reviewFileRepository.save(reviewFile);
         }
-
-
     }
 
 //        Review save = reviewRepository.save(reviewDto.createReview());
@@ -141,7 +141,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public void deleteReview(ReviewDto reviewDto) {
-        Review review = reviewRepository.findById(reviewDto.getReviewNum())
+        Review review = reviewRepository.findById(reviewDto.getReviewId())
                 .orElseThrow(() -> new EntityNotFoundException("리뷰를 찾을 수 없습니다."));
 
         String bucketName = "springboot";
@@ -184,6 +184,8 @@ public class ReviewServiceImpl implements ReviewService {
 //                .collect(Collectors.toList());
 //    }
 
+
+    //리뷰 조회하기
     @Override
     @Transactional
     public List<ReviewDto> getAllReviewsWithFiles(Long vendorId) {

@@ -43,6 +43,7 @@ public class ReviewController {
     String attachPath;
 
 
+    //vendor의 리뷰 조회
     @GetMapping("/review-list/{vendorId}")
     public ResponseEntity<?> getReviewList(@PathVariable(name = "vendorId") Long vendorId) {
         ResponseDTO<ReviewDto> responseDTO = new ResponseDTO<>();
@@ -89,7 +90,7 @@ public class ReviewController {
                 throw new NoSuchElementException("Vendor not found");
             }
 
-            // memberId 값으로 Member 엔티티를 조회합니다.
+            // nickname 값으로 Member 엔티티를 조회합니다.
             Optional<Member> optionalMember = memberRepository.findById(reviewDto.getMemberId());
             if (optionalMember.isPresent()) { // Member 엔티티가 존재하는 경우 Review 엔티티에 참조를 설정합니다.
                 Member member = optionalMember.get();
@@ -121,7 +122,7 @@ public class ReviewController {
             }
 
             System.out.println("11111111111111111111111");
-            reviewService.createReview(review, uploadFileList);
+                reviewService.createReview(review, uploadFileList);
             System.out.println("2222222222222222222222222");
 
             // 좋아요 처리

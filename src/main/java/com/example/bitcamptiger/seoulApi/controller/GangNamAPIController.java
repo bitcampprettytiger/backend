@@ -1,8 +1,8 @@
 package com.example.bitcamptiger.seoulApi.controller;
 
-import com.example.bitcamptiger.seoulApi.dto.DongdaemunAPIDTO;
+import com.example.bitcamptiger.seoulApi.dto.GangNamAPIDTO;
 import com.example.bitcamptiger.seoulApi.service.DongdaemunAPIService;
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.example.bitcamptiger.seoulApi.service.GangNamAPIService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,17 +13,20 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/API/dongdaemun")
-public class DongdaemunAPIController {
+@RequestMapping("/API/gangNam")
+public class GangNamAPIController {
+    private final GangNamAPIService gangNamAPIService;
 
     @Autowired
-    private DongdaemunAPIService dongdaemunAPIService;
+    public GangNamAPIController(GangNamAPIService gangNamAPIService) {
+        this.gangNamAPIService = gangNamAPIService;
+    }
 
-    @GetMapping("/DongdaemunData")
-    public  ResponseEntity<List<DongdaemunAPIDTO>> getExtractDongdaemunData() throws JsonProcessingException {
+    @GetMapping("/gangNamData")
+    public ResponseEntity<List<GangNamAPIDTO>> getExtractGangNamData() {
         try {
-            // DongdaemunAPIService를 이용해 데이터 추출
-            List<DongdaemunAPIDTO> extractedDataList = dongdaemunAPIService.extractDongdaemunData();
+            // GangNamAPIService를 이용해 데이터 추출
+            List<GangNamAPIDTO> extractedDataList = gangNamAPIService.extractGangNamData();
 
             // 추출한 데이터가 비어있지 않은 경우
             if (extractedDataList != null && !extractedDataList.isEmpty()) {
@@ -39,8 +42,5 @@ public class DongdaemunAPIController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
-
-
-
 
 }

@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/DongJak")
+@RequestMapping("/API/DongJak")
 public class DongJakAPIController {
     private final DongJakAPIService dongJakAPIService;
 

@@ -14,7 +14,7 @@ import org.modelmapper.ModelMapper;
 @Builder
 public class ReviewFileDto {
 
-    private Long reviewNum; // 리뷰 번호(Review 참조)
+    private Long id; // 리뷰 번호(Review 참조)
     private Long reviewFileNo;
     private String reviewFileOrigin;
     private String reviewFileName;
@@ -26,7 +26,7 @@ public class ReviewFileDto {
     public ReviewFile DtoToEntity() {
         ReviewFile reviewFile = ReviewFile.builder()
                 .reviewFileNo(this.reviewFileNo)
-                .review(Review.builder().reviewNum(this.reviewNum).build())
+                .review(Review.builder().id(this.id).build())
                 .reviewFileName(this.reviewFileName)
                 .reviewFilePath(this.reviewFilePath)
                 .reviewFileOrigin(this.reviewFileOrigin)

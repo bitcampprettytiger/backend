@@ -43,6 +43,7 @@ public class ReviewController {
     String attachPath;
 
 
+    //vendor의 리뷰 조회
     @GetMapping("/review-list/{vendorId}")
     public ResponseEntity<?> getReviewList(@PathVariable(name = "vendorId") Long vendorId) {
         ResponseDTO<ReviewDto> responseDTO = new ResponseDTO<>();
@@ -61,6 +62,7 @@ public class ReviewController {
         }
     }
 
+    //리뷰 등록
     //multipart form 데이터 형식을 받기 위해 consumes 속성 지정
     @PostMapping(value = "/review", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> createReview(ReviewDto reviewDto,
@@ -121,7 +123,7 @@ public class ReviewController {
             }
 
             System.out.println("11111111111111111111111");
-            reviewService.createReview(review, uploadFileList);
+                reviewService.createReview(review, uploadFileList);
             System.out.println("2222222222222222222222222");
 
             // 좋아요 처리
@@ -151,26 +153,8 @@ public class ReviewController {
         }
     }
 
-//    @PostMapping("/review")
-//    public ResponseEntity<?> insertReview(ReviewDto reviewDto, @RequestParam(required = false, value = "file") MultipartFile[] uploadFiles) {
-//        ResponseDTO<ReviewDto> reponse = new ResponseDTO<>();
-//
-//        try {
-//            reviewService.createReview(reviewDto, uploadFiles);
-//
-//            List<ReviewDto> reviewDtoList = reviewService.getReviewList();
-//
-//            reponse.setItemlist(reviewDtoList);
-//            reponse.setStatusCode(HttpStatus.OK.value());
-//
-//            return ResponseEntity.ok().body(reponse);
-//        } catch (IOException e) {
-//            reponse.setErrorMessage(e.getMessage());
-//            reponse.setStatusCode(HttpStatus.BAD_REQUEST.value());
-//            return  ResponseEntity.badRequest().body(reponse);
-//        }
-//    }
 
+    //리뷰 수정
     @PutMapping("/review")
     public ResponseEntity<?> updateReview(@RequestPart(value = "reviewDto") ReviewDto reviewDto,
                                           @RequestPart(value = "uploadFiles", required = false) MultipartFile[] uploadFiles,
@@ -257,9 +241,9 @@ public class ReviewController {
 
             Map<String, Object> returnMap = new HashMap<>();
 
-            Review updateReview = reviewService.getReview(review.getReviewNum());
+            Review updateReview = reviewService.getReview(review.getId());
             List<ReviewFile> updateReviewFileList =
-                    reviewService.getReviewFileList(review.getReviewNum());
+                    reviewService.getReviewFileList(review.getId());
 
             ReviewDto retrunReviewDto = updateReview.EntityToDto();
 
@@ -284,22 +268,23 @@ public class ReviewController {
         }
     }
 
-        @DeleteMapping("/review")
-        public ResponseEntity<?> deleteReview (ReviewDto reviewDto){
-            ResponseDTO<ReviewDto> responseDTO = new ResponseDTO<>();
+    //리뷰삭제
+    @DeleteMapping("/review")
+    public ResponseEntity<?> deleteReview (ReviewDto reviewDto){
+        ResponseDTO<ReviewDto> responseDTO = new ResponseDTO<>();
 
-            try {
-                reviewService.deleteReview(reviewDto);
+        try {
+            reviewService.deleteReview(reviewDto);
 
-                responseDTO.setStatusCode(HttpStatus.OK.value());
-                responseDTO.setMessage("정상적으로 삭제되었습니다.");
+            responseDTO.setStatusCode(HttpStatus.OK.value());
+            responseDTO.setMessage("정상적으로 삭제되었습니다.");
 
-                return ResponseEntity.ok().body(responseDTO);
-            } catch (Exception e) {
-                responseDTO.setStatusCode(HttpStatus.BAD_REQUEST.value());
-                responseDTO.setErrorMessage(e.getMessage());
+            return ResponseEntity.ok().body(responseDTO);
+        } catch (Exception e) {
+            responseDTO.setStatusCode(HttpStatus.BAD_REQUEST.value());
+            responseDTO.setErrorMessage(e.getMessage());
 
-                return ResponseEntity.badRequest().body(responseDTO);
-            }
+            return ResponseEntity.badRequest().body(responseDTO);
         }
     }
+}

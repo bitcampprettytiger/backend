@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 @Repository
 public interface ReviewRepository extends JpaRepository<Review, Long> {
-    @Query("SELECT r, rf FROM Review r LEFT JOIN ReviewFile rf ON r.reviewNum = rf.review.reviewNum WHERE r.vendor.id = :vendorId")
+    @Query("SELECT r, rf FROM Review r LEFT JOIN ReviewFile rf ON r.id = rf.review.id WHERE r.vendor.id = :vendorId")
     List<Object[]> findByVendorId(@Param("vendorId") Long vendorId);
-    Optional<Review> findByReviewNum(Long reviewNum);
+    Optional<Review> findById(Long id);
 }

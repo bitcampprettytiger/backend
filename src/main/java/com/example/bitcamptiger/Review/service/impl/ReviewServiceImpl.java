@@ -170,7 +170,7 @@ public class ReviewServiceImpl implements ReviewService {
         List<Object[]> results = reviewRepository.findByVendorId(vendorId);
         for (Object[] result : results) {
             Review review = (Review) result[0];
-            ReviewDto reviewDto = review.EntityToDto();
+            ReviewDto reviewDto = ReviewDto.of(review);
 
             // 리뷰 파일 관련 정보 추가
             ReviewFileDto reviewFileDto = null;

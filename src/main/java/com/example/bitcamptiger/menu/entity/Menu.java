@@ -49,12 +49,11 @@ public class Menu {
     @Column(nullable = false)
     private int views = 0; // 기본값 0으로 설정
 
-
-
     // 메뉴와 메뉴 이미지 간의 일대다 관계
     @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<MenuImage> images = new ArrayList<>();
+
 
 
 }

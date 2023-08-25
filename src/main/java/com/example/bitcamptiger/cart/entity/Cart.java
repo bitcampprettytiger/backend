@@ -26,7 +26,6 @@ public class Cart {
     private Member member;
 
 
-
     @OneToMany(mappedBy = "cart")
     @JsonManagedReference   //순환참조 문제를 해결하기 위해 주관리자 명시
     private List<CartItem> cartItems = new ArrayList<>();
@@ -38,6 +37,8 @@ public class Cart {
         cart.setMember(member);
         return cart;
     }
+
+
 
 
 }

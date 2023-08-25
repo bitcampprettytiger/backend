@@ -1,12 +1,10 @@
 package com.example.bitcamptiger.vendor.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -34,6 +32,9 @@ public class VendorImage {
 
     @Column
     private String fileCate;
+
+    @Column
+    private String S3url;
 
 
 }

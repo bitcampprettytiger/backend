@@ -52,7 +52,7 @@ public class VendorRepositoryCustomImpl implements VendorRepositoryCustom {
                 //  or 조건을 사용하려면 BooleanBuilder 클래스를 사용하여 동적 쿼리 생성하는 것이 좋음.
                 // 조건을 여러개를 걸 수 있다. 그러나 모든 조건을 써야하는 것은 아니고 null값으로 생략도 가능하다.
                 // 즉, 갖고 있는 값에 따라 조건을 다양하게 걸 수 있다. (동적 쿼리. 쿼리dsl)
-                .leftJoin(QVendor.vendor.menuList, QMenu.menu)
+                .leftJoin(QVendor.vendor, QMenu.menu.vendor)
                 .where(builder)
                 .orderBy(QVendor.vendor.vendorName.asc())
                 .fetch();
@@ -81,7 +81,6 @@ public class VendorRepositoryCustomImpl implements VendorRepositoryCustom {
                 .where(builder)
                 .orderBy(QVendor.vendor.vendorName.asc())
                 .fetch();
-
         return content;
     }
 

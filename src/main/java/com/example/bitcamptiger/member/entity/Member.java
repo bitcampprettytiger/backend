@@ -19,7 +19,6 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@ToString
 public class Member {
 
     @Id
@@ -30,7 +29,6 @@ public class Member {
 
     @Column(nullable = false)
     private String username;
-
 
 
     @Column(nullable = false)
@@ -47,9 +45,12 @@ public class Member {
 
     private boolean isOAuth;
 
+    @Column
+    private String local;
+    @Column
     //  판매자,관리자,사용자.
     private String role;
-
+    @Column
 //  가입 타입
     private String type;
 

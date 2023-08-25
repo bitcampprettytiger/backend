@@ -73,22 +73,32 @@ public class GangNamAPIServiceImpl implements GangNamAPIService {
 
         // 필요한 정보 추출하여 엔티티에 저장
         for (GangNamAPIDTO data : dataList) {
-            GangNamVenders existingEntity = gangNamVendersRepository.findBy소재지도로명주소(data.get소재지도로명주소());
+            if ("허가노점".equals(data.get구분())) {
+                GangNamVenders existingEntity = gangNamVendersRepository.findBy소재지도로명주소(data.get소재지도로명주소());
 
-            if (existingEntity == null) {
-                GangNamVenders gangNamEntity = new GangNamVenders();
-                gangNamEntity.set관리부서전화번호(data.get관리부서전화번호());
-                gangNamEntity.set관리부서명(data.get관리부서명());
-                gangNamEntity.set구분(data.get구분());
-                gangNamEntity.set데이터기준일자(data.get데이터기준일자());
-                gangNamEntity.set소재지도로명주소(data.get소재지도로명주소());
-                gangNamEntity.set소재지지번주소(data.get소재지지번주소());
-                gangNamEntity.set취급물품(data.get취급물품());
+                if (existingEntity == null) {
+                    GangNamVenders gangNamEntity = new GangNamVenders();
+                    gangNamEntity.set관리부서전화번호(data.get관리부서전화번호());
+                    gangNamEntity.set관리부서명(data.get관리부서명());
+                    gangNamEntity.set구분(data.get구분());
+                    gangNamEntity.set데이터기준일자(data.get데이터기준일자());
+                    gangNamEntity.set소재지도로명주소(data.get소재지도로명주소());
+                    gangNamEntity.set소재지지번주소(data.get소재지지번주소());
+                    gangNamEntity.set취급물품(data.get취급물품());
 
-                gangNamVendersRepository.save(gangNamEntity); // 엔티티 저장
+                    gangNamVendersRepository.save(gangNamEntity); // 엔티티 저장
+                }
             }
         }
         return extractedDataList; // 필요한 정보가 담긴 DTO 리스트 반환
     }
+
+
+    //검증로직 -> 강남구 : 소재지도로명주소 또는 소재지지번주소 을 입력하여 일치여부 확인
+
+
+
+
+
 }
 

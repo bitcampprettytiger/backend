@@ -45,18 +45,19 @@ public class GangseoguAPIController {
     
     
     @PostMapping("/validateGangseo")
-    public ResponseEntity<?> validateGangseoInfo(
-            @RequestBody GangseoguAPIDTO gangseoguAPIDTO){
+    public ResponseEntity<?> validateGangseoInfo(@RequestBody GangseoguAPIDTO gangseoguAPIDTO){
         String 위치 = gangseoguAPIDTO.get위치();
         String 판매품목 = gangseoguAPIDTO.get판매품목();
-        String validationMessage = userValiService.signUpForGangseo(위치, 판매품목);
         
-        if("정보가 일치합니다.".equals(validationMessage)){
+        //서비스를 통해 정보 검증
+        boolean isInformationValid = userValiService.signUpForGangseo(위치, 판매품목);
+        
+        if(isInformationValid){
             //정보가 일치하는 경우, 다음 단계로 진행
-            return ResponseEntity.ok(validationMessage);
+            return ResponseEntity.ok("정보가 일치합니다.");
         }else{
             //정보가 일치하지 않는 경우, 에러 처리
-            return ResponseEntity.badRequest().body(validationMessage);
+            return ResponseEntity.badRequest().body("정보가 일치하지 않습니다. 다시 확인해주세요.");
         }
     }
 

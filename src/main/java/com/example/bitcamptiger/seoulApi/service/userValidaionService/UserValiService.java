@@ -63,13 +63,13 @@ public class UserValiService {
     }
 
 
-    public String signUpForGangseo(String 위치,String 판매품목){
+    public boolean signUpForGangseo(String 위치,String 판매품목){
         GangseoguVenders existingEntity = gangseoguVendersRepository.findBy위치And판매품목(위치, 판매품목);
 
         if(existingEntity != null){
-            return "정보가 일치합니다.";
+            return true;
         }else{
-            return "정보가 일치하지 않습니다. 다시 확인해주세ㅐ요.";
+            return false;
         }
     }
 

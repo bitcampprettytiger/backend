@@ -32,21 +32,21 @@ public class GyeongGiController {
     }
 
 
-//    @PostMapping("validateGyeonggi")
-//    public ResponseEntity<?> validateGyeonggiInfo(
-//            @RequestBody RowDTO rowDTO){
-//        String prmsnNm = rowDTO.getPrmsnNm();
-//        String storeNm = rowDTO.getStoreNm();
-////        String validationMessage = userValiService.signUpForGyeongGi(prmsnNm, storeNm);
-//
-//        if("정보가 일치합니다.".equals(validationMessage)){
-//            //정보가 일치하는 경우, 다음 단계로 진행
-//            return ResponseEntity.ok(validationMessage);
-//        }else{
-//            //정보가 일치하지 않는 경우, 에러 처리
-//            return ResponseEntity.badRequest().body(validationMessage);
-//        }
-//    }
+    @PostMapping("validateGyeonggi")
+    public ResponseEntity<?> validateGyeonggiInfo(@RequestBody RowDTO rowDTO){
+        String prmsnNm = rowDTO.getPrmsnNm();
+        String storeNm = rowDTO.getStoreNm();
+        //서비스를 통해 정보 검증
+        boolean isInformationValid = userValiService.signUpForGyeongGi(prmsnNm, storeNm);
+
+        if(isInformationValid){
+            //정보가 일치하는 경우, 다음 단계로 진행
+            return ResponseEntity.ok("정보가 일치합니다.");
+        }else{
+            //정보가 일치하지 않는 경우, 에러 처리
+            return ResponseEntity.badRequest().body("정보가 일치하지 않습니다. 다시 확인해주세요.");
+        }
+    }
 
 
 }

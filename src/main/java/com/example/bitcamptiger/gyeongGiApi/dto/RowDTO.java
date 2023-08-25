@@ -1,10 +1,14 @@
 package com.example.bitcamptiger.gyeongGiApi.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class RowDTO {
     private String prmsnNm;
     private String refineLotnoAddr;

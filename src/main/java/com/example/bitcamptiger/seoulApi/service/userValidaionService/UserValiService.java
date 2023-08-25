@@ -34,16 +34,14 @@ public class UserValiService {
 //    }
 
 
-    public String signUpForGangNam(String userAddress) {
+    public boolean signUpForGangNam(String userAddress) {
         GangNamVenders existingEntityByRoad = gangNamVendersRepository.findBy소재지도로명주소(userAddress);
         GangNamVenders existingEntityByJibun = gangNamVendersRepository.findBy소재지지번주소(userAddress);
 
         if (existingEntityByRoad != null || existingEntityByJibun != null) {
-            // 주소가 일치하는 경우, 회원 가입 처리
-            return "주소가 일치합니다.";
+            return true;
         } else {
-            // 주소가 일치하지 않는 경우, 에러 처리
-            return "주소가 일치하지 않습니다.";
+            return false;
         }
     }
 

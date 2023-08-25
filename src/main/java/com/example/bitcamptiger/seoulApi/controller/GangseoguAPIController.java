@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/API/Gangseogu")
+@RequestMapping("/API/gangseogu")
 public class GangseoguAPIController {
 
     private final GangseoguAPIService gangseoguAPIService;
@@ -22,7 +22,7 @@ public class GangseoguAPIController {
     }
 
 
-    @GetMapping("/gangseoguData")
+    @GetMapping("/GangseoguData")
     public ResponseEntity<List<GangseoguAPIDTO>> getExtractGangseoguData(){
         try {
             // GangseoguAPIService를 이용해 데이터 추출

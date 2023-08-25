@@ -12,16 +12,13 @@ import java.util.List;
 
 @Repository
 public interface ReviewFileRepository extends JpaRepository<ReviewFile, ReviewFileId> {
-//    @Query(value = "SELECT IFNULL(MAX(F.review_file_no), 0) + 1 " +
-//            "           FROM review_file F", nativeQuery = true)
-//    public long findMaxFileNo();
 
     @Query(value="SELECT IFNULL(MAX(F.review_file_no), 0) + 1 " +
             "           FROM review_file F" +
-            "           WHERE F.review_num = :reviewNum", nativeQuery = true)
-    public long findMaxFileNo(@Param("reviewNum") long reviewNum);
+            "           WHERE F.review_id = :id", nativeQuery = true)
+    public long findMaxFileNo(@Param("id") long id);
 
-    List<ReviewFile> findByReviewReviewNum(long reviewNum);
+    List<ReviewFile> findByReviewId(long id);
 
     //List<ReviewFile> findByReviewNum(long reviewNum);
 

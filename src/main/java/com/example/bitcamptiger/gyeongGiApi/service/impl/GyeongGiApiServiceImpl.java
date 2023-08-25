@@ -121,13 +121,7 @@ public class GyeongGiApiServiceImpl implements GyeongGiApiService {
             }
 
             return rowList;
-//
-//            for (RowDTO dto : rowList) {
-//                if (dto.getInduTypeNm() != null && dto.getInduTypeNm().endsWith("가게")) {
-//
-//                    entityList.add(entity);
-//                }
-//            }
+
 
             // 이후 예외 처리 코드...
         } catch (HttpServerErrorException.InternalServerError ex) {

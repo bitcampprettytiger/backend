@@ -13,14 +13,16 @@ public class GyeonggiValiService {
 
     private final GyeonggiVendersRepository gyeonggiVendersRepository;
 
-    public String signUpForGyeongGi(String prmsnNm, String storeNm){
+    public boolean signUpForGyeongGi(String prmsnNm, String storeNm){
         GyeonggiVenders existingEntity = gyeonggiVendersRepository.findByPrmsnNmAndStoreNm(prmsnNm, storeNm);
 
 
         if(existingEntity != null){
-            return "정보가 일치합니다.";
+            //정보가 일치하는 경우, 검증 통과
+            return true;
         }else{
-            return "정보가 일치하지 않습니다. 다시 확인해주세ㅐ요.";
+            //정보가 일치하지 않는 경우
+            return false;
         }
     }
 

@@ -212,6 +212,7 @@ public class VendorServiceImpl implements VendorService {
             if(!byVendor.isEmpty()) {
                 geturl = s3UploadService.geturl(byVendor.get(0).getUrl() + byVendor.get(0).getFileName());
                 vendorDTO.setPrimaryimgurl(geturl);
+
             }
 
             List<Menu> menuList = menuRepository.findByVendor(vendor);
@@ -477,8 +478,9 @@ public class VendorServiceImpl implements VendorService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public VendorDTO getVendorDetail(Long id) {
-
+        String geturl = new String();
 
         Vendor vendor = vendorRepository.findById(id).orElseThrow();
         VendorDTO vendorDTO = VendorDTO.of(vendor);
@@ -487,9 +489,15 @@ public class VendorServiceImpl implements VendorService {
 
         List<VendorImageDTO> vendorImageDTOList = new ArrayList<>();
         for(VendorImage vendorImage : vendorImageList){
-            String geturl = s3UploadService.geturl(vendorImage.getUrl() + vendorImage.getFileName());
-            vendorImage.setUrl(geturl);
+            if(vendorImage.getFileCate().equals("defaultImage")) {
+                geturl = s3UploadService.geturl(vendorImage.getUrl() + vendorImage.getOriginName());
+            }else {
+                geturl = s3UploadService.geturl(vendorImage.getUrl() + vendorImage.getFileName());
+            }
+
             VendorImageDTO vendorImageDTO = VendorImageDTO.of(vendorImage);
+            vendorImageDTO.setUrl(geturl);
+            System.out.println(geturl);
             vendorImageDTOList.add(vendorImageDTO);
         }
         vendorDTO.setVendorImageDTOList(vendorImageDTOList);
@@ -514,6 +522,7 @@ public class VendorServiceImpl implements VendorService {
         }
 
         vendorDTO.setMenuDTOList(menuDTOList);
+        vendorDTO.setPrimaryimgurl(geturl);
 
         return vendorDTO;
     }

@@ -12,12 +12,6 @@ import java.util.List;
 
 @Entity
 @Table(name = "Review")
-@SequenceGenerator(
-        name = "ReviewSeqGenerator",
-        sequenceName = "REVIEW_SEQ",
-        initialValue = 1,
-        allocationSize = 1
-)
 @Getter
 @Setter
 @NoArgsConstructor
@@ -25,11 +19,11 @@ import java.util.List;
 @Builder
 public class Review {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE,
-                    generator = "ReviewSeqGenerator")
-    @Column(name = "reviewNum")
-    private Long reviewNum; //리뷰번호
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "review_id")
+    private Long id; //리뷰번호
 
+    @Column
     private Long orderNum; //포장번호
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -38,7 +32,7 @@ public class Review {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id", referencedColumnName = "id")
-    private Member member;
+    private Member member; //멤버 닉네임
 
     @Column
     private String reviewContent; //리뷰내용
@@ -54,12 +48,12 @@ public class Review {
 
     public ReviewDto EntityToDto() {
         return ReviewDto.builder()
-                .reviewNum(this.reviewNum)
+                .reviewId(this.id)
                 .orderNum(this.orderNum)
                 .memberId(this.member.getId())
                 .vendorId(this.vendor.getId())
                 .reviewContent(this.reviewContent)
-                .reviewRegDate(this.reviewRegDate.toString())
+                .reviewRegDate(this.reviewRegDate)
                 .reviewScore(this.reviewScore)
                 .likedCount(this.likeCount != null ? this.likeCount : 0)
                 .disLikedCount(this.disLikeCount != null ? this.disLikeCount : 0)

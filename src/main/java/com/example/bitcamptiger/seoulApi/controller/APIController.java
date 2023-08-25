@@ -31,10 +31,16 @@ public class APIController {
                 isValid = userValiService.signUpForGangNam(value1);
                 break;
             case "동작구":
-                isValid = userValiService.signUpForDongJak(value1, value2); // 적절한 값을 전달해야 함
+                isValid = userValiService.signUpForDongJak(value1, value2);
                 break;
             case "노량진":
-                isValid = userValiService.signUpForNoRyangJin(호점); // 적절한 값을 전달해야 함
+                isValid = userValiService.signUpForNoRyangJin(호점);
+                break;
+            case "도봉구":
+                isValid = userValiService.signUpForDoBongGu(value1, value2);
+                break;
+            case "동대문":
+                isValid = userValiService.signUpForDongDaeMun(value1, value2);
                 break;
             // 다른 지역 케이스 추가 ...
             default:

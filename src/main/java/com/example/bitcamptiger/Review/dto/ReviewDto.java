@@ -25,12 +25,13 @@ public class ReviewDto {
 
     @JsonIgnore
     private Vendor vendor;
+
     private Member member;
     private String reviewContent;
     private String reviewRegDate;
     private int reviewScore;
-    private int likedCount;
-    private int disLikedCount;
+    private int likeCount;
+    private int disLikeCount;
     private List<ReviewFile> reviewFileList;
     private ReviewFileDto reviewFile;
 
@@ -47,11 +48,11 @@ public class ReviewDto {
 
 
     public boolean isLiked() {
-        return likedCount > 0;
+        return likeCount > 0;
     }
 
     public boolean isDisliked() {
-        return disLikedCount > 0;
+        return disLikeCount > 0;
     }
 }
 

@@ -44,11 +44,9 @@ public class DongJakAPIController {
 
 
     @PostMapping("/validateDongJak")
-    public ResponseEntity<String> validateDongJakInfo(
-            @RequestBody DongJakAPIDTO dongJakAPIDTO) {
+    public ResponseEntity<String> validateDongJakInfo(@RequestBody DongJakAPIDTO dongJakAPIDTO) {
         String storeName = dongJakAPIDTO.get거리가게명();
         String location = dongJakAPIDTO.get위치();
-        System.out.println(storeName + location);
         String validationMessage = userValiService.signUpForDongJak(storeName, location);
 
         if ("정보가 일치합니다.".equals(validationMessage)) {

@@ -2,6 +2,7 @@ package com.example.bitcamptiger.favoritePick.controller;
 
 import com.example.bitcamptiger.dto.ResponseDTO;
 import com.example.bitcamptiger.favoritePick.DTO.FavoriteVendorDTO;
+import com.example.bitcamptiger.favoritePick.entity.FavoriteVendor;
 import com.example.bitcamptiger.favoritePick.service.FavoriteService;
 import com.example.bitcamptiger.member.entity.CustomUserDetails;
 import com.example.bitcamptiger.member.entity.Member;
@@ -33,7 +34,7 @@ public class FavoritePickController {
     //해당 유저와 가게 정보를 받아와서 찜하기를 추가
     @PostMapping("/add/{vendorId}")
     public void addFavorite(@AuthenticationPrincipal CustomUserDetails customUserDetails,@PathVariable Long vendorId) {
-
+        System.out.println(customUserDetails.getUser());
         Member member = new Member();
         member.setId(customUserDetails.getUser().getId());
 
@@ -75,9 +76,11 @@ public class FavoritePickController {
 
         try{
 
-//            List<FavoriteVendorDTO> favoriteVendorDTOList = favoriteService.getMyFavoriteVendor(memberId);
-
-            return  null;
+            List<FavoriteVendorDTO> myFavoriteVendor = favoriteService.getMyFavoriteVendor(memberId);
+            System.out.println(myFavoriteVendor);
+            response.setItemlist(myFavoriteVendor);
+            response.setStatusCode(HttpStatus.OK.value());
+            return  ResponseEntity.ok().body(myFavoriteVendor);
         }catch(Exception e) {
             response.setErrorMessage(e.getMessage());
             response.setStatusCode(HttpStatus.BAD_REQUEST.value());

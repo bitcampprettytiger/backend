@@ -13,6 +13,7 @@ import net.minidev.json.annotate.JsonIgnore;
 import org.modelmapper.ModelMapper;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Data
@@ -27,7 +28,7 @@ public class ReviewDto {
     private Vendor vendor;
     private Member member;
     private String reviewContent;
-    private String reviewRegDate;
+    private String reviewRegDateTime;
     private int reviewScore;
     private int likedCount;
     private int disLikedCount;
@@ -45,7 +46,6 @@ public class ReviewDto {
         return modelMapper.map(review,ReviewDto.class);
     }
 
-
     public boolean isLiked() {
         return likedCount > 0;
     }
@@ -53,6 +53,13 @@ public class ReviewDto {
     public boolean isDisliked() {
         return disLikedCount > 0;
     }
+
+    // 포스트맨 출력시 변환된 형식으로 반환하는 메서드 추가
+    public String getReviewRegDateTimeFormatted() {
+        LocalDateTime dateTime = LocalDateTime.parse(reviewRegDateTime, DateTimeFormatter.ISO_DATE_TIME);
+        return dateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+    }
+
 }
 
 

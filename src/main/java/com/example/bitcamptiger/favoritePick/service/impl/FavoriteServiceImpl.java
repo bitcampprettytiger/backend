@@ -1,14 +1,18 @@
 package com.example.bitcamptiger.favoritePick.service.impl;
 
+import com.example.bitcamptiger.favoritePick.DTO.FavoriteVendorDTO;
 import com.example.bitcamptiger.favoritePick.entity.FavoriteVendor;
 import com.example.bitcamptiger.favoritePick.repository.FavoriteVendorRepository;
 import com.example.bitcamptiger.favoritePick.service.FavoriteService;
 import com.example.bitcamptiger.member.entity.Member;
+import com.example.bitcamptiger.member.reposiitory.MemberRepository;
 import com.example.bitcamptiger.vendor.entity.Vendor;
 import com.example.bitcamptiger.vendor.repository.VendorRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -19,9 +23,12 @@ public class FavoriteServiceImpl implements FavoriteService {
     private final FavoriteVendorRepository favoriteVendorRepository;
     private final VendorRepository vendorRepository;
 
-    public FavoriteServiceImpl(FavoriteVendorRepository favoriteVendorRepository, VendorRepository vendorRepository) {
+    private final MemberRepository memberRepository;
+
+    public FavoriteServiceImpl(FavoriteVendorRepository favoriteVendorRepository, VendorRepository vendorRepository,MemberRepository memberRepository) {
         this.favoriteVendorRepository = favoriteVendorRepository;
         this.vendorRepository = vendorRepository;
+        this.memberRepository = memberRepository;
     }
 
 
@@ -70,7 +77,14 @@ public class FavoriteServiceImpl implements FavoriteService {
     //나의 찜하기 리스트 조회하기
     @Transactional
     @Override
-    public List<FavoriteVendor> getMyFavoriteVendor(Long memberId) {
-        return null;
+    public List<FavoriteVendorDTO> getMyFavoriteVendor(Long memberId) {
+        List<FavoriteVendor> byMember = favoriteVendorRepository.findByMember(memberRepository.findById(memberId).orElseThrow(EntityNotFoundException::new));
+
+        List<FavoriteVendorDTO> favoriteVendorDTOS = new ArrayList<>();
+        for(FavoriteVendor favoriteVendor:byMember){
+            FavoriteVendorDTO of = FavoriteVendorDTO.of(favoriteVendor);
+            favoriteVendorDTOS.add(of);
+        }
+        return favoriteVendorDTOS;
     }
 }

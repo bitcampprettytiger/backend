@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/API/DongJak")
+@RequestMapping("/API/dongJak")
 public class DongJakAPIController {
     private final DongJakAPIService dongJakAPIService;
     private final UserValiService userValiService;
@@ -43,12 +43,10 @@ public class DongJakAPIController {
 
 
 
-    @PostMapping("/dongJak")
-    public ResponseEntity<String> validateDongJakInfo(
-            @RequestBody DongJakAPIDTO dongJakAPIDTO) {
+    @PostMapping("/validateDongJak")
+    public ResponseEntity<String> validateDongJakInfo(@RequestBody DongJakAPIDTO dongJakAPIDTO) {
         String storeName = dongJakAPIDTO.get거리가게명();
         String location = dongJakAPIDTO.get위치();
-        System.out.println(storeName + location);
         String validationMessage = userValiService.signUpForDongJak(storeName, location);
 
         if ("정보가 일치합니다.".equals(validationMessage)) {

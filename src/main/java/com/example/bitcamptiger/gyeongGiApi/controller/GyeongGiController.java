@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/gyeonggi")
+@RequestMapping("/API/gyeonggi")
 public class GyeongGiController {
     private final GyeongGiApiService gyeongGiApiService;
 
@@ -26,7 +26,7 @@ public class GyeongGiController {
 
 
 
-    @GetMapping("/vendors")
+    @GetMapping("/GyeonggiData")
     public List<RowDTO> getAllVendors() throws JsonProcessingException {
         ResponseDTO<List<Map<String, Object>>> responseDTO = new ResponseDTO<>();
         return gyeongGiApiService.getAllStreetVendorInfo();

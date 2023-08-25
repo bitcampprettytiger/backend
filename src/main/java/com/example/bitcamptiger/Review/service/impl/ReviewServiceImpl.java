@@ -185,23 +185,34 @@ public class ReviewServiceImpl implements ReviewService {
 //    }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public List<ReviewDto> getAllReviewsWithFiles(Long vendorId) {
         List<ReviewDto> reviewDtos = new ArrayList<>();
 
-        List<Object[]> results = reviewRepository.findByVendorId(vendorId);
-        for (Object[] result : results) {
-            Review review = (Review) result[0];
-            ReviewDto reviewDto = review.EntityToDto();
+        Optional<Vendor> vendor = vendorRepository.findById(vendorId);
+        System.out.println(vendor.get());
+        List<Review> reviewList = reviewRepository.findByVendor(vendor.orElseThrow(EntityNotFoundException::new));;
+
+        System.out.println(reviewList.size());
+        for (Review review : reviewList) {
+            ReviewDto reviewDto = ReviewDto.of(review);
+            System.out.println(reviewDto);
 
             // 리뷰 파일 관련 정보 추가
-            ReviewFileDto reviewFileDto = null;
-            if (result[1] != null) {
-                ReviewFile reviewFile = (ReviewFile) result[1];
-                reviewFileDto = reviewFile.EntitytoDto();
-            }
-            reviewDto.setReviewFile(reviewFileDto);
+//            ReviewFileDto reviewFileDto = new ReviewFileDto();
+//            if (result[1] != null) {
+//                ReviewFile reviewFile = (ReviewFile) result[1];
+//                reviewFileDto = reviewFile.EntitytoDto();
+//            }
+//            reviewDto.setReviewFile(reviewFileDto);
 
+            List<ReviewFile> reviewFileList = reviewFileRepository.findByReview(review);
+            for(ReviewFile reviewFile: reviewFileList)
+            {
+
+            }
+            System.out.println(reviewFileList.size());
+            reviewDto.setReviewFileList(reviewFileList);
             reviewDtos.add(reviewDto);
         }
 

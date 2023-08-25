@@ -46,9 +46,10 @@ public class ReviewController {
     @GetMapping("/review-list/{vendorId}")
     public ResponseEntity<?> getReviewList(@PathVariable(name = "vendorId") Long vendorId) {
         ResponseDTO<ReviewDto> responseDTO = new ResponseDTO<>();
+        System.out.println(vendorId);
         try {
             List<ReviewDto> reviewsWithFiles = reviewService.getAllReviewsWithFiles(vendorId);
-
+            System.out.println(reviewsWithFiles);
             responseDTO.setItemlist(reviewsWithFiles);
             responseDTO.setStatusCode(HttpStatus.OK.value());
 

@@ -225,7 +225,7 @@ public class VendorController {
 
 
     //개별 상점 상세 정보 확인
-    @GetMapping("/infoDetaild/{i}")
+    @GetMapping("/infoDetaild/{id}")
     public VendorDTO getVendorInfoDetail(@PathVariable Long id){
         return vendorService.getVendorDetail(id);
     }

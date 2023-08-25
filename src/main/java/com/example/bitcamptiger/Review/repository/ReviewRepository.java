@@ -14,4 +14,6 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     @Query("SELECT r, rf FROM Review r LEFT JOIN ReviewFile rf ON r.reviewNum = rf.review.reviewNum WHERE r.vendor.id = :vendorId")
     List<Object[]> findByVendorId(@Param("vendorId") Long vendorId);
     Optional<Review> findByReviewNum(Long reviewNum);
+
+    List<Review> findByVendor(Vendor vendor);
 }

@@ -1,5 +1,6 @@
 package com.example.bitcamptiger.seoulApi.controller;
 
+import com.example.bitcamptiger.gyeongGiApi.service.gyeonggiValidationService.GyeonggiValiService;
 import com.example.bitcamptiger.seoulApi.dto.APILocationDTO;
 import com.example.bitcamptiger.seoulApi.service.userValidaionService.UserValiService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,8 @@ public class APIController {
 
     @Autowired
     private UserValiService userValiService;
+    @Autowired
+    private GyeonggiValiService gyeonggiValiService;
 
     @PostMapping("/validateByRegion")
     public ResponseEntity<String> validateByRegion(@RequestBody APILocationDTO locationDTO) {
@@ -36,6 +39,13 @@ public class APIController {
             case "노량진":
                 isValid = userValiService.signUpForNoRyangJin(호점); // 적절한 값을 전달해야 함
                 break;
+            case "강서구":
+                isValid = userValiService.signUpForGangseo(value1, value2);
+                break;
+            case "경기도":
+                isValid = gyeonggiValiService.signUpForGyeongGi(value1, value2);
+                break;
+
             // 다른 지역 케이스 추가 ...
             default:
                 // 유효하지 않은 지역 처리 ...

@@ -2,8 +2,10 @@ package com.example.bitcamptiger.seoulApi.service.userValidaionService;
 
 import com.example.bitcamptiger.seoulApi.entity.DongJakVenders;
 import com.example.bitcamptiger.seoulApi.entity.GangNamVenders;
+import com.example.bitcamptiger.seoulApi.entity.GangseoguVenders;
 import com.example.bitcamptiger.seoulApi.repository.DongJakVendersRepository;
 import com.example.bitcamptiger.seoulApi.repository.GangNamVendersRepository;
+import com.example.bitcamptiger.seoulApi.repository.GangseoguVendersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +18,8 @@ public class UserValiService {
     private GangNamVendersRepository gangNamVendersRepository;
     @Autowired
     private DongJakVendersRepository dongJakVendersRepository;
+    @Autowired
+    private GangseoguVendersRepository gangseoguVendersRepository;
 
 
     //강남구 검증 : 소재지도로명주소로 검색하거나 소재지번주소로 검색
@@ -58,6 +62,16 @@ public class UserValiService {
         }
     }
 
+
+    public boolean signUpForGangseo(String 위치,String 판매품목){
+        GangseoguVenders existingEntity = gangseoguVendersRepository.findBy위치And판매품목(위치, 판매품목);
+
+        if(existingEntity != null){
+            return true;
+        }else{
+            return false;
+        }
+    }
 
 
 

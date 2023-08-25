@@ -92,35 +92,36 @@ public class GyeongGiApiServiceImpl implements GyeongGiApiService {
             }
             // rowList가 DTO 리스트이므로 여기에서 엔터티로 변환하고 저장
             // 엔터티를 저장할 리스트
-            List<GyeonggiVenders> entityList = new ArrayList<>();
 
-            for (RowDTO dto : rowList) {
-                if (dto.getInduTypeNm() != null && dto.getInduTypeNm().endsWith("가게")) {
-                    GyeonggiVenders entity = new GyeonggiVenders();
-                    entity.setPrmsnNm(dto.getPrmsnNm());
-                    entity.setRefineLotnoAddr(dto.getRefineLotnoAddr());
-                    entity.setRefineZipno(dto.getRefineZipno());
-                    entity.setInduTypeNm(dto.getInduTypeNm());
-                    entity.setLicensgDe(dto.getLicensgDe());
-                    entity.setSigunNm(dto.getSigunNm());
-                    entity.setOccupTnAr(dto.getOccupTnAr());
-                    entity.setRefineRoadnmAddr(dto.getRefineRoadnmAddr());
-                    entity.setRefineWgs84Lat(dto.getRefineWgs84Lat());
-                    entity.setStoreNm(dto.getStoreNm());
-                    entity.setClsbizYn(dto.getClsbizYn());
-                    entity.setRefineWgs84Logt(dto.getRefineWgs84Logt());
+            //필요한 정보 추출하여 엔티티에 저장
+            for(RowDTO rowDTO : rowList){
+                if(rowDTO.getInduTypeNm() != null && rowDTO.getInduTypeNm().endsWith("가게")){
 
-                    entityList.add(entity);
+                    GyeonggiVenders existingEntity = gyeonggiVendersRepository.findByPrmsnNmAndStoreNm(rowDTO.getPrmsnNm(), rowDTO.getStoreNm());
+
+                    if(existingEntity == null){
+                        GyeonggiVenders gyeonggiVenders = new GyeonggiVenders();
+                        gyeonggiVenders.setPrmsnNm(rowDTO.getPrmsnNm());
+                        gyeonggiVenders.setRefineLotnoAddr(rowDTO.getRefineLotnoAddr());
+                        gyeonggiVenders.setRefineZipno(rowDTO.getRefineZipno());
+                        gyeonggiVenders.setInduTypeNm(rowDTO.getInduTypeNm());
+                        gyeonggiVenders.setLicensgDe(rowDTO.getLicensgDe());
+                        gyeonggiVenders.setSigunNm(rowDTO.getSigunNm());
+                        gyeonggiVenders.setOccupTnAr(rowDTO.getOccupTnAr());
+                        gyeonggiVenders.setRefineRoadnmAddr(rowDTO.getRefineRoadnmAddr());
+                        gyeonggiVenders.setRefineWgs84Lat(rowDTO.getRefineWgs84Lat());
+                        gyeonggiVenders.setStoreNm(rowDTO.getStoreNm());
+                        gyeonggiVenders.setClsbizYn(rowDTO.getClsbizYn());
+                        gyeonggiVenders.setRefineWgs84Logt(rowDTO.getRefineWgs84Logt());
+
+                        gyeonggiVendersRepository.save(gyeonggiVenders);
+                    }
                 }
-            }
-            // 엔터티 리스트가 비어있지 않은 경우에만 저장 수행
-            if (!entityList.isEmpty()) {
-                gyeonggiVendersRepository.saveAll(entityList); // 저장
 
-                System.out.println("Saved " + entityList.size() + " entities.");
             }
-            System.out.println("rowList.size(): " + rowList.size());
+
             return rowList;
+
 
             // 이후 예외 처리 코드...
         } catch (HttpServerErrorException.InternalServerError ex) {

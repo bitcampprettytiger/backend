@@ -8,4 +8,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface GyeonggiVendersRepository extends JpaRepository <GyeonggiVenders, Long> {
 
+
+    GyeonggiVenders findByPrmsnNmAndStoreNm(String prmsnNm, String storeNm);
 }

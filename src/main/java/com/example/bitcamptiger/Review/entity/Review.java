@@ -46,20 +46,6 @@ public class Review {
     private Integer disLikeCount = 0; // 싫어요 수
 
 
-//    public ReviewDto EntityToDto() {
-//        return ReviewDto.builder()
-//                .reviewId(this.id)
-//                .orderNum(this.orderNum)
-//                .memberIdFromDto(this.member.getId())
-//                .vendorIdFromDto(this.vendor.getId())
-//                .reviewContent(this.reviewContent)
-//                .reviewRegDate(this.reviewRegDate)
-//                .reviewScore(this.reviewScore)
-//                .likedCount(this.likeCount != null ? this.likeCount : 0)
-//                .disLikedCount(this.disLikeCount != null ? this.disLikeCount : 0)
-//                .build();
-//    }
-
 
         //리뷰 생성되거나 수정될 때 vendor 엔티티 업데이트
         public void setVendor(Vendor vendor){

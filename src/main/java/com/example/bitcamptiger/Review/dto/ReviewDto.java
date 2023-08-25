@@ -19,16 +19,17 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class ReviewDto {
-    private Long reviewNum;
+    private Long reviewId;
     private Long orderNum;
     private Long vendorId;
     private Long memberId;
     private String reviewContent;
-    private String reviewRegDate;
+    private LocalDateTime reviewRegDate;
     private int reviewScore;
     private int likedCount;
     private int disLikedCount;
     private List<ReviewFile> reviewFileList;
+    private ReviewFileDto reviewFile;
     private static ModelMapper modelMapper = new ModelMapper();
 
 
@@ -38,9 +39,9 @@ public class ReviewDto {
 
     public Review DtoToEntity() {
         Review review = Review.builder()
-                .reviewNum(this.reviewNum)
+                .id(this.reviewId)
                 .reviewContent(this.reviewContent)
-                .reviewRegDate(LocalDateTime.parse(this.reviewRegDate))
+                .reviewRegDate(this.reviewRegDate)
                 .reviewScore(this.reviewScore)
                 .likeCount(this.likedCount)
                 .disLikeCount(this.disLikedCount)

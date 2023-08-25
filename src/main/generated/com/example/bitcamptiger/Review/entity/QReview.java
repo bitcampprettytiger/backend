@@ -24,6 +24,8 @@ public class QReview extends EntityPathBase<Review> {
 
     public final NumberPath<Integer> disLikeCount = createNumber("disLikeCount", Integer.class);
 
+    public final NumberPath<Long> id = createNumber("id", Long.class);
+
     public final NumberPath<Integer> likeCount = createNumber("likeCount", Integer.class);
 
     public final com.example.bitcamptiger.member.entity.QMember member;
@@ -31,8 +33,6 @@ public class QReview extends EntityPathBase<Review> {
     public final NumberPath<Long> orderNum = createNumber("orderNum", Long.class);
 
     public final StringPath reviewContent = createString("reviewContent");
-
-    public final NumberPath<Long> reviewNum = createNumber("reviewNum", Long.class);
 
     public final DateTimePath<java.time.LocalDateTime> reviewRegDate = createDateTime("reviewRegDate", java.time.LocalDateTime.class);
 

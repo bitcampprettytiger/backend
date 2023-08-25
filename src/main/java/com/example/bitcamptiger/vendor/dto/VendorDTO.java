@@ -10,7 +10,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.modelmapper.ModelMapper;
 
-import java.time.LocalTime;
 import java.util.List;
 
 
@@ -57,10 +56,8 @@ public class VendorDTO {
     private Long reviewCount;
     private Double weightedAverageScore;
 
-    @JsonIgnore
     private List<VendorImageDTO> vendorImageDTOList;
 
-    @JsonIgnore
     private List<MenuDTO> menuDTOList;
 
 

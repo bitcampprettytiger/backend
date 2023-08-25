@@ -2,13 +2,11 @@ package com.example.bitcamptiger.Review.entity;
 
 import com.example.bitcamptiger.member.entity.Member;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserReviewAction {
@@ -21,7 +19,7 @@ public class UserReviewAction {
     private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "reviewNum") //리뷰 id 조인
+    @JoinColumn(name = "review_id") //리뷰 id 조인
     private Review review;
 
     private boolean liked;

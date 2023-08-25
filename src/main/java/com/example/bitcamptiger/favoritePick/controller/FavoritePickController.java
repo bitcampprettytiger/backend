@@ -1,5 +1,7 @@
 package com.example.bitcamptiger.favoritePick.controller;
 
+import com.example.bitcamptiger.dto.ResponseDTO;
+import com.example.bitcamptiger.favoritePick.DTO.FavoriteVendorDTO;
 import com.example.bitcamptiger.favoritePick.service.FavoriteService;
 import com.example.bitcamptiger.member.entity.CustomUserDetails;
 import com.example.bitcamptiger.member.entity.Member;
@@ -7,6 +9,8 @@ import com.example.bitcamptiger.vendor.dto.VendorDTO;
 import com.example.bitcamptiger.vendor.entity.Vendor;
 import com.example.bitcamptiger.vendor.service.VendorService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,7 +43,7 @@ public class FavoritePickController {
     }
 
     //유저와 가게 정보를 받아와서 찜하기를 삭제
-    @PostMapping("/{memberId}/remove/{vendorId}")
+    @DeleteMapping("/{memberId}/remove/{vendorId}")
     public void removeFavorite(@PathVariable Long memberId, @PathVariable Long vendorId) {
         Member member = new Member();
         member.setId(memberId);
@@ -61,6 +65,24 @@ public class FavoritePickController {
         }
 
         return top8VendorDTOs;
+    }
+
+
+    //내 찜하기 리스트 조회하기
+    @GetMapping("/{memberId}")
+    public ResponseEntity<?> getMyFavoriteVendor(@PathVariable Long memberId){
+        ResponseDTO<FavoriteVendorDTO> response = new ResponseDTO<>();
+
+        try{
+
+//            List<FavoriteVendorDTO> favoriteVendorDTOList = favoriteService.getMyFavoriteVendor(memberId);
+
+            return  null;
+        }catch(Exception e) {
+            response.setErrorMessage(e.getMessage());
+            response.setStatusCode(HttpStatus.BAD_REQUEST.value());
+            return ResponseEntity.badRequest().body(response);
+        }
     }
 
 }

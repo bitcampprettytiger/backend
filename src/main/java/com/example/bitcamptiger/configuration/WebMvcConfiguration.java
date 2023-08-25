@@ -12,6 +12,8 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
     @Value(value = "${file.resource}")
     private String filePath;
 
+
+
     @Override
     public void  addResourceHandlers(ResourceHandlerRegistry resourceHandlerRegistry){
 

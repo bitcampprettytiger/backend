@@ -61,7 +61,7 @@ public class SecurityConfiguration {
      authorizaRequests.requestMatchers("/favorite-Test/**","/businessApi/**","/API/**").permitAll();
 
      authorizaRequests.requestMatchers("/vendor/**","/reviews/**").permitAll();
-     authorizaRequests.requestMatchers("/**").hasAuthority("ROLE_VENDOR");
+//     authorizaRequests.requestMatchers("/**").hasAuthority("ROLE_VENDOR");
      authorizaRequests.anyRequest().authenticated();
 
 })

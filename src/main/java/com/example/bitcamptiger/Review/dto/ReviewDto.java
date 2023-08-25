@@ -1,6 +1,7 @@
 package com.example.bitcamptiger.Review.dto;
 
 import com.example.bitcamptiger.Review.entity.Review;
+import com.example.bitcamptiger.Review.entity.ReviewFile;
 import com.example.bitcamptiger.member.entity.Member;
 import com.example.bitcamptiger.vendor.dto.VendorDTO;
 import com.example.bitcamptiger.vendor.entity.Vendor;
@@ -27,12 +28,13 @@ public class ReviewDto {
     private int reviewScore;
     private int likedCount;
     private int disLikedCount;
+    private List<ReviewFile> reviewFileList;
     private ReviewFileDto reviewFile;
-
     private static ModelMapper modelMapper = new ModelMapper();
 
+
     public static ReviewDto of(Review review){
-        return modelMapper.map(review, ReviewDto.class);
+        return modelMapper.map(review,ReviewDto.class);
     }
 
     public Review DtoToEntity() {

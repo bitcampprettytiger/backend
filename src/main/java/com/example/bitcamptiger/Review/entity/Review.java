@@ -20,9 +20,10 @@ import java.util.List;
 public class Review {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "review_ID")
-    private Long reviewNum; //리뷰번호
+    @Column(name = "review_id")
+    private Long id; //리뷰번호
 
+    @Column
     private Long orderNum; //포장번호
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -47,7 +48,7 @@ public class Review {
 
     public ReviewDto EntityToDto() {
         return ReviewDto.builder()
-                .reviewId(this.reviewNum)
+                .reviewId(this.id)
                 .orderNum(this.orderNum)
                 .memberId(this.member.getId())
                 .vendorId(this.vendor.getId())

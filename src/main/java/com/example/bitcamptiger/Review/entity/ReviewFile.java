@@ -37,13 +37,13 @@ public class ReviewFile {
 
     @Id
     @ManyToOne
-    @JoinColumn(name = "reviewNum")
+    @JoinColumn(name = "review_id")
     private Review review;
 
 
     public ReviewFileDto EntitytoDto() {
         ReviewFileDto reviewFileDto = ReviewFileDto.builder()
-                .reviewNum(this.review.getReviewNum()) // Review 참조
+                .id(this.review.getId()) // Review 참조
                 .reviewFileNo(this.reviewFileNo)
                 .reviewFileName(this.reviewFileName)
                 .reviewFilePath(this.reviewFilePath)

@@ -37,7 +37,7 @@ public class ReviewDto {
 
     public Review DtoToEntity() {
         Review review = Review.builder()
-                .reviewNum(this.reviewId)
+                .id(this.reviewId)
                 .reviewContent(this.reviewContent)
                 .reviewRegDate(this.reviewRegDate)
                 .reviewScore(this.reviewScore)

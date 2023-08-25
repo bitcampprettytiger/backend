@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import net.minidev.json.annotate.JsonIgnore;
 import org.modelmapper.ModelMapper;
 
 import java.time.LocalDateTime;
@@ -20,35 +21,43 @@ import java.util.List;
 public class ReviewDto {
     private Long reviewId;
     private Long orderNum;
-    private Long vendorId;
-    private Long memberId;
+
+    @JsonIgnore
+    private Vendor vendor;
+    private Member member;
     private String reviewContent;
-    private LocalDateTime reviewRegDate;
+    private String reviewRegDate;
     private int reviewScore;
     private int likedCount;
     private int disLikedCount;
     private ReviewFileDto reviewFile;
 
+
+
     private static ModelMapper modelMapper = new ModelMapper();
+
+    public Review createReview() {
+        return modelMapper.map(this, Review.class);
+    }
 
     public static ReviewDto of(Review review){
         return modelMapper.map(review, ReviewDto.class);
     }
 
-    public Review DtoToEntity() {
-        Review review = Review.builder()
-                .id(this.reviewId)
-                .reviewContent(this.reviewContent)
-                .reviewRegDate(this.reviewRegDate)
-                .reviewScore(this.reviewScore)
-                .likeCount(this.likedCount)
-                .disLikeCount(this.disLikedCount)
-                .member(Member.builder().id(this.memberId).build())
-                .vendor(Vendor.builder().id(this.vendorId).build())
-                .orderNum(this.orderNum)
-                .build();
-        return review;
-    }
+//    public static ReviewDto of(Review review) {
+//        ModelMapper modelMapper = new ModelMapper();
+//        ReviewDto dto = modelMapper.map(review, ReviewDto.class);
+//        dto.setReviewRegDate(review.getReviewRegDate());
+//        return dto;
+//    }
+//
+//    public Review DtoToEntity() {
+//        ModelMapper modelMapper = new ModelMapper();
+//        Review review = modelMapper.map(this, Review.class);
+//        review.setVendor(Vendor.builder().id(this.vendorIdFromDto).build());
+//        review.setMember(Member.builder().id(this.memberIdFromDto).build());
+//        return review;
+//    }
 
     public boolean isLiked() {
         return likedCount > 0;

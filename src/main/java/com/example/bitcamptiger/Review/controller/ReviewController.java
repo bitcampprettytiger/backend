@@ -75,15 +75,16 @@ public class ReviewController {
         Long reviewId = 1L;
 
         try{
-            Review review = Review.builder()
-                    .reviewContent(reviewDto.getReviewContent())
-                    .reviewScore(reviewDto.getReviewScore())
-                    .reviewRegDate(LocalDateTime.now())
-                    .build();
+//            Review review = Review.builder()
+//                    .reviewContent(reviewDto.getReviewContent())
+//                    .reviewScore(reviewDto.getReviewScore())
+//                    .reviewRegDate(LocalDateTime.now())
+//                    .build();
+            Review review = reviewDto.createReview();
             System.out.println("=================" + review.getReviewRegDate());
 
             // vendorId 값으로 Vendor 엔티티를 조회합니다.
-            Optional<Vendor> optionalVendor = vendorRepository.findById(reviewDto.getVendorId());
+            Optional<Vendor> optionalVendor = vendorRepository.findById(reviewDto.getVendor().getId());
             if (optionalVendor.isPresent()) { // Vendor 엔티티가 존재하는 경우 Review 엔티티에 참조를 설정합니다.
                 Vendor vendor = optionalVendor.get();
                 review.setVendor(vendor);
@@ -92,7 +93,7 @@ public class ReviewController {
             }
 
             // memberId 값으로 Member 엔티티를 조회합니다.
-            Optional<Member> optionalMember = memberRepository.findById(reviewDto.getMemberId());
+            Optional<Member> optionalMember = memberRepository.findById(reviewDto.getMember().getId());
             if (optionalMember.isPresent()) { // Member 엔티티가 존재하는 경우 Review 엔티티에 참조를 설정합니다.
                 Member member = optionalMember.get();
                 review.setMember(member);
@@ -116,7 +117,7 @@ public class ReviewController {
                         reviewFile.setReview(review);
 
                         uploadFileList.add(reviewFile);
-
+                        System.out.println("=================" + reviewFile.getReview().getReviewRegDate());
                         reviewId = reviewId + 1L;
                     }
                 }
@@ -140,7 +141,7 @@ public class ReviewController {
 
             returnMap.put("msg", "정상적으로 저장되었습니다.");
             returnMap.put("review", uploadFileList);
-
+            System.out.println(uploadFileList.get(0).getReview().getReviewRegDate());
             responseDTO.setItem(returnMap);
 
             return ResponseEntity.ok().body(responseDTO);
@@ -176,7 +177,7 @@ public class ReviewController {
         List<ReviewFile> uFileList = new ArrayList<>();
 
         try {
-            Review review = reviewDto.DtoToEntity();
+            Review review = reviewDto.createReview();
             System.out.println(reviewDto);
             if (originFiles != null) {
                 //파일처리
@@ -245,7 +246,7 @@ public class ReviewController {
             List<ReviewFile> updateReviewFileList =
                     reviewService.getReviewFileList(review.getId());
 
-            ReviewDto retrunReviewDto = updateReview.EntityToDto();
+            ReviewDto retrunReviewDto = ReviewDto.of(updateReview);
 
             List<ReviewFileDto> reviewFileDtoList = new ArrayList<>();
 

@@ -23,6 +23,11 @@ public class ReviewFileDto {
     private String reviewFileStatus;
     private String newFileName;
 
+
+    public static ModelMapper modelMapper = new ModelMapper();
+
+    public static ReviewFileDto of(ReviewFile reviewFile) { return modelMapper.map(reviewFile, ReviewFileDto.class);}
+
     public ReviewFile DtoToEntity() {
         ReviewFile reviewFile = ReviewFile.builder()
                 .reviewFileNo(this.reviewFileNo)

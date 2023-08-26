@@ -3,6 +3,7 @@ package com.example.bitcamptiger.Review.dto;
 import com.example.bitcamptiger.Review.entity.Review;
 import com.example.bitcamptiger.Review.entity.ReviewFile;
 import com.example.bitcamptiger.member.entity.Member;
+import com.example.bitcamptiger.order.entity.Orders;
 import com.example.bitcamptiger.vendor.dto.VendorDTO;
 import com.example.bitcamptiger.vendor.entity.Vendor;
 import lombok.AllArgsConstructor;
@@ -20,9 +21,10 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class ReviewDto {
-    private Long reviewId;
-    private Long orderNum;
+    private Long id;
 
+    @JsonIgnore
+    private Orders orders;
     @JsonIgnore
     private Vendor vendor;
 
@@ -43,7 +45,7 @@ public class ReviewDto {
     }
 
     public static ReviewDto of(Review review){
-        return modelMapper.map(review,ReviewDto.class);
+        return modelMapper.map(review, ReviewDto.class);
     }
 
 

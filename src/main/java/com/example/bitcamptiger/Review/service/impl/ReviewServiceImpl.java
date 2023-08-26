@@ -16,6 +16,8 @@ import com.example.bitcamptiger.common.reviewFileUtils;
 import com.example.bitcamptiger.member.entity.Member;
 import com.example.bitcamptiger.member.reposiitory.MemberRepository;
 import com.example.bitcamptiger.menu.entity.MenuImage;
+import com.example.bitcamptiger.order.entity.Orders;
+import com.example.bitcamptiger.order.repository.OrderRepository;
 import com.example.bitcamptiger.vendor.entity.Vendor;
 import com.example.bitcamptiger.vendor.repository.VendorRepository;
 import jakarta.persistence.*;
@@ -42,11 +44,11 @@ import java.util.stream.Collectors;
 public class ReviewServiceImpl implements ReviewService {
 
     private final ReviewRepository reviewRepository;
-    private final MemberRepository memberRepository;
     private final VendorRepository vendorRepository;
     private final ReviewFileRepository reviewFileRepository;
     private final reviewFileUtils reviewFileUtils;
     private final UserReviewActionRepository userReviewActionRepository;
+    private final OrderRepository orderRepository;
 
 
     @Override
@@ -63,6 +65,12 @@ public class ReviewServiceImpl implements ReviewService {
 
         Vendor vendor = vendorRepository.findById(review.getVendor().getId()).orElseThrow();
 
+        //주문 확인
+        Orders completedOrders = orderRepository.findByMemberIdAndId(review.getMember().getId(), review.getOrders().getId());
+        if(completedOrders == null){
+            throw new RuntimeException("리뷰 작성 권한이 없습니다.");
+        }
+
         //리뷰 개수와 총 리뷰 점수 업데이트
         review.setVendor(vendor);
         // Review 엔티티 저장
@@ -72,8 +80,6 @@ public class ReviewServiceImpl implements ReviewService {
 
         for (ReviewFile reviewFile : uploadFileList) {
             reviewFile.setReview(review);
-            System.out.println(reviewFile + "========================================");
-            System.out.println("========================================================>" + review.getId());
             long reviewFileNo = reviewFileRepository.findMaxFileNo(review.getId());
             reviewFile.setReviewFileNo(reviewFileNo);
 
@@ -109,7 +115,7 @@ public class ReviewServiceImpl implements ReviewService {
     //리뷰 삭제
     @Override
     public void deleteReview(ReviewDto reviewDto) {
-        Review review = reviewRepository.findById(reviewDto.getReviewId())
+        Review review = reviewRepository.findById(reviewDto.getId())
                 .orElseThrow(() -> new EntityNotFoundException("리뷰를 찾을 수 없습니다."));
 
         String bucketName = "springboot";

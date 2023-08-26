@@ -52,9 +52,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 //           유효성 검사 및 username가져오기
                 String username = jwtTokenProvider.validateAndGetUsername(token);
 //                System.out.println(username);
+                System.out.println("username==="+username);
 
                 UserDetails userDetails =
                         userDetailsServiceImpl.loadUserByUsername(username);
+                System.out.println(userDetails);
 //           유효성 검사 완료된 토큰 시큐리티에 인증된 사용자로 등록
                 AbstractAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                         userDetails,null,userDetails.getAuthorities());

@@ -91,21 +91,22 @@ public class JwtTokenProvider {
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
-
-
+        System.out.println(claims.getSubject());
+//        System.out.println(claims.getExpiration());
         try {
             // 검증
             //refresh 토큰의 만료시간이 지나지 않았을 경우, 새로운 access 토큰을 생성합니다.
-            if (!claims.getExpiration().before(new Date())) {
+            if (claims.getExpiration().before(new Date())) {
+                System.out.println("여기가 들어가?");
                 throw new BaseException(BaseResponseStatus.EMPTY_JWT);
             }
+            return claims.getSubject();
         }catch (Exception e) {
 
             //refresh 토큰이 만료되었을 경우, 로그인이 필요합니다.
             return null;
         }
 //     subject에 담겨있는 username을 리턴
-        return claims.getSubject();
 
     }
     public String validateRefreshToken(String refreshToken){

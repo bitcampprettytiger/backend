@@ -25,6 +25,7 @@ public class ReviewDto {
     private Long id;
 
     private Orders orders;
+    @JsonIgnore
     private Vendor vendor;
 
     private Member member;

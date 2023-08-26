@@ -24,8 +24,11 @@ public class JwtTokenProvider {
 //    BASE64 인코딩된 값
 //    navercloud5todobootappgogibitcamp702
     private static final String SECRET_KEY ="bmF2ZXJjbG91ZDV0b2RvYm9vdGFwcGdvZ2liaXRjYW1wNzAy";
-//    SCERET_KEY를 Key 객체로 변환
+    private static final String RE_KEY ="bmF2ZXJjbG91ZDV0b2RvYm9vdGFwcGdvZ2liaXRjYW1wNzAy";
+
+    //    SCERET_KEY를 Key 객체로 변환
     Key key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
+    Key key2 = Keys.hmacShaKeyFor(RE_KEY.getBytes(StandardCharsets.UTF_8));
 
 //   *
 //        사용자 정보를 받아서 JWT Token을 생성해주는 메소드
@@ -61,7 +64,7 @@ public class JwtTokenProvider {
 //       JWT Token 생성하여 반환
         return Jwts.builder()
 //                시그니쳐(서명) 부분에 들어갈 key값 지정
-                .signWith(key, SignatureAlgorithm.HS256)
+                .signWith(key2, SignatureAlgorithm.HS256)
 //               페이로드에 들어갈 내용
 //                토큰의 주인(sub)
                 .setSubject(member.getUsername())
@@ -111,13 +114,13 @@ public class JwtTokenProvider {
     }
     public String validateRefreshToken(String refreshToken){
 
-
+        System.out.println("refreshToken");
 //        // refresh 객체에서 refreshToken 추출
 //        String refreshToken = refreshTokenObj;
 
         Claims claims
                 =Jwts.parserBuilder()
-                .setSigningKey(SECRET_KEY.getBytes())
+                .setSigningKey(RE_KEY.getBytes())
                 .build()
                 .parseClaimsJws(refreshToken)
                 .getBody();
@@ -125,16 +128,16 @@ public class JwtTokenProvider {
         try {
             // 검증
             //refresh 토큰의 만료시간이 지나지 않았을 경우, 새로운 access 토큰을 생성합니다.
-            if (!claims.getExpiration().before(new Date())) {
+            if (claims.getExpiration().before(new Date())) {
                 return recreationAccessToken(claims.getSubject().toString());
             }
+            return null;
         }catch (Exception e) {
 
             //refresh 토큰이 만료되었을 경우, 로그인이 필요합니다.
             return null;
         }
 
-        return null;
     }
 //  리플레시 토큰이 만료되지않을때 에센스 토큰 다시만들기1
     public String recreationAccessToken(String membername){

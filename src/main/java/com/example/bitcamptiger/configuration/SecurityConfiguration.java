@@ -54,10 +54,10 @@ public class SecurityConfiguration {
         authorizeHttpRequests((authorizaRequests) -> {
 //                    /요청은 모든 사용자가 이용가능
 
+    authorizaRequests.requestMatchers("/member/**").permitAll();
 
 
-
-     authorizaRequests.requestMatchers("/member/**","/board/**", "/menu/**", "/cart/**", "/reviews/**", "/orders/**","/upload/**").hasAuthority("ROLE_BASIC");
+     authorizaRequests.requestMatchers("/board/**", "/menu/**", "/cart/**", "/reviews/**", "/orders/**","/upload/**").hasAuthority("ROLE_BASIC");
      authorizaRequests.requestMatchers("/favorite-Test/**","/businessApi/**","/API/**").hasAuthority("ROLE_BASIC");
 
      authorizaRequests.requestMatchers("/vendor/**","/reviews/**").hasAuthority("ROLE_BASIC");

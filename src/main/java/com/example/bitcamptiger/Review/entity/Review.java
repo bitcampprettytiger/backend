@@ -2,6 +2,7 @@ package com.example.bitcamptiger.Review.entity;
 
 import com.example.bitcamptiger.Review.dto.ReviewDto;
 import com.example.bitcamptiger.member.entity.Member;
+import com.example.bitcamptiger.order.entity.Orders;
 import com.example.bitcamptiger.vendor.entity.Vendor;
 import jakarta.persistence.*;
 import lombok.*;
@@ -23,8 +24,9 @@ public class Review {
     @Column(name = "review_id")
     private Long id; //리뷰번호
 
-    @Column
-    private Long orderNum; //포장번호
+    @OneToOne
+    @JoinColumn(name = "order_id")
+    private Orders orders; //포장번호
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "vendor_id", referencedColumnName = "vendor_id")

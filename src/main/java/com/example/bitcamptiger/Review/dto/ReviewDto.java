@@ -3,6 +3,7 @@ package com.example.bitcamptiger.Review.dto;
 import com.example.bitcamptiger.Review.entity.Review;
 import com.example.bitcamptiger.Review.entity.ReviewFile;
 import com.example.bitcamptiger.member.entity.Member;
+import com.example.bitcamptiger.order.entity.Orders;
 import com.example.bitcamptiger.vendor.dto.VendorDTO;
 import com.example.bitcamptiger.vendor.entity.Vendor;
 import lombok.AllArgsConstructor;
@@ -21,17 +22,19 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class ReviewDto {
-    private Long reviewId;
-    private Long orderNum;
+    private Long id;
 
     @JsonIgnore
+    private Orders orders;
+    @JsonIgnore
     private Vendor vendor;
+
     private Member member;
     private String reviewContent;
     private String reviewRegDateTime;
     private int reviewScore;
-    private int likedCount;
-    private int disLikedCount;
+    private int likeCount;
+    private int disLikeCount;
     private List<ReviewFile> reviewFileList;
     private ReviewFileDto reviewFile;
 
@@ -43,15 +46,15 @@ public class ReviewDto {
     }
 
     public static ReviewDto of(Review review){
-        return modelMapper.map(review,ReviewDto.class);
+        return modelMapper.map(review, ReviewDto.class);
     }
 
     public boolean isLiked() {
-        return likedCount > 0;
+        return likeCount > 0;
     }
 
     public boolean isDisliked() {
-        return disLikedCount > 0;
+        return disLikeCount > 0;
     }
 
     // 포스트맨 출력시 변환된 형식으로 반환하는 메서드 추가

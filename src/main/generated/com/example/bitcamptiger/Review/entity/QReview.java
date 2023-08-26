@@ -36,7 +36,7 @@ public class QReview extends EntityPathBase<Review> {
 
     public final DateTimePath<java.time.LocalDateTime> reviewRegDate = createDateTime("reviewRegDate", java.time.LocalDateTime.class);
 
-    public final NumberPath<Integer> reviewScore = createNumber("reviewScore", Integer.class);
+    public final NumberPath<Double> reviewScore = createNumber("reviewScore", Double.class);
 
     public final com.example.bitcamptiger.vendor.entity.QVendor vendor;
 

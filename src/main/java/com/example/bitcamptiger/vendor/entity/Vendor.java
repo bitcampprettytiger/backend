@@ -101,32 +101,31 @@ public class Vendor {
     @JsonManagedReference   //순환참조 문제를 해결하기 위해 주관리자 명시
     private List<Menu> menuList = new ArrayList<>();
 
+    @OneToMany(mappedBy = "vendor",cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference   //순환참조 문제를 해결하기 위해 주관리자 명시
+    private List<Review> reviewList = new ArrayList<>();
 
     //리뷰 별점 합계
     @Column
-    private Double totalReviewScore;
+    private Double totalReviewScore = 0.0;
 
     //리뷰 개수
     @Column
-    private Long reviewCount;
+    private Long reviewCount = 0L;
 
-    //리뷰 가중평균점수(리뷰별점 + 리뷰갯수)
+    //리뷰 평균점수
     @Column
-    private Double weightedAverageScore;
+    private Double averageReviewScore = 0.0;
 
 
 
     //리뷰가 생성되거나 수정될 때 vendor 엔티티 업데이트
-    //(총 리뷰 점수, 총 리뷰 개수, 평균 리뷰 점수)
     public void updateVendorReviewScore(Review review) {
 
-        if(this.reviewCount == null){
-            this.reviewCount = 0L;
-            this.totalReviewScore = 0.0;
-        }
+
         this.reviewCount++;
         this.totalReviewScore += review.getReviewScore();
-        this.weightedAverageScore = (this.totalReviewScore) / (this.reviewCount);
+        this.averageReviewScore = (this.totalReviewScore) / (this.reviewCount);
 
 
     }

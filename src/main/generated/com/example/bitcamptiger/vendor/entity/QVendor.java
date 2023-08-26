@@ -26,6 +26,8 @@ public class QVendor extends EntityPathBase<Vendor> {
 
     public final StringPath address = createString("address");
 
+    public final NumberPath<Double> averageReviewScore = createNumber("averageReviewScore", Double.class);
+
     public final StringPath b_no = createString("b_no");
 
     public final StringPath bank = createString("bank");
@@ -50,6 +52,8 @@ public class QVendor extends EntityPathBase<Vendor> {
 
     public final NumberPath<Long> reviewCount = createNumber("reviewCount", Long.class);
 
+    public final ListPath<com.example.bitcamptiger.Review.entity.Review, com.example.bitcamptiger.Review.entity.QReview> reviewList = this.<com.example.bitcamptiger.Review.entity.Review, com.example.bitcamptiger.Review.entity.QReview>createList("reviewList", com.example.bitcamptiger.Review.entity.Review.class, com.example.bitcamptiger.Review.entity.QReview.class, PathInits.DIRECT2);
+
     public final StringPath rlAppiNm = createString("rlAppiNm");
 
     public final StringPath tel = createString("tel");
@@ -67,8 +71,6 @@ public class QVendor extends EntityPathBase<Vendor> {
     public final StringPath vendorOpenStatus = createString("vendorOpenStatus");
 
     public final StringPath vendorType = createString("vendorType");
-
-    public final NumberPath<Double> weightedAverageScore = createNumber("weightedAverageScore", Double.class);
 
     public final StringPath x = createString("x");
 

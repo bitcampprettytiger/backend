@@ -39,6 +39,7 @@ public enum BaseResponseStatus {
     INVALID_OAUTH_TYPE(false, HttpStatus.BAD_REQUEST.value(), "알 수 없는 소셜 로그인 형식입니다."),
     FAIL_LOGIN_NAME(false, HttpStatus.BAD_REQUEST.value(), "이름의 길이를 20자 이하로 해주세요"),
     FAIL_LOGIN_PHONE(false, HttpStatus.BAD_REQUEST.value(), "핸드폰 번호의 형식을 맞춰주세요. "),
+    FAIL_LOGIN_REFRESH(false, HttpStatus.UNAUTHORIZED.value(), "리프레시 토큰입니다. 에세스토큰을 주세요."),
 
 
 

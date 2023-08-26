@@ -24,9 +24,7 @@ import java.util.List;
 public class ReviewDto {
     private Long id;
 
-    @JsonIgnore
     private Orders orders;
-    @JsonIgnore
     private Vendor vendor;
 
     private Member member;

@@ -56,13 +56,20 @@ public class SecurityConfiguration {
 
     authorizaRequests.requestMatchers("/member/**").permitAll();
 
+    authorizaRequests.requestMatchers("/board/**", "/menu/**", "/cart/**", "/reviews/**", "/orders/**","/upload/**").permitAll();
+    authorizaRequests.requestMatchers("/favorite-Test/**","/businessApi/**","/API/**").permitAll();
 
-     authorizaRequests.requestMatchers("/board/**", "/menu/**", "/cart/**", "/reviews/**", "/orders/**","/upload/**").hasAuthority("ROLE_BASIC");
-     authorizaRequests.requestMatchers("/favorite-Test/**","/businessApi/**","/API/**").hasAuthority("ROLE_BASIC");
-
-     authorizaRequests.requestMatchers("/vendor/**","/reviews/**").hasAuthority("ROLE_BASIC");
+    authorizaRequests.requestMatchers("/vendor/**","/reviews/**").permitAll();
 //     authorizaRequests.requestMatchers("/**").hasAuthority("ROLE_VENDOR");
-     authorizaRequests.requestMatchers("/api/**").hasAuthority("ROLE_BASIC");
+    authorizaRequests.requestMatchers("/api/**").permitAll();
+
+//
+//     authorizaRequests.requestMatchers("/board/**", "/menu/**", "/cart/**", "/reviews/**", "/orders/**","/upload/**").hasAuthority("ROLE_BASIC");
+//     authorizaRequests.requestMatchers("/favorite-Test/**","/businessApi/**","/API/**").hasAuthority("ROLE_BASIC");
+//
+//     authorizaRequests.requestMatchers("/vendor/**","/reviews/**").hasAuthority("ROLE_BASIC");
+////     authorizaRequests.requestMatchers("/**").hasAuthority("ROLE_VENDOR");
+//     authorizaRequests.requestMatchers("/api/**").hasAuthority("ROLE_BASIC");
 
 })
 //                로그인 로그아웃 설정

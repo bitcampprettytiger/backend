@@ -44,9 +44,6 @@ public class Menu {
     @Column
     private String menuType;
 
-    //메뉴 조회수
-    @Column(nullable = false)
-    private int views = 0; // 기본값 0으로 설정
 
     // 메뉴와 메뉴 이미지 간의 일대다 관계
     @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)

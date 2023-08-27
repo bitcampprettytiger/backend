@@ -111,24 +111,13 @@ public class Vendor {
 
     //리뷰 개수
     @Column
-    private Long reviewCount = 0L;
+    private Integer reviewCount = 0;
 
     //리뷰 평균점수
     @Column
     private Double averageReviewScore = 0.0;
 
 
-
-    //리뷰가 생성되거나 수정될 때 vendor 엔티티 업데이트
-    public void updateVendorReviewScore(Review review) {
-
-
-        this.reviewCount++;
-        this.totalReviewScore += review.getReviewScore();
-        this.averageReviewScore = (this.totalReviewScore) / (this.reviewCount);
-
-
-    }
 
 
 }

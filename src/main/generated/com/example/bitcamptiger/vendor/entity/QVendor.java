@@ -50,7 +50,7 @@ public class QVendor extends EntityPathBase<Vendor> {
 
     public final StringPath perNo = createString("perNo");
 
-    public final NumberPath<Long> reviewCount = createNumber("reviewCount", Long.class);
+    public final NumberPath<Integer> reviewCount = createNumber("reviewCount", Integer.class);
 
     public final ListPath<com.example.bitcamptiger.Review.entity.Review, com.example.bitcamptiger.Review.entity.QReview> reviewList = this.<com.example.bitcamptiger.Review.entity.Review, com.example.bitcamptiger.Review.entity.QReview>createList("reviewList", com.example.bitcamptiger.Review.entity.Review.class, com.example.bitcamptiger.Review.entity.QReview.class, PathInits.DIRECT2);
 

@@ -43,19 +43,12 @@ public class Review {
     @Column
     private LocalDateTime reviewRegDate = LocalDateTime.now(); //리뷰작성일자
     @Column
-    private Double reviewScore; //별점
+    private Long reviewScore; //별점
     @Column
     private Integer likeCount = 0; //좋아요 수
     @Column
     private Integer disLikeCount = 0; // 싫어요 수
 
-
-
-        //리뷰 생성되거나 수정될 때 vendor 엔티티 업데이트
-        public void setVendor(Vendor vendor){
-            this.vendor = vendor;
-            vendor.updateVendorReviewScore(this);
-        }
 
 
 

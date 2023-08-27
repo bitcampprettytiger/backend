@@ -185,16 +185,6 @@ public class VendorServiceImpl implements VendorService {
     }
 
 
-    @Override
-    public void insertVendor(VendorDTO vendorDTO) throws JsonProcessingException {
-
-    }
-
-    @Override
-    public void updateVendor(VendorDTO vendorDTO) {
-
-    }
-
 
     // 해당 검색어를 포함한 모든 가게 조회.
     // 주소, 메뉴명, 가게명
@@ -291,11 +281,11 @@ public class VendorServiceImpl implements VendorService {
     String attachPath;
 
 
-    //리뷰 가장 많은 순 / 별점 높은 순 정렬
+    //리뷰 100개 이상인 vendor 중 별점 높은 순 정렬
     @Override
-    public List<VendorDTO> getVendorByReview(Double weightedAverageScore) {
+    public List<VendorDTO> getVendorByReview() {
 
-        List<Vendor> vendorList = vendorRepository.findByReview(weightedAverageScore);
+        List<Vendor> vendorList = vendorRepository.findByReviewScore(10L);
 
         List<VendorDTO> vendorDTOList = new ArrayList<>();
 

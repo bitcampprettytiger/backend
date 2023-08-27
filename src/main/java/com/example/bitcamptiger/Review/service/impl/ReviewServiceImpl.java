@@ -67,12 +67,23 @@ public class ReviewServiceImpl implements ReviewService {
 
         //주문 확인
         Orders completedOrders = orderRepository.findByMemberIdAndId(review.getMember().getId(), review.getOrders().getId());
-        if(completedOrders == null){
+        if (completedOrders == null) {
             throw new RuntimeException("리뷰 작성 권한이 없습니다.");
         }
-
         //리뷰 개수와 총 리뷰 점수 업데이트
         review.setVendor(vendor);
+
+        if(vendor.getReviewCount() == null){
+            vendor.setReviewCount(0);
+        }
+        if(vendor.getTotalReviewScore() == null){
+            vendor.setTotalReviewScore(0.0);
+        }
+
+        vendor.setReviewCount(vendor.getReviewCount() + 1);
+        vendor.setTotalReviewScore(vendor.getTotalReviewScore() + review.getReviewScore());
+        vendor.setAverageReviewScore(Math.round((vendor.getTotalReviewScore() / vendor.getReviewCount())*100)/100.0);
+
         // Review 엔티티 저장
         reviewRepository.save(review);
         //변경사항 커밋 후 저장
@@ -199,16 +210,16 @@ public class ReviewServiceImpl implements ReviewService {
     public void likeReview(Member member, Review review) {
         Optional<UserReviewAction> userReivewAction = userReviewActionRepository.findByMemberAndReview(member, review);
 
-        if(userReivewAction.isPresent()) {
+        if (userReivewAction.isPresent()) {
             UserReviewAction action = userReivewAction.get();
-            if(!action.isLiked()) {
+            if (!action.isLiked()) {
                 action.setLiked(true);
                 action.setDisliked(false);
                 review.setLikeCount(review.getLikeCount() + 1);
                 userReviewActionRepository.save(action);
                 reviewRepository.save(review);
             }
-        } else  {
+        } else {
             UserReviewAction newAction = new UserReviewAction();
             newAction.setMember(member);
             newAction.setReview(review);
@@ -226,9 +237,9 @@ public class ReviewServiceImpl implements ReviewService {
     public void disLikeReview(Member member, Review review) {
         Optional<UserReviewAction> userReivewAction = userReviewActionRepository.findByMemberAndReview(member, review);
 
-        if(userReivewAction.isPresent()) {
+        if (userReivewAction.isPresent()) {
             UserReviewAction action = userReivewAction.get();
-            if(!action.isDisliked()) {
+            if (!action.isDisliked()) {
                 action.setDisliked(true);
                 action.setLiked(false);
                 review.setDisLikeCount(review.getDisLikeCount() + 1);

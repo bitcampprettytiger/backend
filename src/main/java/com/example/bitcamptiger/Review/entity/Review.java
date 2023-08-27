@@ -4,6 +4,7 @@ import com.example.bitcamptiger.Review.dto.ReviewDto;
 import com.example.bitcamptiger.member.entity.Member;
 import com.example.bitcamptiger.order.entity.Orders;
 import com.example.bitcamptiger.vendor.entity.Vendor;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -30,6 +31,7 @@ public class Review {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "vendor_id", referencedColumnName = "vendor_id")
+    @JsonBackReference  //순환참조 문제를 해결하기 위해 참조속성 명시
     private Vendor vendor;//상점번호
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -41,7 +43,7 @@ public class Review {
     @Column
     private LocalDateTime reviewRegDate = LocalDateTime.now(); //리뷰작성일자
     @Column
-    private Integer reviewScore; //별점
+    private Long reviewScore; //별점
     @Column
     private Integer likeCount = 0; //좋아요 수
     @Column
@@ -49,9 +51,5 @@ public class Review {
 
 
 
-        //리뷰 생성되거나 수정될 때 vendor 엔티티 업데이트
-        public void setVendor(Vendor vendor){
-            this.vendor = vendor;
-            vendor.updateVendorReviewScore(this);
-        }
+
 }

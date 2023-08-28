@@ -9,6 +9,9 @@ import com.example.bitcamptiger.favoritePick.service.FavoriteService;
 import com.example.bitcamptiger.member.entity.Member;
 import com.example.bitcamptiger.member.reposiitory.MemberRepository;
 import com.example.bitcamptiger.member.service.MyPageService;
+import com.example.bitcamptiger.order.dto.OrderDTO;
+import com.example.bitcamptiger.order.dto.OrderMenuDTO;
+import com.example.bitcamptiger.order.entity.OrderMenu;
 import com.example.bitcamptiger.order.entity.Orders;
 import com.example.bitcamptiger.order.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
@@ -62,14 +65,41 @@ public class MyPageServiceImpl implements MyPageService {
     }
 
     //내 주문 내역
+    // 내 주문 내역을 조회하고 DTO로 변환하여 반환
     @Override
-    public List<Orders> getMyOrders(String username) {
+    public List<OrderDTO> getMyOrderDTOs(String username) {
+        // 현재 로그인한 사용자의 정보를 가져옴
         Optional<Member> optionalMember = memberRepository.findByUsername(username);
 
         if (optionalMember.isPresent()) {
+            // 사용자가 존재하는 경우, 사용자 정보를 가져옴
             Member member = optionalMember.get();
-            return orderRepository.findByMemberId(member.getId());
+
+            // 사용자의 주문 내역을 조회
+            List<Orders> ordersList = orderRepository.findByMemberId(member.getId());
+
+            // 주문 내역을 DTO로 변환한 결과를 담을 리스트
+            List<OrderDTO> orderDTOList = new ArrayList<>();
+            for (Orders orders : ordersList) {
+                // 주문 내역을 OrderDTO 형태로 변환
+                OrderDTO orderDTO = OrderDTO.of(orders);
+
+                // 주문 내역에 포함된 주문한 메뉴들을 변환하여 리스트에 추가
+                List<OrderMenuDTO> orderMenuDTOList = new ArrayList<>();
+                for (OrderMenu orderMenu : orders.getOrderMenuList()) {
+                    // 주문한 메뉴를 OrderMenuDTO 형태로 변환
+                    OrderMenuDTO orderMenuDTO = OrderMenuDTO.of(orderMenu);
+                    orderMenuDTOList.add(orderMenuDTO);
+                }
+                // 주문 내역 DTO에 주문한 메뉴 정보를 추가
+                orderDTO.setOrderedMenuDTOList(orderMenuDTOList);
+
+                // 변환한 주문 내역 DTO를 리스트에 추가
+                orderDTOList.add(orderDTO);
+            }
+            return orderDTOList;
         } else {
+            // 사용자가 존재하지 않는 경우, 예외 발생
             throw new RuntimeException("주문 내역을 조회할 회원을 찾을 수 없습니다.");
         }
     }
@@ -92,25 +122,64 @@ public class MyPageServiceImpl implements MyPageService {
 
     //내 찜 가게 내역
 
-    @Override
-    public List<FavoriteVendorDTO> getMyFavoriteVendor(Long memberId) {
-        Optional<Member> memberOptional = memberRepository.findById(memberId);
+    // 내 찜 가게 내역을 조회하고 DTO로 변환하여 반환
+//    @Override
+//    public List<FavoriteVendorDTO> getMyFavoriteVendorDTOs(String username) {
+//        // 현재 로그인한 사용자의 정보를 가져옴
+//        Optional<Member> optionalMember = memberRepository.findByUsername(username);
+//
+//        if (optionalMember.isPresent()) {
+//            // 사용자가 존재하는 경우, 사용자 정보를 가져옴
+//            Member member = optionalMember.get();
+//
+//            // 사용자의 찜한 가게 내역을 조회
+//            List<FavoriteVendor> favoriteVendors = favoriteVendorRepository.findByMember(member);
+//
+//            // 찜한 가게 내역을 DTO로 변환한 결과를 담을 리스트
+//            List<FavoriteVendorDTO> favoriteVendorDTOList = new ArrayList<>();
+//            for (FavoriteVendor favoriteVendor : favoriteVendors) {
+//                // 찜한 가게 내역을 FavoriteVendorDTO 형태로 변환
+//                FavoriteVendorDTO favoriteVendorDTO = FavoriteVendorDTO.of(favoriteVendor);
+//                favoriteVendorDTOList.add(favoriteVendorDTO);
+//            }
+//            return favoriteVendorDTOList;
+//        } else {
+//            // 사용자를 찾을 수 없는 경우에 대한 처리
+//            throw new RuntimeException("사용자를 찾을 수 없습니다.");
+//        }
+//    }
 
-        if (memberOptional.isPresent()) {
-            Member member = memberOptional.get();
+    @Override
+    public List<FavoriteVendorDTO> getMyFavoriteVendorDTOs(String username) {
+        // 현재 로그인한 사용자의 정보를 가져옴
+        Optional<Member> optionalMember = memberRepository.findByUsername(username);
+
+        if (optionalMember.isPresent()) {
+            // 사용자가 존재하는 경우, 사용자 정보를 가져옴
+            Member member = optionalMember.get();
+
+            // 사용자의 찜한 가게 내역을 조회
             List<FavoriteVendor> favoriteVendors = favoriteVendorRepository.findByMember(member);
 
-            List<FavoriteVendorDTO> favoriteVendorDTOS = new ArrayList<>();
+            // 찜한 가게 내역을 DTO로 변환한 결과를 담을 리스트
+            List<FavoriteVendorDTO> favoriteVendorDTOList = new ArrayList<>();
             for (FavoriteVendor favoriteVendor : favoriteVendors) {
-                FavoriteVendorDTO favoriteVendorDTO = FavoriteVendorDTO.customMap(favoriteVendor);
-                favoriteVendorDTOS.add(favoriteVendorDTO);
+                // 찜한 가게 내역을 FavoriteVendorDTO 형태로 변환
+                FavoriteVendorDTO favoriteVendorDTO = new FavoriteVendorDTO();
+                favoriteVendorDTO.setId(favoriteVendor.getId());
+                favoriteVendorDTO.setMember(favoriteVendor.getMember());
+                favoriteVendorDTO.setVendor(favoriteVendor.getVendor());
+
+                favoriteVendorDTOList.add(favoriteVendorDTO);
             }
-            return favoriteVendorDTOS;
+            return favoriteVendorDTOList;
         } else {
             // 사용자를 찾을 수 없는 경우에 대한 처리
             throw new RuntimeException("사용자를 찾을 수 없습니다.");
         }
     }
+
+
 
 
 }

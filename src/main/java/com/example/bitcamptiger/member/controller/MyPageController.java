@@ -7,6 +7,9 @@ import com.example.bitcamptiger.favoritePick.service.FavoriteService;
 import com.example.bitcamptiger.member.dto.MemberDTO;
 import com.example.bitcamptiger.member.entity.Member;
 import com.example.bitcamptiger.member.service.MyPageService;
+import com.example.bitcamptiger.order.dto.OrderDTO;
+import com.example.bitcamptiger.order.dto.OrderMenuDTO;
+import com.example.bitcamptiger.order.entity.OrderMenu;
 import com.example.bitcamptiger.order.entity.Orders;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,6 +22,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -73,32 +77,29 @@ public class MyPageController {
     }
 
 
-    //내 주문 내역
+    // 내 주문 내역을 조회하는 엔드포인트
     @GetMapping("/myOrders")
     public ResponseEntity<?> getMyOrders(@AuthenticationPrincipal UserDetails userDetails) {
-        ResponseDTO<List<Orders>> response = new ResponseDTO<>();
+        // 응답을 담을 DTO 생성
+        ResponseDTO<List<OrderDTO>> response = new ResponseDTO<>();
 
         try {
-            List<Orders> ordersList = myPageService.getMyOrders(userDetails.getUsername());
+            // 로그인한 사용자의 주문 내역을 조회하고 DTO로 변환
+            List<OrderDTO> orderDTOList = myPageService.getMyOrderDTOs(userDetails.getUsername());
 
-            if (ordersList.isEmpty()) {
-                //주문내역 없을 경우
-                response.setErrorMessage("주문 내역이 존재하지 않습니다.");
-                response.setStatusCode(HttpStatus.NOT_FOUND.value());
-            } else {
-                //주문내역 있어야 반환ok
-                response.setItem(ordersList);
-                response.setStatusCode(HttpStatus.OK.value());
-            }
+            // 응답 데이터를 설정하고 OK 상태로 반환
+            response.setItem(orderDTOList);
+            response.setStatusCode(HttpStatus.OK.value());
 
             return ResponseEntity.ok().body(response);
         } catch (Exception e) {
-            //조회 실패
+            // 오류 발생 시 에러 메시지를 설정하고 BAD_REQUEST 상태로 반환
             response.setErrorMessage("주문 내역 조회 중 오류가 발생했습니다.");
             response.setStatusCode(HttpStatus.BAD_REQUEST.value());
             return ResponseEntity.badRequest().body(response);
         }
     }
+
     //내 리뷰 내역
     @GetMapping("/myReviews")
     public ResponseEntity<?> getMyReviews(@AuthenticationPrincipal UserDetails userDetails) {
@@ -129,29 +130,31 @@ public class MyPageController {
     //내 찜 가게 내역
     @GetMapping("/myFavoriteVendors")
     public ResponseEntity<?> getMyFavoriteVendors(@AuthenticationPrincipal UserDetails userDetails) {
+        // 응답을 담을 DTO 생성
         ResponseDTO<List<FavoriteVendorDTO>> response = new ResponseDTO<>();
 
         try {
-            Member member = myPageService.getMyInfo(userDetails.getUsername())
-                    .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다."));
+            // 로그인한 사용자의 찜한 가게 내역을 조회하고 DTO로 변환
+            List<FavoriteVendorDTO> favoriteVendorDTOList = myPageService.getMyFavoriteVendorDTOs(userDetails.getUsername());
 
-            List<FavoriteVendorDTO> favoriteVendors = myPageService.getMyFavoriteVendor(member.getId());
-
-            if (favoriteVendors.isEmpty()) {
-                response.setErrorMessage("찜한 내역이 없습니다.");
-                response.setStatusCode(HttpStatus.OK.value());
+            if (favoriteVendorDTOList.isEmpty()) {
+                // 찜한 가게 내역이 없는 경우에 대한 처리
+                response.setErrorMessage("찜한 가게가 없습니다.");
+                response.setStatusCode(HttpStatus.NOT_FOUND.value());
             } else {
-                System.out.println(favoriteVendors);
-                response.setItem(favoriteVendors);
+                // 찜한 가게 내역이 있는 경우에 대한 처리
+                System.out.println(favoriteVendorDTOList);
+                response.setItem(favoriteVendorDTOList);
                 response.setStatusCode(HttpStatus.OK.value());
             }
 
             return ResponseEntity.ok().body(response);
         } catch (Exception e) {
-            response.setErrorMessage(e.getMessage());
+            // 오류 발생 시 에러 메시지를 설정하고 BAD_REQUEST 상태로 반환
+            response.setErrorMessage("찜한 가게 내역 조회 중 오류가 발생했습니다.");
             response.setStatusCode(HttpStatus.BAD_REQUEST.value());
             return ResponseEntity.badRequest().body(response);
         }
-    }
 
+    }
 }

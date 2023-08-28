@@ -34,6 +34,9 @@ public class Vendor {
     private String vendorName;
 
     @Column
+    private String SIGMenu;
+
+    @Column
     private String vendorInfo;  //가게 설명
 
     @Column
@@ -75,22 +78,8 @@ public class Vendor {
     private String location;
 
     @Column
-    private String bank;    //은행명
+    private String helpCheck;  //화장실 정보, 냉방기기 정보
 
-    @Column
-    private String accountOwner;    //계좌주명
-
-    @Column
-    private String accountNumber;   //사장님 계좌번호
-
-    @Column
-    private String toiletInfo;  //화장실 정보
-    
-    @Column
-    private String toiletDistance;  //화장실까지 거리
-
-    @Column
-    private String coolerInfo;  //냉방기기 정보
 
     @OneToMany(mappedBy = "vendor")
     @JsonManagedReference

@@ -59,11 +59,11 @@ public class SecurityConfiguration {
     authorizaRequests.requestMatchers("/favorite-Test/**","/businessApi/**","/API/**").hasAuthority("ROLE_BASIC");
     authorizaRequests.requestMatchers("/vendor/**","/reviews/**").hasAuthority("ROLE_BASIC");
 //     authorizaRequests.requestMatchers("/**").hasAuthority("ROLE_VENDOR");
-    authorizaRequests.requestMatchers("/api/**").hasAuthority("ROLE_BASIC");
+//    authorizaRequests.requestMatchers("/api/**").hasAuthority("ROLE_BASIC");
     authorizaRequests.requestMatchers("/refresh/**").hasAuthority("ROLE_BASIC");
     authorizaRequests.requestMatchers("/refresh").hasAuthority("ROLE_BASIC");
-
-
+    authorizaRequests.requestMatchers("/api/**").permitAll();
+    authorizaRequests.anyRequest().authenticated();
 
 //
 //     authorizaRequests.requestMatchers("/board/**", "/menu/**", "/cart/**", "/reviews/**", "/orders/**","/upload/**").hasAuthority("ROLE_BASIC");

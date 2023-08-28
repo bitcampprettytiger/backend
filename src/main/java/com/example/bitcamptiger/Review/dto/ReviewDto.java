@@ -22,11 +22,13 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class ReviewDto {
-    private Long id;
 
+    private Long reviewId;
+    private Long orderNum;
+    @JsonIgnore
+    private Long id;
     private Orders orders;
     private Vendor vendor;
-
     private Member member;
     private String reviewContent;
     private String reviewRegDateTime;

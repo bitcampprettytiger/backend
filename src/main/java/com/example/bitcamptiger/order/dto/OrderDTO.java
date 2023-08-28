@@ -24,10 +24,6 @@ public class OrderDTO {
 
     private String orderDate;   //주문한 날짜
 
-//    private int quantity;   // 주문 메뉴별 수량
-//    private int price;      // 주문 메뉴의 가격
-//    private int menuPrice; // 메뉴별 합산 금액
-
     private int totalQuantity; // 총 주문메뉴 수량
     private int totalPrice; // 총 결제 금액
 

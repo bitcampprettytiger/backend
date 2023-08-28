@@ -2,7 +2,6 @@ package com.example.bitcamptiger.menu.controller;
 
 import com.example.bitcamptiger.common.service.S3UploadService;
 import com.example.bitcamptiger.dto.ResponseDTO;
-import com.example.bitcamptiger.member.dto.VendorMemberDTO;
 import com.example.bitcamptiger.menu.dto.MenuDTO;
 import com.example.bitcamptiger.menu.repository.MenuRepository;
 import com.example.bitcamptiger.menu.service.Impl.MenuServiceImpl;
@@ -135,9 +134,7 @@ public class MenuController {
     //추천 메뉴 표출
     //조회수가 가장 많은 탑 5 메뉴를 표시할 것
     @GetMapping("/recommendedMenus5")
-    public List<MenuDTO> getRecommendedMenus() {
-        List<MenuDTO> recommendedMenus = menuServiceImpl.getRecommendedMenus();
-        return recommendedMenus;
+    public List<String> getRecommendedMenuTypes() {
+        return menuService.getRecommendedMenuTypes();
     }
-
 }

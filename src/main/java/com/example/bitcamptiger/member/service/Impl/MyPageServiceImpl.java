@@ -6,6 +6,7 @@ import com.example.bitcamptiger.favoritePick.DTO.FavoriteVendorDTO;
 import com.example.bitcamptiger.favoritePick.entity.FavoriteVendor;
 import com.example.bitcamptiger.favoritePick.repository.FavoriteVendorRepository;
 import com.example.bitcamptiger.favoritePick.service.FavoriteService;
+import com.example.bitcamptiger.member.dto.MemberDTO;
 import com.example.bitcamptiger.member.entity.Member;
 import com.example.bitcamptiger.member.reposiitory.MemberRepository;
 import com.example.bitcamptiger.member.service.MyPageService;
@@ -15,6 +16,7 @@ import com.example.bitcamptiger.order.entity.OrderMenu;
 import com.example.bitcamptiger.order.entity.Orders;
 import com.example.bitcamptiger.order.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,11 +45,41 @@ public class MyPageServiceImpl implements MyPageService {
     }
 
 
-
+    private final PasswordEncoder passwordEncoder;
 
     //내 정보 수정
+//    @Override
+//    public Member updateMemberInfo(Member member, String nickname, String password) {
+//        // 수정할 정보 업데이트
+//        member.setNickname(nickname);
+//
+//        // 비밀번호가 제공된 경우에만 비밀번호 업데이트
+//        if (password != null && !password.isEmpty()) {
+//            member.setPassword(passwordEncoder.encode(password));
+//        }
+//
+//        // 회원 정보 업데이트
+//        return memberRepository.save(member);
+//    }
+    @Override
+    public MemberDTO updateMemberInfo(Member member, String updatedNickName, String newPassword) {
+        // 업데이트할 필드들 설정
+        if (updatedNickName != null) {
+            member.setNickname(updatedNickName);
+        }
 
+        if (newPassword != null && !newPassword.isEmpty()) {
+            member.setPassword(passwordEncoder.encode(newPassword));
+        }
 
+        // 데이터베이스에 저장하여 업데이트 수행
+        Member updatedMember = memberRepository.save(member);
+
+        // 업데이트된 엔터티를 DTO로 변환하여 반환
+        MemberDTO updatedDTO = updatedMember.toMemberDTO();
+
+        return updatedDTO;
+    }
 
     // 회원 탈퇴
     // memberRepository를 사용하여 회원을 사용자명(username)으로 찾은 다음,

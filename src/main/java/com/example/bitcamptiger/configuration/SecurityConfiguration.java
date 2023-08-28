@@ -62,6 +62,7 @@ public class SecurityConfiguration {
     authorizaRequests.requestMatchers("/vendor/**","/reviews/**").permitAll();
 //     authorizaRequests.requestMatchers("/**").hasAuthority("ROLE_VENDOR");
     authorizaRequests.requestMatchers("/api/**").permitAll();
+    authorizaRequests.anyRequest().authenticated();
 
 //
 //     authorizaRequests.requestMatchers("/board/**", "/menu/**", "/cart/**", "/reviews/**", "/orders/**","/upload/**").hasAuthority("ROLE_BASIC");

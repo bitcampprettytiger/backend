@@ -8,6 +8,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
@@ -36,7 +37,7 @@ public class JwtTokenProvider {
 //
     public String create(Member member){
 //        토큰 만료일 설정. 현재로부터 1일뒤로 설정
-        Date expireDate = Date.from(Instant.now().plus(30, ChronoUnit.MINUTES));
+        Date expireDate = Date.from(Instant.now().plus(1, ChronoUnit.MINUTES));
 
 //       JWT Token 생성하여 반환
         return Jwts.builder()

@@ -20,8 +20,6 @@ public interface ReviewFileRepository extends JpaRepository<ReviewFile, ReviewFi
 
     List<ReviewFile> findByReviewId(long id);
 
-    //List<ReviewFile> findByReviewNum(long reviewNum);
-
     List<ReviewFile> findByReview(Review review);
 
 }

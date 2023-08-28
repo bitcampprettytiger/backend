@@ -75,14 +75,18 @@ public class MyPageController {
             // 현재 로그인한 사용자의 정보를 가져옴
             Member member = customUserDetails.getUser();
 
-            // 닉네임이 제공된 경우에만 닉네임 업데이트
+            // 닉네임 및 비밀번호 수정 여부 확인
+            boolean updatedNickname = false;
+            boolean updatedPassword = false;
+
             if (updatedInfo.getNickName() != null) {
                 member.setNickname(updatedInfo.getNickName());
+                updatedNickname = true;
             }
 
-            // 비밀번호가 제공된 경우에만 비밀번호 업데이트
             if (updatedInfo.getPassword() != null && !updatedInfo.getPassword().isEmpty()) {
                 member.setPassword(passwordEncoder.encode(updatedInfo.getPassword()));
+                updatedPassword = true;
             }
 
             // 회원 정보 업데이트
@@ -90,7 +94,17 @@ public class MyPageController {
                     member, updatedInfo.getNickName(), updatedInfo.getPassword()
             );
 
-            // DTO로 변환하여 응답
+            // 응답 메시지 생성
+            String message = "";
+            if (updatedNickname && updatedPassword) {
+                message = "닉네임, 비밀번호 수정이 완료되었습니다.";
+            } else if (updatedNickname) {
+                message = "닉네임이 수정되었습니다.";
+            } else if (updatedPassword) {
+                message = "비밀번호가 수정되었습니다.";
+            }
+
+            // 응답 DTO 구성
             MyInfoDTO updatedDTO = MyInfoDTO.builder()
                     .password(updatedMemberDTO.getPassword())
                     .username(updatedMemberDTO.getUsername())
@@ -98,14 +112,18 @@ public class MyPageController {
                     .build();
 
             responseDTO.setItem(updatedDTO);
+            responseDTO.setMessage(message);
             responseDTO.setStatusCode(HttpStatus.OK.value());
+
             return ResponseEntity.ok().body(responseDTO);
         } catch (Exception exception) {
             responseDTO.setErrorMessage(exception.getMessage());
             responseDTO.setStatusCode(HttpStatus.BAD_REQUEST.value());
+
             return ResponseEntity.badRequest().body(responseDTO);
         }
     }
+
 
 
     //회원 탈퇴

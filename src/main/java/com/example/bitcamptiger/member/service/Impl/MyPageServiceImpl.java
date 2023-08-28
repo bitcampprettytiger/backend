@@ -48,19 +48,6 @@ public class MyPageServiceImpl implements MyPageService {
     private final PasswordEncoder passwordEncoder;
 
     //내 정보 수정
-//    @Override
-//    public Member updateMemberInfo(Member member, String nickname, String password) {
-//        // 수정할 정보 업데이트
-//        member.setNickname(nickname);
-//
-//        // 비밀번호가 제공된 경우에만 비밀번호 업데이트
-//        if (password != null && !password.isEmpty()) {
-//            member.setPassword(passwordEncoder.encode(password));
-//        }
-//
-//        // 회원 정보 업데이트
-//        return memberRepository.save(member);
-//    }
     @Override
     public MemberDTO updateMemberInfo(Member member, String updatedNickName, String newPassword) {
         // 업데이트할 필드들 설정
@@ -153,34 +140,6 @@ public class MyPageServiceImpl implements MyPageService {
 
 
     //내 찜 가게 내역
-
-    // 내 찜 가게 내역을 조회하고 DTO로 변환하여 반환
-//    @Override
-//    public List<FavoriteVendorDTO> getMyFavoriteVendorDTOs(String username) {
-//        // 현재 로그인한 사용자의 정보를 가져옴
-//        Optional<Member> optionalMember = memberRepository.findByUsername(username);
-//
-//        if (optionalMember.isPresent()) {
-//            // 사용자가 존재하는 경우, 사용자 정보를 가져옴
-//            Member member = optionalMember.get();
-//
-//            // 사용자의 찜한 가게 내역을 조회
-//            List<FavoriteVendor> favoriteVendors = favoriteVendorRepository.findByMember(member);
-//
-//            // 찜한 가게 내역을 DTO로 변환한 결과를 담을 리스트
-//            List<FavoriteVendorDTO> favoriteVendorDTOList = new ArrayList<>();
-//            for (FavoriteVendor favoriteVendor : favoriteVendors) {
-//                // 찜한 가게 내역을 FavoriteVendorDTO 형태로 변환
-//                FavoriteVendorDTO favoriteVendorDTO = FavoriteVendorDTO.of(favoriteVendor);
-//                favoriteVendorDTOList.add(favoriteVendorDTO);
-//            }
-//            return favoriteVendorDTOList;
-//        } else {
-//            // 사용자를 찾을 수 없는 경우에 대한 처리
-//            throw new RuntimeException("사용자를 찾을 수 없습니다.");
-//        }
-//    }
-
     @Override
     public List<FavoriteVendorDTO> getMyFavoriteVendorDTOs(String username) {
         // 현재 로그인한 사용자의 정보를 가져옴

@@ -25,6 +25,10 @@ public interface FavoriteService {
     List<Vendor> getTop8FavoriteVendors();
 
     //나의 찜하기 리스트 조회하기
+//    @Transactional
+//    List<FavoriteVendorDTO> getMyFavoriteVendors(String username);
+
+    //나의 찜하기 리스트 조회하기
     @Transactional
     List<FavoriteVendorDTO> getMyFavoriteVendor(Long memberId);
 

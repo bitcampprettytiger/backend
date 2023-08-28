@@ -41,6 +41,6 @@ public class OrderDTO {
     }
 
 
-
-
+    public void setOrderMenuList(List<OrderMenuDTO> orderMenuDTOList) {
+    }
 }

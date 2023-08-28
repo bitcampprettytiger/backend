@@ -28,15 +28,4 @@ public class ReviewFileDto {
 
     public static ReviewFileDto of(ReviewFile reviewFile) { return modelMapper.map(reviewFile, ReviewFileDto.class);}
 
-    public ReviewFile DtoToEntity() {
-        ReviewFile reviewFile = ReviewFile.builder()
-                .reviewFileNo(this.reviewFileNo)
-                .review(Review.builder().id(this.id).build())
-                .reviewFileName(this.reviewFileName)
-                .reviewFilePath(this.reviewFilePath)
-                .reviewFileOrigin(this.reviewFileOrigin)
-                .reviewFileCate(this.reviewFileCate)
-                .build();
-        return reviewFile;
-    }
 }

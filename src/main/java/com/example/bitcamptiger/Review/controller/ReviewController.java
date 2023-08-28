@@ -142,7 +142,6 @@ public class ReviewController {
 
             returnMap.put("msg", "정상적으로 저장되었습니다.");
             returnMap.put("review", uploadFileList);
-            System.out.println(uploadFileList.get(0).getReview().getReviewRegDate());
             responseDTO.setItem(returnMap);
 
             return ResponseEntity.ok().body(responseDTO);

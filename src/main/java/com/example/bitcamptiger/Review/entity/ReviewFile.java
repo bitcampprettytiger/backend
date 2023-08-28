@@ -27,7 +27,7 @@ public class ReviewFile {
     private String reviewFilePath;// 파일 저장 경로
 
     @Column
-    private String reviewFileCate;
+    private String reviewFileCate; // 파일 종류
 
     @Transient
     private String reviewFileStatus;

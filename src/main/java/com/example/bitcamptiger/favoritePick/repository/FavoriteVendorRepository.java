@@ -17,6 +17,7 @@ public interface FavoriteVendorRepository extends JpaRepository<FavoriteVendor, 
 
     void deleteByMemberAndVendor(Member member, Vendor vendor);
 
+    List<FavoriteVendor> findByMember(Member member);
     //찜 중복방지
     List<FavoriteVendor> findByMemberAndVendor(Member member, Vendor vendor);
 }

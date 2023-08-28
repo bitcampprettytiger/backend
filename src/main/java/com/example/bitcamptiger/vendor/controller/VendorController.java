@@ -203,13 +203,13 @@ public class VendorController {
         }
     }
 
-    //리뷰 가장 많은 순 / 별점 높은 순 정렬
-    @GetMapping("/review/weightedAverageScore")
-    public ResponseEntity<?> getVendorByReview(Double weightedAverageScore){
+    //리뷰 100개 이상인 vendor 중 별점 높은 순 정렬
+    @GetMapping("/review/averageReviewScore")
+    public ResponseEntity<?> getVendorByReview(){
         ResponseDTO<VendorDTO> response = new ResponseDTO<>();
 
         try{
-            List<VendorDTO> vendorDTOList = vendorService.getVendorByReview(weightedAverageScore);
+            List<VendorDTO> vendorDTOList = vendorService.getVendorByReview();
 
             response.setItemlist(vendorDTOList);
             response.setStatusCode(HttpStatus.OK.value());
@@ -240,8 +240,9 @@ public class VendorController {
             @ApiResponse(responseCode = "400", description = "실패")
     })
     @PostMapping("/info")
-    public ResponseEntity<?> insertVendorInfo(@RequestBody VendorDTO vendorDTO, @RequestParam(required = false, value = "file")MultipartFile[] uploadFiles){
+    public ResponseEntity<?> insertVendorInfo(VendorDTO vendorDTO, @RequestParam(required = false, value = "file")MultipartFile[] uploadFiles){
         System.out.println(vendorDTO);
+        System.out.println(uploadFiles.length);
 //        vendorDTO null 일때 vaildation
         if(vendorDTO.equals(null)){
             new BaseResponse<>(VENDORDTO_NUTNULL);

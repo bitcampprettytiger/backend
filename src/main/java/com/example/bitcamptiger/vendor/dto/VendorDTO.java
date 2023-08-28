@@ -30,9 +30,15 @@ public class VendorDTO {
 //  시그니처메뉴(대표메뉴)
     private String SIGMenu;
 
+    private String vendorInfo;
+
     private String vendorOpenStatus;
 //  가게주소 (도로명)
     private String address;
+
+    private String x;
+    private String y;
+
 //   가게번호
     private String tel;
 //  영업일
@@ -42,24 +48,23 @@ public class VendorDTO {
 // 영업닫는시간
     private String close;
 //사업자 번호
-    private String b_no;
+//    private String b_no;
 //도로 점유증 허가 번호
-    private String perNo;
+//    private String perNo;
+// 신청인명
+//private String rlAppiNm;
 
     private String primaryimgurl;
 
-    private String x;
-    private String y;
-    private String rlAppiNm;        //신청인명
     private String location;
+
     private Double totalReviewScore;
     private Long reviewCount;
-    private Double weightedAverageScore;
+    private Double averageReviewScore;
 
     private List<VendorImageDTO> vendorImageDTOList;
 
     private List<MenuDTO> menuDTOList;
-
 
     private static ModelMapper modelMapper = new ModelMapper();
 

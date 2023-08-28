@@ -30,13 +30,13 @@ public class QReview extends EntityPathBase<Review> {
 
     public final com.example.bitcamptiger.member.entity.QMember member;
 
-    public final NumberPath<Long> orderNum = createNumber("orderNum", Long.class);
+    public final com.example.bitcamptiger.order.entity.QOrders orders;
 
     public final StringPath reviewContent = createString("reviewContent");
 
     public final DateTimePath<java.time.LocalDateTime> reviewRegDate = createDateTime("reviewRegDate", java.time.LocalDateTime.class);
 
-    public final NumberPath<Integer> reviewScore = createNumber("reviewScore", Integer.class);
+    public final NumberPath<Long> reviewScore = createNumber("reviewScore", Long.class);
 
     public final com.example.bitcamptiger.vendor.entity.QVendor vendor;
 
@@ -59,6 +59,7 @@ public class QReview extends EntityPathBase<Review> {
     public QReview(Class<? extends Review> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.member = inits.isInitialized("member") ? new com.example.bitcamptiger.member.entity.QMember(forProperty("member")) : null;
+        this.orders = inits.isInitialized("orders") ? new com.example.bitcamptiger.order.entity.QOrders(forProperty("orders"), inits.get("orders")) : null;
         this.vendor = inits.isInitialized("vendor") ? new com.example.bitcamptiger.vendor.entity.QVendor(forProperty("vendor")) : null;
     }
 

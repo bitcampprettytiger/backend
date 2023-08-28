@@ -95,6 +95,10 @@ public class VendorServiceImpl implements VendorService {
         nowLocationDto.setHardness(geocoding.get("x").toString());
         nowLocationDto.setLatitude(geocoding.get("y").toString());
         Randmark createrandmark = nowLocationDto.createrandmark();
+        if(nowLocationDto.getName()!=null) {
+            createrandmark.setLocation(nowLocationDto.getName());
+            createrandmark.setMapLocation(nowLocationDto.getName());
+        }
         System.out.println(createrandmark);
         System.out.println(nowLocationDto);
         nowLocationRepository.save(createrandmark);
@@ -180,16 +184,6 @@ public class VendorServiceImpl implements VendorService {
         return null;
     }
 
-
-    @Override
-    public void insertVendor(VendorDTO vendorDTO) throws JsonProcessingException {
-
-    }
-
-    @Override
-    public void updateVendor(VendorDTO vendorDTO) {
-
-    }
 
 
     // 해당 검색어를 포함한 모든 가게 조회.
@@ -287,11 +281,11 @@ public class VendorServiceImpl implements VendorService {
     String attachPath;
 
 
-    //리뷰 가장 많은 순 / 별점 높은 순 정렬
+    //리뷰 100개 이상인 vendor 중 별점 높은 순 정렬
     @Override
-    public List<VendorDTO> getVendorByReview(Double weightedAverageScore) {
+    public List<VendorDTO> getVendorByReview() {
 
-        List<Vendor> vendorList = vendorRepository.findByReview(weightedAverageScore);
+        List<Vendor> vendorList = vendorRepository.findByReviewScore(10L);
 
         List<VendorDTO> vendorDTOList = new ArrayList<>();
 

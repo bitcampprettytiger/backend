@@ -16,6 +16,8 @@ public class NowLocationDto {
 
     private String Hardness;
 
+    private String name;
+
 
     private static ModelMapper modelMapper = new ModelMapper();
 

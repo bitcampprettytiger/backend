@@ -2,6 +2,7 @@ package com.example.bitcamptiger.Review.dto;
 
 import com.example.bitcamptiger.Review.entity.Review;
 import com.example.bitcamptiger.Review.entity.ReviewFile;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,7 +21,9 @@ public class ReviewFileDto {
     private String reviewFileName;
     private String reviewFilePath;
     private String reviewFileCate;
+    @JsonIgnore
     private String reviewFileStatus;
+    @JsonIgnore
     private String newFileName;
 
 

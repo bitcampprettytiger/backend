@@ -13,4 +13,9 @@ public class BaseException extends RuntimeException {
         super(status.getMessage());
         this.status = status;
     }
+
+//    public BaseException(int statusCode, String message) {
+//        super(message);
+//        this.status = new BaseResponseStatus(false, statusCode, message);
+//    }
 }

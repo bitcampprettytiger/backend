@@ -55,13 +55,15 @@ public class SecurityConfiguration {
 //                    /요청은 모든 사용자가 이용가능
 
     authorizaRequests.requestMatchers("/member/**").permitAll();
-
-    authorizaRequests.requestMatchers("/board/**", "/menu/**", "/cart/**", "/reviews/**", "/orders/**","/upload/**").permitAll();
-    authorizaRequests.requestMatchers("/favorite-Test/**","/businessApi/**","/API/**").permitAll();
-
-    authorizaRequests.requestMatchers("/vendor/**","/reviews/**").permitAll();
+    authorizaRequests.requestMatchers("/board/**", "/menu/**", "/cart/**", "/reviews/**", "/orders/**","/upload/**").hasAuthority("ROLE_BASIC");
+    authorizaRequests.requestMatchers("/favorite-Test/**","/businessApi/**","/API/**").hasAuthority("ROLE_BASIC");
+    authorizaRequests.requestMatchers("/vendor/**","/reviews/**").hasAuthority("ROLE_BASIC");
 //     authorizaRequests.requestMatchers("/**").hasAuthority("ROLE_VENDOR");
-    authorizaRequests.requestMatchers("/api/**").permitAll();
+    authorizaRequests.requestMatchers("/api/**").hasAuthority("ROLE_BASIC");
+    authorizaRequests.requestMatchers("/refresh/**").hasAuthority("ROLE_BASIC");
+    authorizaRequests.requestMatchers("/refresh").hasAuthority("ROLE_BASIC");
+
+
 
 //
 //     authorizaRequests.requestMatchers("/board/**", "/menu/**", "/cart/**", "/reviews/**", "/orders/**","/upload/**").hasAuthority("ROLE_BASIC");

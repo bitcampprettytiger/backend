@@ -15,4 +15,5 @@ public interface MenuRepository extends JpaRepository<Menu, Long> {
     //조회수 높은 메뉴 탑 5 찾기
     List<Menu> findTop5ByOrderByViewsDesc();
 
+    List<Menu> findByMenuType(String menuType);
 }

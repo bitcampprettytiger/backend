@@ -5,6 +5,7 @@ import com.example.bitcamptiger.dto.ResponseDTO;
 import com.example.bitcamptiger.member.dto.MemberDTO;
 import com.example.bitcamptiger.member.entity.Member;
 import com.example.bitcamptiger.response.BaseResponse;
+import com.example.bitcamptiger.response.BaseResponseStatus;
 import com.example.bitcamptiger.vendor.dto.LocationDto;
 import com.example.bitcamptiger.vendor.dto.NowLocationDto;
 import com.example.bitcamptiger.vendor.dto.VendorDTO;
@@ -54,8 +55,11 @@ public class VendorController {
         } catch(Exception e) {
             System.out.println(e.getMessage());
             response.setErrorMessage(e.getMessage());
-            response.setStatusCode(HttpStatus.BAD_REQUEST.value());
-            return new BaseResponse<>(response);
+//            BaseResponseStatus status = new BaseResponseStatus(INVALID_JWT);
+//            BaseResponse<>
+//            response.setStatusCode(FAIL_LOGIN_REFRESH.getCode());
+
+            return new BaseResponse<>(FAIL_LOGIN_REFRESH);
         }
 
     }
@@ -78,7 +82,7 @@ public class VendorController {
         } catch(Exception e) {
             response.setErrorMessage(e.getMessage());
             response.setStatusCode(HttpStatus.BAD_REQUEST.value());
-            return new BaseResponse<>(response);
+            return new BaseResponse<>(FAIL_LOGIN_REFRESH);
         }
 
     }
@@ -104,7 +108,7 @@ public class VendorController {
             return ResponseEntity.ok().body(response);
         }catch(Exception e) {
             response.setErrorMessage(e.getMessage());
-            response.setStatusCode(HttpStatus.BAD_REQUEST.value());
+            response.setStatusCode(HttpStatus.FORBIDDEN.value());
             return ResponseEntity.badRequest().body(response);
         }
 
@@ -116,7 +120,6 @@ public class VendorController {
     public ResponseEntity<?> getVendorInfoList(){
         ResponseDTO<VendorDTO> response = new ResponseDTO<>();
         try{
-
             List<VendorDTO> vendorDTOList = vendorService.getVendorList();
 
             response.setItemlist(vendorDTOList);

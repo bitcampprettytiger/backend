@@ -15,4 +15,6 @@ public interface MenuService {
     void updateMenu(MenuDTO menuDTO, MultipartFile[] uploadFiles) throws IOException;
 
     void deleteMenu(MenuDTO menuDTO);
+
+    List<String> getRecommendedMenuTypes();
 }

@@ -21,9 +21,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -233,23 +232,29 @@ public class MenuServiceImpl implements MenuService {
 
 
     //메뉴조회수순 탑5
-    //조회수가 높은 순서대로 상위 5개의 메뉴 정보를 추천
-    public List<MenuDTO> getRecommendedMenus() {
+//조회수가 높은 순서대로 상위 5개의 메뉴 정보를 추천
+    public List<String> getRecommendedMenuTypes() {
         List<Menu> recommendedMenus = menuRepository.findTop5ByOrderByViewsDesc();
-        // 메뉴 정보를 저장할 MenuDTO 리스트
-        List<MenuDTO> menuDTOs = new ArrayList<>();
+        Map<String, Integer> menuTypeViewsMap = new HashMap<>();
 
-        // recommendedMenus 리스트의 각 메뉴에 대해 반복
         for (Menu menu : recommendedMenus) {
-            MenuDTO dto = new MenuDTO();
-            // dto에 메뉴 이름과 조회수 정보
-            dto.setMenuName(menu.getMenuName());
-            dto.setViews(menu.getViews());
-            // dto를 menuDTOs 리스트에 추가
-            menuDTOs.add(dto);
+            increaseMenuViews(menu); // 조회수 증가 로직 추가
+            String menuType = menu.getMenuType();
+            menuTypeViewsMap.put(menuType, menuTypeViewsMap.getOrDefault(menuType, 0) + 1);
         }
 
-        return menuDTOs;
+        List<String> recommendedMenuTypes = menuTypeViewsMap.entrySet()
+                .stream()
+                .sorted((entry1, entry2) -> entry2.getValue().compareTo(entry1.getValue()))
+                .limit(5)
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toList());
+
+        return recommendedMenuTypes;
+    }
+
+    private void increaseMenuViews(Menu menu) {
+        menu.setViews(menu.getViews() + 1);
     }
 
 

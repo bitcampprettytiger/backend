@@ -76,11 +76,6 @@ public class ReviewController {
         Long reviewId = 1L;
 
         try{
-//            Review review = Review.builder()
-//                    .reviewContent(reviewDto.getReviewContent())
-//                    .reviewScore(reviewDto.getReviewScore())
-//                    .reviewRegDate(LocalDateTime.now())
-//                    .build();
             Review review = reviewDto.createReview();
             System.out.println("=================" + review.getReviewRegDate());
 

@@ -1,6 +1,7 @@
 package com.example.bitcamptiger.Review.repository;
 
 import com.example.bitcamptiger.Review.entity.Review;
+import com.example.bitcamptiger.member.entity.Member;
 import com.example.bitcamptiger.vendor.entity.Vendor;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -17,4 +18,7 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
 
     List<Review> findByVendor(Vendor vendor);
     Optional<Review> findById(Long id);
+
+    List<Review> findByMember(Member member);
+
 }

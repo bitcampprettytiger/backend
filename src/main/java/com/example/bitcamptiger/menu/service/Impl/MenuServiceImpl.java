@@ -21,9 +21,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -233,23 +232,36 @@ public class MenuServiceImpl implements MenuService {
 
 
     //메뉴조회수순 탑5
-    //조회수가 높은 순서대로 상위 5개의 메뉴 정보를 추천
-    public List<MenuDTO> getRecommendedMenus() {
+//조회수가 높은 순서대로 상위 5개의 메뉴 정보를 추천
+    public List<String> getRecommendedMenuTypes() {
+        // 조회수가 높은 상위 5개의 메뉴를 가져옴
         List<Menu> recommendedMenus = menuRepository.findTop5ByOrderByViewsDesc();
-        // 메뉴 정보를 저장할 MenuDTO 리스트
-        List<MenuDTO> menuDTOs = new ArrayList<>();
 
-        // recommendedMenus 리스트의 각 메뉴에 대해 반복
+        // 메뉴 타입별로 조회수를 누적할 Map을 생성
+        Map<String, Integer> menuTypeViewsMap = new HashMap<>();
+
+        // 조회수 증가 로직을 포함하여 메뉴 타입별 조회수 누적
         for (Menu menu : recommendedMenus) {
-            MenuDTO dto = new MenuDTO();
-            // dto에 메뉴 이름과 조회수 정보
-            dto.setMenuName(menu.getMenuName());
-            dto.setViews(menu.getViews());
-            // dto를 menuDTOs 리스트에 추가
-            menuDTOs.add(dto);
+            increaseMenuViews(menu); // 메뉴 조회 시 조회수 증가 로직 실행
+            String menuType = menu.getMenuType(); // 메뉴의 타입 가져오기
+            menuTypeViewsMap.put(menuType, menuTypeViewsMap.getOrDefault(menuType, 0) + menu.getViews());
+            // 위에서 누적된 메뉴 타입별 조회수를 갱신 (누적 조회수에 현재 메뉴의 조회수를 더함)
         }
 
-        return menuDTOs;
+        // 누적된 메뉴 타입별 조회수를 기준으로 내림차순 정렬하여 상위 5개 메뉴 타입 추출
+        List<String> recommendedMenuTypes = menuTypeViewsMap.entrySet()
+                .stream()
+                .sorted((entry1, entry2) -> entry2.getValue().compareTo(entry1.getValue()))
+                .limit(5) // 상위 5개 메뉴 타입만 추출
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toList());
+
+        return recommendedMenuTypes; // 상위 5개 메뉴 타입 반환
+    }
+
+    // 메뉴 조회 시 조회수 증가 로직
+    private void increaseMenuViews(Menu menu) {
+        menu.setViews(menu.getViews() + 1); // 메뉴의 조회수 1 증가
     }
 
 

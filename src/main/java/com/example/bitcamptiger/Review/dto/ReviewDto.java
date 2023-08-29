@@ -24,14 +24,13 @@ import java.util.List;
 public class ReviewDto {
 
     private Long reviewId;
-    private Long orderNum;
     @JsonIgnore
     private Long id;
     private Orders orders;
     private Vendor vendor;
     private Member member;
     private String reviewContent;
-    private String reviewRegDateTime;
+    private String reviewRegDate;
     private int reviewScore;
     private int likeCount;
     private int disLikeCount;
@@ -59,7 +58,7 @@ public class ReviewDto {
 
     // 포스트맨 출력시 변환된 형식으로 반환하는 메서드 추가
     public String getReviewRegDateTimeFormatted() {
-        LocalDateTime dateTime = LocalDateTime.parse(reviewRegDateTime, DateTimeFormatter.ISO_DATE_TIME);
+        LocalDateTime dateTime = LocalDateTime.parse(reviewRegDate, DateTimeFormatter.ISO_DATE_TIME);
         return dateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
     }
 

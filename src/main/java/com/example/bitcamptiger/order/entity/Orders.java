@@ -1,6 +1,7 @@
 package com.example.bitcamptiger.order.entity;
 
 import com.example.bitcamptiger.member.entity.Member;
+import com.example.bitcamptiger.payments.entity.Payments;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
@@ -28,11 +29,17 @@ public class Orders {
     @Column
     private LocalDateTime orderDate;
 
+    @Column
+    @Enumerated(EnumType.STRING)
+    private OrderStatus orderStatus;
+
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<OrderMenu> orderMenuList = new ArrayList<>(); // 주문한 메뉴들의 정보
 
-
+    @OneToOne
+    @JoinColumn(name = "payment_id")
+    private Payments payments;
 
     public void addOrderMenu(OrderMenu orderMenu) {
         orderMenuList.add(orderMenu);

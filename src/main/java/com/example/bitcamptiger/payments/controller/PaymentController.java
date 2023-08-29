@@ -82,9 +82,6 @@ public class PaymentController {
         try{
             Payments payments = paymentService.addPayment(paymentDTO, token);
 
-//            List<PaymentDTO> paymentDTOList = paymentService.getPaymentList(token);
-
-//            response.setItemlist(paymentDTOList);
             response.setItem(PaymentDTO.of(payments));
             response.setStatusCode(HttpStatus.OK.value());
 

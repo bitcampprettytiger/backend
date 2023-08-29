@@ -57,7 +57,6 @@ public class ReviewServiceImpl implements ReviewService {
 
     //리뷰작성
     @Override
-    @Transactional
     public Map<String, Object> processReview(ReviewDto reviewDto, MultipartHttpServletRequest mphsRequest) throws IOException {
         Review review = createReviewEntity(reviewDto);
 
@@ -328,9 +327,14 @@ public class ReviewServiceImpl implements ReviewService {
 
     //리뷰 삭제
     @Override
-    public void deleteReview(ReviewDto reviewDto) {
+    public void deleteReview(ReviewDto reviewDto, Member loggedInMember) {
         Review review = reviewRepository.findById(reviewDto.getId())
                 .orElseThrow(() -> new EntityNotFoundException("리뷰를 찾을 수 없습니다."));
+        Member reviewAuthor = review.getMember();
+
+        if (!loggedInMember.equals(reviewAuthor)) {
+            throw new RuntimeException("리뷰를 삭제할 권한이 없습니다.");
+        }
 
         String bucketName = "springboot";
 

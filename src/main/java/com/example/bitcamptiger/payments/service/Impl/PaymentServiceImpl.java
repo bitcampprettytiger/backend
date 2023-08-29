@@ -5,6 +5,11 @@ import com.example.bitcamptiger.jwt.JwtTokenProvider;
 import com.example.bitcamptiger.member.entity.CustomUserDetails;
 import com.example.bitcamptiger.member.entity.Member;
 import com.example.bitcamptiger.member.reposiitory.MemberRepository;
+import com.example.bitcamptiger.order.dto.OrderDTO;
+import com.example.bitcamptiger.order.entity.OrderStatus;
+import com.example.bitcamptiger.order.entity.Orders;
+import com.example.bitcamptiger.order.repository.OrderRepository;
+import com.example.bitcamptiger.order.service.OrderService;
 import com.example.bitcamptiger.payments.dto.PaymentDTO;
 import com.example.bitcamptiger.payments.entity.Payments;
 import com.example.bitcamptiger.payments.repository.PaymentRepository;
@@ -27,6 +32,8 @@ public class PaymentServiceImpl implements PaymentService {
     private final JwtTokenProvider jwtTokenProvider;
     private final MemberRepository memberRepository;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final OrderRepository orderRepository;
+    private final OrderService orderService;
 
 
     //결제하기
@@ -43,6 +50,13 @@ public class PaymentServiceImpl implements PaymentService {
         //Member 엔티티 조회
         Member member = memberRepository.findByUsername(userId).orElseThrow();
 
+        //결제 전에 주문을 생성하고 예약 상태로 설정
+        OrderDTO orderDTO = new OrderDTO();
+        Orders orders = orderService.createOrder(orderDTO);
+        orders.setOrderStatus(OrderStatus.RESERVATION);
+        orderRepository.save(orders);
+
+        //결제 생성
         Payments payment = new Payments();
         payment.setPayMethod(paymentDTO.getPayMethod());
         payment.setImpUid(paymentDTO.getImpUid());
@@ -54,9 +68,19 @@ public class PaymentServiceImpl implements PaymentService {
         ///////////////////////// jwt //////////////////////////////////
         payment.setMember(member);
 
-        return paymentRepository.save(payment);
+        //결제 서비스를 호출해서 결제가 진행된 결과
+        boolean isPaymentSuccessful = true;
 
+        if(isPaymentSuccessful) {
+            orders.setPayments(payment);
+            orders.setOrderStatus(OrderStatus.CONFIRMED);
+            orderRepository.save(orders);
+        }else{
+            orders.setOrderStatus(OrderStatus.CANCELED);
+            orderRepository.save(orders);
+        }
 
+        return payment;
 
     }
 

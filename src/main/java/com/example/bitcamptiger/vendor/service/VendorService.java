@@ -14,6 +14,7 @@ public interface VendorService {
 
     // 모든 가게 목록 가져오기
 
+    List<VendorDTO> giveLandmarkvendor(NowLocationDto nowLocationDto);
     NowLocationDto saverandmark(NowLocationDto nowLocationDto);
 
     List<VendorDTO> getVendorList();

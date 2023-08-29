@@ -65,6 +65,25 @@ public class VendorController {
         }
 
     }
+
+    @PostMapping("/search10vendor")
+    public BaseResponse<?> getVendorrandmark(@RequestBody NowLocationDto nowLocationDto) {
+        ResponseDTO<VendorDTO> response = new ResponseDTO<>();
+        try{
+            List<VendorDTO> vendorDTOList = vendorService.giveLandmarkvendor(nowLocationDto);
+
+            response.setItemlist(vendorDTOList);
+            response.setStatusCode(HttpStatus.OK.value());
+
+            return new BaseResponse<>(response);
+        } catch(Exception e) {
+            System.out.println(e.getMessage());
+            response.setErrorMessage(e.getMessage());
+
+            return new BaseResponse<>(POST_ISNULL);
+        }
+
+    }
     @PostMapping("/locationsave")
     public BaseResponse<?> saveVendorOpenInfoList(@RequestBody NowLocationDto nowLocationDto) {
 

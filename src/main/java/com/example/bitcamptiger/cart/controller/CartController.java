@@ -31,14 +31,14 @@ public class CartController {
     public final MenuRepository menuRepository;
 
     //내 장바구니 조회
-    @GetMapping("/member/{memberId}")
-    public ResponseEntity<?> getMyCart(@PathVariable Member memberId){
+    @GetMapping("/member")
+    public ResponseEntity<?> getMyCart(@AuthenticationPrincipal CustomUserDetails customUserDetails){
         ResponseDTO<CartItemDTO> response = new ResponseDTO<>();
         try{
-            Member member = memberRepository.findById(memberId.getId()).orElseThrow();
+            Member member = memberRepository.findById(customUserDetails.getUser().getId()).orElseThrow();
             Cart cart = cartRepository.findByMemberId(member.getId());
 
-            List<CartItemDTO> cartItemDTOList = cartService.getCartList(memberId);
+            List<CartItemDTO> cartItemDTOList = cartService.getCartList(customUserDetails.getUser());
 
             response.setItemlist(cartItemDTOList);
             response.setStatusCode(HttpStatus.OK.value());

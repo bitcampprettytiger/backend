@@ -33,7 +33,7 @@ public class MenuController {
 
     //해당 가게의 모든 메뉴 정보 리스트
     @GetMapping("/info/{vendorId}")
-    public ResponseEntity<?> getMenuInfoList(@PathVariable Long vendorId){
+    public ResponseEntity<?> getMenuInfoList(@PathVariable Long vendorId,@AuthenticationPrincipal CustomUserDetails customUserDetails){
         ResponseDTO<MenuDTO> response = new ResponseDTO<>();
         try{
             List<MenuDTO> menuDTOList = menuService.getMenuList(vendorId);
@@ -53,6 +53,7 @@ public class MenuController {
 
 
     //메뉴 등록
+
     @PostMapping("/info/insertMenu")
     public ResponseEntity<?> insertMenu(@AuthenticationPrincipal CustomUserDetails customUserDetails, MenuDTO menuDTO, @RequestParam(required = false, value = "file") MultipartFile[] uploadFiles){
         ResponseDTO<MenuDTO> response = new ResponseDTO<>();
@@ -79,7 +80,9 @@ public class MenuController {
 
 
     @PostMapping("/UpdateVendor")
-    public ResponseEntity<?> vendorupdateMenu( @AuthenticationPrincipal CustomUserDetails customUserDetails,VendorMenuDto vendorMenuDto){
+    public ResponseEntity<?> vendorupdateMenu(VendorMenuDto vendorMenuDto,
+                                              @AuthenticationPrincipal CustomUserDetails customUserDetails){
+
         ResponseDTO<String> response = new ResponseDTO<>();
         System.out.println(vendorMenuDto);
 
@@ -102,6 +105,7 @@ public class MenuController {
     public ResponseEntity<?> updateMenu(
             @AuthenticationPrincipal CustomUserDetails customUserDetails,MenuDTO menuDTO,
             @RequestParam(required = false, value = "file") MultipartFile[] uploadFiles){
+
         ResponseDTO<MenuDTO> response = new ResponseDTO<>();
         try{
             // 로그인한 사용자의 정보에 접근
@@ -125,6 +129,7 @@ public class MenuController {
 
 
     // 메뉴 삭제
+
     @DeleteMapping("/info/deleteMenu")
     public ResponseEntity<?> deleteMenu(MenuDTO menuDTO){
         ResponseDTO<MenuDTO> response = new ResponseDTO<>();
@@ -147,8 +152,10 @@ public class MenuController {
 
     //추천 메뉴 표출
     //조회수가 가장 많은 탑 5 메뉴를 표시할 것
-    @GetMapping("/recommendedMenus5")
-    public List<String> getRecommendedMenuTypes() {
+    @GetMapping("/recommendedMenus10")
+    public List<String> getRecommendedMenuTypes(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        System.out.println("recommendedMenus5==========================>");
+        System.out.println(menuService.getRecommendedMenuTypes());
         return menuService.getRecommendedMenuTypes();
     }
 }

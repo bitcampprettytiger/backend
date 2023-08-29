@@ -1,6 +1,7 @@
 package com.example.bitcamptiger.menu.service.Impl;
 
 import com.example.bitcamptiger.common.FileUtils;
+import com.example.bitcamptiger.common.service.S3UploadService;
 import com.example.bitcamptiger.member.entity.Member;
 import com.example.bitcamptiger.menu.dto.MenuDTO;
 import com.example.bitcamptiger.menu.dto.MenuImageDTO;
@@ -33,7 +34,7 @@ public class MenuServiceImpl implements MenuService {
     private final MenuImageRepository menuImageRepository;
     private final VendorRepository vendorRepository;
     private final FileUtils fileUtils;
-//    public  final S3UploadService s3UploadService;
+    public  final S3UploadService s3UploadService;
 
 
     //메뉴 리스트
@@ -56,12 +57,15 @@ public class MenuServiceImpl implements MenuService {
             List<MenuImage> menuImageList = menuImageRepository.findByMenu(menu);
 
             List<MenuImageDTO> menuImageDTOList = new ArrayList<>();
-            for (MenuImage  menuImage: menuImageList){
-//                String geturl = s3UploadService.geturl(menuImage.getUrl() + menuImage.getFileName());
+            if(!menuImageDTOList.isEmpty()) {
+                for (MenuImage menuImage : menuImageList) {
+                    String geturl = s3UploadService.geturl(menuImage.getUrl() + menuImage.getFileName());
 //                menuImage.setUrl(geturl);
-                //MenuImage 객체를 MenuImageDTO 객체로 변환
-                MenuImageDTO menuImageDTO = MenuImageDTO.of(menuImage);
-                menuImageDTOList.add(menuImageDTO);
+                    //MenuImage 객체를 MenuImageDTO 객체로 변환
+                    MenuImageDTO menuImageDTO = MenuImageDTO.of(menuImage);
+                    menuImageDTO.setUrl(geturl);
+                    menuImageDTOList.add(menuImageDTO);
+                }
             }
 
             // MenuDTO 객체에 메뉴 이미지 리스트를 설정
@@ -235,7 +239,7 @@ public class MenuServiceImpl implements MenuService {
 //조회수가 높은 순서대로 상위 5개의 메뉴 정보를 추천
     public List<String> getRecommendedMenuTypes() {
         // 조회수가 높은 상위 5개의 메뉴를 가져옴
-        List<Menu> recommendedMenus = menuRepository.findTop5ByOrderByViewsDesc();
+        List<Menu> recommendedMenus = menuRepository.findTop10ByOrderByViewsDesc();
 
         // 메뉴 타입별로 조회수를 누적할 Map을 생성
         Map<String, Integer> menuTypeViewsMap = new HashMap<>();
@@ -252,7 +256,7 @@ public class MenuServiceImpl implements MenuService {
         List<String> recommendedMenuTypes = menuTypeViewsMap.entrySet()
                 .stream()
                 .sorted((entry1, entry2) -> entry2.getValue().compareTo(entry1.getValue()))
-                .limit(5) // 상위 5개 메뉴 타입만 추출
+                .limit(10) // 상위 5개 메뉴 타입만 추출
                 .map(Map.Entry::getKey)
                 .collect(Collectors.toList());
 

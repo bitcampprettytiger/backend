@@ -54,11 +54,15 @@ public class CartController {
 
     // 장바구니에 메뉴 추가
     @PostMapping("/info")
-    public ResponseEntity<ResponseDTO<CartItemDTO>> addMenuToCart(@AuthenticationPrincipal CustomUserDetails customUserDetails,@RequestBody CartItemDTO cartItemDTO) {
-        ResponseDTO<CartItemDTO> response = new ResponseDTO<>();
 
+    public ResponseEntity<ResponseDTO<CartItemDTO>> addMenuToCart(@AuthenticationPrincipal CustomUserDetails customUserDetails,@RequestBody CartItemDTO cartItemDTO) {
+
+        ResponseDTO<CartItemDTO> response = new ResponseDTO<>();
+        System.out.println(cartItemDTO);
         try {
+
             Member member = customUserDetails.getUser(); // 로그인한 사용자 정보에 접근
+
             Menu menu = menuRepository.findById(cartItemDTO.getMenu().getId())
                     .orElseThrow(() -> new RuntimeException("메뉴 정보를 찾을 수 없습니다."));
 

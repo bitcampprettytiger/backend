@@ -64,7 +64,7 @@ public class VendorController {
 //            BaseResponse<>
 //            response.setStatusCode(FAIL_LOGIN_REFRESH.getCode());
 
-            return new BaseResponse<>(FAIL_LOGIN_REFRESH);
+            return new BaseResponse<>(POST_ISNULL);
         }
 
     }
@@ -154,15 +154,19 @@ public class VendorController {
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @RequestParam(required = false) String address,
             @RequestParam(required = false) String menuName,
-            @RequestParam(required = false) String vendorName){
+            @RequestParam(required = false) String vendorName,
+            @RequestParam(required = false, defaultValue = "vendorName") String orderBy){
+
         System.out.println(address);
         System.out.println(menuName);
         System.out.println(vendorName);
         ResponseDTO<VendorDTO> response = new ResponseDTO<>();
         try{
+
             Member loggedInMember = customUserDetails.getUser();
             System.out.println(loggedInMember);
-            List<VendorDTO> vendorDTOList = vendorService.getVendorByCategory(address, menuName, vendorName);
+            List<VendorDTO> vendorDTOList = vendorService.getVendorByCategory(address, menuName, vendorName, orderBy);
+
 
             response.setItemlist(vendorDTOList);
             response.setStatusCode(HttpStatus.OK.value());
@@ -183,7 +187,6 @@ public class VendorController {
     public ResponseEntity<?> getVendorByVendorType(
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @PathVariable String vendorType){
-
         ResponseDTO<VendorDTO> response = new ResponseDTO<>();
 
         try{
@@ -254,7 +257,11 @@ public class VendorController {
     //개별 상점 상세 정보 확인
 
     @GetMapping("/infoDetail/{id}")
-    public VendorDTO getVendorInfoDetail(@PathVariable Long id){
+    public VendorDTO getVendorInfoDetail(@PathVariable Long id,
+                                         @AuthenticationPrincipal CustomUserDetails customUserDetails){
+        System.out.println("infoDetail");
+        System.out.println(id);
+        System.out.println(vendorService.getVendorDetail(id));
         return vendorService.getVendorDetail(id);
     }
 
@@ -267,13 +274,16 @@ public class VendorController {
             @ApiResponse(responseCode = "400", description = "실패")
     })
     @PostMapping("/info")
-    public ResponseEntity<?> insertVendorInfo(VendorDTO vendorDTO, @RequestParam(required = false, value = "file")MultipartFile[] uploadFiles){
+    public ResponseEntity<?> insertVendorInfo(VendorDTO vendorDTO, @RequestParam(required = false, value = "file")MultipartFile[] uploadFiles,
+                                              @AuthenticationPrincipal CustomUserDetails customUserDetails){
+        System.out.println("info!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         System.out.println(vendorDTO);
         System.out.println(uploadFiles.length);
 //        vendorDTO null 일때 vaildation
         if(vendorDTO.equals(null)){
             new BaseResponse<>(VENDORDTO_NUTNULL);
         }
+
         ResponseDTO<VendorDTO> response = new ResponseDTO<>();
         try{
             vendorService.insertVendor(vendorDTO, uploadFiles);
@@ -292,7 +302,8 @@ public class VendorController {
 
     //가게 정보 수정
     @PutMapping("/info")
-    public ResponseEntity<?> updateVendorInfo(VendorDTO vendorDTO, @RequestParam(required = false, value = "file")MultipartFile[] uploadFiles){
+    public ResponseEntity<?> updateVendorInfo(VendorDTO vendorDTO, @RequestParam(required = false, value = "file")MultipartFile[] uploadFiles,
+                                              @AuthenticationPrincipal CustomUserDetails customUserDetails){
         ResponseDTO<VendorDTO> response = new ResponseDTO<>();
 
         try{
@@ -316,7 +327,8 @@ public class VendorController {
 
     //가게 정보 삭제
     @DeleteMapping("/info")
-    public ResponseEntity<?> deleteVendorInfo(@RequestBody VendorDTO vendorDTO){
+    public ResponseEntity<?> deleteVendorInfo(@RequestBody VendorDTO vendorDTO,
+                                              @AuthenticationPrincipal CustomUserDetails customUserDetails){
         ResponseDTO<VendorDTO> response = new ResponseDTO<>();
 
         try{

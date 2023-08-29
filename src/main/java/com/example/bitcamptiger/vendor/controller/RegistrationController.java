@@ -29,11 +29,13 @@ public class RegistrationController {
 
     //사업자 번호조회 및 유효한 사업자인지 여부에 대한 정보
     @GetMapping("/checkBusiness/{name}")
+
     public ResponseEntity<?> checkBusiness(@AuthenticationPrincipal CustomUserDetails customUserDetails, @PathVariable String name
     ) throws JsonProcessingException {
         // 로그인한 사용자의 정보에 접근 (필요한 경우)
         Member loggedInMember = customUserDetails.getUser();
         System.out.println(loggedInMember);
+
         // VendorAPIService를 사용하여 비즈니스 유효성 검사 API 호출
         BusinessResponseDto responseDto = vendorAPIService.checkBusiness(name);
 

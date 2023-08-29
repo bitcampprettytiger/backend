@@ -35,6 +35,7 @@ public class CartController {
     public ResponseEntity<?> getMyCart(@AuthenticationPrincipal CustomUserDetails customUserDetails){
         ResponseDTO<CartItemDTO> response = new ResponseDTO<>();
         try{
+
             Member loggedInMember = customUserDetails.getUser(); // 로그인한 사용자 정보에 접근
             Cart cart = cartRepository.findByMemberId(loggedInMember.getId());
 

@@ -65,6 +65,7 @@ public class SecurityConfiguration {
     authorizaRequests.anyRequest().authenticated();
 
 
+
 //
 //    authorizaRequests.requestMatchers("/member/**").permitAll();
 //    authorizaRequests.requestMatchers("/board/**", "/menu/**", "/cart/**", "/reviews/**", "/orders/**","/upload/**").permitAll();

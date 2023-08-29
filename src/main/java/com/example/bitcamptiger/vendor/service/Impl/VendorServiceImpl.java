@@ -118,9 +118,9 @@ public class VendorServiceImpl implements VendorService {
         nowLocationDto.setHardness(geocoding.get("x").toString());
         nowLocationDto.setLatitude(geocoding.get("y").toString());
         Randmark createrandmark = nowLocationDto.createrandmark();
-        if(nowLocationDto.getName()!=null) {
+        if(!nowLocationDto.getName().equals(null)&&!nowLocationDto.getAddress().equals(null)) {
             createrandmark.setLocation(nowLocationDto.getName());
-            createrandmark.setMapLocation(nowLocationDto.getName());
+            createrandmark.setMapLocation(nowLocationDto.getAddress());
         }
         System.out.println(createrandmark);
         System.out.println(nowLocationDto);

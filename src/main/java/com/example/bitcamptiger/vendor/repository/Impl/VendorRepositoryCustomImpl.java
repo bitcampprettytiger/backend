@@ -145,18 +145,19 @@ public class VendorRepositoryCustomImpl implements VendorRepositoryCustom {
     public List<Vendor> findByrandmart(NowLocationDto nowLocationDto) {
 
 
-        double vendorLatitude = Double.parseDouble(nowLocationDto.getLatitude()); // 위도를 가져옴
-        double vendorLongitude = Double.parseDouble(nowLocationDto.getLatitude()); // 경도를 가져옴
+        double vendorLatitude = Double.parseDouble(nowLocationDto.getLatitude()); // 현재 위치의 위도를 가져옴
+        double vendorLongitude = Double.parseDouble(nowLocationDto.getHardness()); // 현재 위치의 경도를 가져옴
 
         double maxDistance = 3000.0; // 3 키로미터
 
-        NumberTemplate<Double> doubleNumberTemplate = Expressions.numberTemplate(Double.class,
-                "ST_Distance_Sphere(POINT({0}, {1}), POINT({2}, {3}))",
-                vendorLatitude, vendorLongitude, vendor.x, vendor.y
+        NumberTemplate<Double> distanceExpression = Expressions.numberTemplate(Double.class,
+                "ST_Distance_Sphere(POINT({0}, {1}), POINT(vendor.x, vendor.y))",
+                vendorLatitude, vendorLongitude
         );
+
         return queryFactory.selectFrom(vendor)
-                .where(doubleNumberTemplate.loe(maxDistance))
-                .orderBy(doubleNumberTemplate.asc())
+                .where(distanceExpression.loe(maxDistance))
+                .orderBy(distanceExpression.asc())
                 .fetch();
     }
 

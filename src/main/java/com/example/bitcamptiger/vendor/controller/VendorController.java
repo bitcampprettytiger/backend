@@ -144,13 +144,14 @@ public class VendorController {
             @RequestParam(required = false) String address,
             @RequestParam(required = false) String menuName,
             @RequestParam(required = false) String vendorName,
-            @AuthenticationPrincipal CustomUserDetails customUserDetails){
+            @RequestParam(required = false, defaultValue = "vendorName") String orderBy){
+
         System.out.println(address);
         System.out.println(menuName);
         System.out.println(vendorName);
         ResponseDTO<VendorDTO> response = new ResponseDTO<>();
         try{
-            List<VendorDTO> vendorDTOList = vendorService.getVendorByCategory(address, menuName, vendorName);
+            List<VendorDTO> vendorDTOList = vendorService.getVendorByCategory(address, menuName, vendorName, orderBy);
 
             response.setItemlist(vendorDTOList);
             response.setStatusCode(HttpStatus.OK.value());

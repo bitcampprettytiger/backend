@@ -37,18 +37,18 @@ public class PaymentServiceImpl implements PaymentService {
 
 
     //결제하기
-    public Payments addPayment(PaymentDTO paymentDTO, String token){
+    public Payments addPayment(PaymentDTO paymentDTO, Member member){
 
-        String newtoken = new String();
-        if(StringUtils.hasText(token)&& token.startsWith("Bearer ")){
-        //실제 token의 값만 리턴
-            newtoken = token.substring(7);
-        }
-
-        String userId = jwtTokenProvider.validateAndGetUsername(newtoken);
+//        String newtoken = new String();
+//        if(StringUtils.hasText(token)&& token.startsWith("Bearer ")){
+//        //실제 token의 값만 리턴
+//            newtoken = token.substring(7);
+//        }
+//
+//        String userId = jwtTokenProvider.validateAndGetUsername(newtoken);
 
         //Member 엔티티 조회
-        Member member = memberRepository.findByUsername(userId).orElseThrow();
+//        Member member = memberRepository.findByUsername(userId).orElseThrow();
 
         //결제 전에 주문을 생성하고 예약 상태로 설정
         OrderDTO orderDTO = new OrderDTO();

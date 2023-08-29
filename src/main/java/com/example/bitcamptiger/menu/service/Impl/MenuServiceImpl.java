@@ -33,7 +33,7 @@ public class MenuServiceImpl implements MenuService {
     private final MenuImageRepository menuImageRepository;
     private final VendorRepository vendorRepository;
     private final FileUtils fileUtils;
-//    public  final S3UploadService s3UploadService;
+    public  final S3UploadService s3UploadService;
 
 
     //메뉴 리스트
@@ -56,12 +56,15 @@ public class MenuServiceImpl implements MenuService {
             List<MenuImage> menuImageList = menuImageRepository.findByMenu(menu);
 
             List<MenuImageDTO> menuImageDTOList = new ArrayList<>();
-            for (MenuImage  menuImage: menuImageList){
-//                String geturl = s3UploadService.geturl(menuImage.getUrl() + menuImage.getFileName());
+            if(!menuImageDTOList.isEmpty()) {
+                for (MenuImage menuImage : menuImageList) {
+                    String geturl = s3UploadService.geturl(menuImage.getUrl() + menuImage.getFileName());
 //                menuImage.setUrl(geturl);
-                //MenuImage 객체를 MenuImageDTO 객체로 변환
-                MenuImageDTO menuImageDTO = MenuImageDTO.of(menuImage);
-                menuImageDTOList.add(menuImageDTO);
+                    //MenuImage 객체를 MenuImageDTO 객체로 변환
+                    MenuImageDTO menuImageDTO = MenuImageDTO.of(menuImage);
+                    menuImageDTO.setUrl(geturl);
+                    menuImageDTOList.add(menuImageDTO);
+                }
             }
 
             // MenuDTO 객체에 메뉴 이미지 리스트를 설정

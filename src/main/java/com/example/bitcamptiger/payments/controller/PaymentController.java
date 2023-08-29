@@ -16,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
@@ -69,9 +70,15 @@ public class PaymentController {
     //결제하기
     @PostMapping("/addPayment")
     public ResponseEntity<?> addPayment(@RequestHeader("Authorization") String token, @RequestBody PaymentDTO paymentDTO){
+//        System.out.println(token);
+
+//        if(StringUtils.hasText(token)&& token.startsWith("Bearer ")){
+////        실제 token의 값만 리턴
+//            token.substring(7);
+//        }
+//        System.out.println(token);
 
         ResponseDTO<PaymentDTO> response = new ResponseDTO<>();
-
         try{
             Payments payments = paymentService.addPayment(paymentDTO, token);
 

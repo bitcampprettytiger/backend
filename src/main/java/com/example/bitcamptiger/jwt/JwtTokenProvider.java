@@ -100,7 +100,7 @@ public class JwtTokenProvider {
         System.out.println("여기서 다 조사합니다.");
 //        받아온 토큰 값을 파싱해서 유효성 검사
 //        토큰에 있는 시그니쳐와 서버에서 가지고있는 시그니쳐값 비교
-
+        System.out.println("validateAndGetUsername"+token);
         Claims claims
                  = Jwts.parserBuilder()
  //                시그니쳐에 담겨있느 토큰의값이랑 시크릿 키랑 비교

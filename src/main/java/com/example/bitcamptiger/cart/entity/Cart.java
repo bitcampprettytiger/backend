@@ -3,15 +3,13 @@ package com.example.bitcamptiger.cart.entity;
 import com.example.bitcamptiger.member.entity.Member;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -28,8 +26,7 @@ public class Cart {
     private Member member;
 
 
-
-    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "cart")
     @JsonManagedReference   //순환참조 문제를 해결하기 위해 주관리자 명시
     private List<CartItem> cartItems = new ArrayList<>();
 
@@ -40,6 +37,8 @@ public class Cart {
         cart.setMember(member);
         return cart;
     }
+
+
 
 
 }

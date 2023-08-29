@@ -32,13 +32,14 @@ public enum BaseResponseStatus {
     DUPLICATED_EMAIL(false, HttpStatus.BAD_REQUEST.value(), "중복된 이메일입니다."),
     INVALID_MEMO(false,HttpStatus.NOT_FOUND.value(), "존재하지 않는 메모입니다."),
     FAILED_TO_LOGIN(false,HttpStatus.NOT_FOUND.value(),"없는 아이디거나 비밀번호가 틀렸습니다."),
-    EMPTY_JWT(false, HttpStatus.UNAUTHORIZED.value(), "JWT를 입력해주세요."),
+    EMPTY_JWT(false, HttpStatus.FORBIDDEN.value(), "JWT를 입력해주세요."),
     INVALID_JWT(false, HttpStatus.UNAUTHORIZED.value(), "유효하지 않은 JWT입니다."),
     INVALID_USER_JWT(false,HttpStatus.FORBIDDEN.value(),"권한이 없는 유저의 접근입니다."),
     NOT_FIND_USER(false,HttpStatus.NOT_FOUND.value(),"일치하는 유저가 없습니다."),
     INVALID_OAUTH_TYPE(false, HttpStatus.BAD_REQUEST.value(), "알 수 없는 소셜 로그인 형식입니다."),
     FAIL_LOGIN_NAME(false, HttpStatus.BAD_REQUEST.value(), "이름의 길이를 20자 이하로 해주세요"),
     FAIL_LOGIN_PHONE(false, HttpStatus.BAD_REQUEST.value(), "핸드폰 번호의 형식을 맞춰주세요. "),
+    FAIL_LOGIN_REFRESH(false, HttpStatus.FORBIDDEN.value(), "리프레시 토큰입니다. 에세스토큰을 주세요."),
 
 
 

@@ -3,12 +3,10 @@ package com.example.bitcamptiger.cart.entity;
 import com.example.bitcamptiger.menu.entity.Menu;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -20,7 +18,7 @@ public class CartItem {
     @Column(name = "cart_item_id")
     private Long id;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "cart_id")
     @JsonBackReference  //순환참조 문제를 해결하기 위해 참조속성 명시
     private Cart cart;
@@ -31,7 +29,7 @@ public class CartItem {
 
     //카드에 담긴 메뉴의 수량
     @Column
-    private Integer cartQuantity;
+    private int cartQuantity;
 
 
     //장바구니에 담을 상품 엔티티를 생성하는 메소드
@@ -47,6 +45,10 @@ public class CartItem {
     //장바구니에 기존에 담겨있는 상품인데, 해당 상품을 추가로 담을 때
     public void addCount(int cartQuantity){
         this.cartQuantity += cartQuantity;
+    }
+
+    public void updateCount(int cartQuantity){
+        this.cartQuantity = cartQuantity;
     }
 
 }

@@ -1,5 +1,6 @@
 package com.example.bitcamptiger.favoritePick.service;
 
+import com.example.bitcamptiger.favoritePick.DTO.FavoriteVendorDTO;
 import com.example.bitcamptiger.member.entity.Member;
 import com.example.bitcamptiger.vendor.entity.Vendor;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,4 +23,13 @@ public interface FavoriteService {
     // 탑 8 가게 정보 가져오기
     @Transactional
     List<Vendor> getTop8FavoriteVendors();
+
+    //나의 찜하기 리스트 조회하기
+//    @Transactional
+//    List<FavoriteVendorDTO> getMyFavoriteVendors(String username);
+
+    //나의 찜하기 리스트 조회하기
+    @Transactional
+    List<FavoriteVendorDTO> getMyFavoriteVendor(Long memberId);
+
 }

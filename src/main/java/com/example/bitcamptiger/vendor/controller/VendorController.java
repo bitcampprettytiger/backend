@@ -2,7 +2,11 @@ package com.example.bitcamptiger.vendor.controller;
 
 
 import com.example.bitcamptiger.dto.ResponseDTO;
+import com.example.bitcamptiger.member.dto.MemberDTO;
+import com.example.bitcamptiger.member.entity.CustomUserDetails;
+import com.example.bitcamptiger.member.entity.Member;
 import com.example.bitcamptiger.response.BaseResponse;
+import com.example.bitcamptiger.response.BaseResponseStatus;
 import com.example.bitcamptiger.vendor.dto.LocationDto;
 import com.example.bitcamptiger.vendor.dto.NowLocationDto;
 import com.example.bitcamptiger.vendor.dto.VendorDTO;
@@ -15,6 +19,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -38,9 +43,6 @@ public class VendorController {
         System.out.println(nowLocationDto);
         ResponseDTO<LocationDto> response = new ResponseDTO<>();
         try{
-
-
-
             List<LocationDto> nowLocationList = vendorService.getNowLocationList(nowLocationDto);
             if(nowLocationList.isEmpty()){
                return new BaseResponse<>(RESPONSE_ERROR);
@@ -55,8 +57,11 @@ public class VendorController {
         } catch(Exception e) {
             System.out.println(e.getMessage());
             response.setErrorMessage(e.getMessage());
-            response.setStatusCode(HttpStatus.BAD_REQUEST.value());
-            return new BaseResponse<>(response);
+//            BaseResponseStatus status = new BaseResponseStatus(INVALID_JWT);
+//            BaseResponse<>
+//            response.setStatusCode(FAIL_LOGIN_REFRESH.getCode());
+
+            return new BaseResponse<>(POST_ISNULL);
         }
 
     }
@@ -79,7 +84,7 @@ public class VendorController {
         } catch(Exception e) {
             response.setErrorMessage(e.getMessage());
             response.setStatusCode(HttpStatus.BAD_REQUEST.value());
-            return new BaseResponse<>(response);
+            return new BaseResponse<>(FAIL_LOGIN_REFRESH);
         }
 
     }
@@ -105,7 +110,7 @@ public class VendorController {
             return ResponseEntity.ok().body(response);
         }catch(Exception e) {
             response.setErrorMessage(e.getMessage());
-            response.setStatusCode(HttpStatus.BAD_REQUEST.value());
+            response.setStatusCode(HttpStatus.FORBIDDEN.value());
             return ResponseEntity.badRequest().body(response);
         }
 
@@ -117,7 +122,6 @@ public class VendorController {
     public ResponseEntity<?> getVendorInfoList(){
         ResponseDTO<VendorDTO> response = new ResponseDTO<>();
         try{
-
             List<VendorDTO> vendorDTOList = vendorService.getVendorList();
 
             response.setItemlist(vendorDTOList);
@@ -139,11 +143,15 @@ public class VendorController {
     public ResponseEntity<?> getVendorByCategory(
             @RequestParam(required = false) String address,
             @RequestParam(required = false) String menuName,
-            @RequestParam(required = false) String vendorName){
-        ResponseDTO<VendorDTO> response = new ResponseDTO<>();
+            @RequestParam(required = false) String vendorName,
+            @RequestParam(required = false, defaultValue = "vendorName") String orderBy){
 
+        System.out.println(address);
+        System.out.println(menuName);
+        System.out.println(vendorName);
+        ResponseDTO<VendorDTO> response = new ResponseDTO<>();
         try{
-            List<VendorDTO> vendorDTOList = vendorService.getVendorByCategory(address, menuName, vendorName);
+            List<VendorDTO> vendorDTOList = vendorService.getVendorByCategory(address, menuName, vendorName, orderBy);
 
             response.setItemlist(vendorDTOList);
             response.setStatusCode(HttpStatus.OK.value());
@@ -162,7 +170,8 @@ public class VendorController {
     //해당 타입에 포함되는 가게 조회하기
     @GetMapping("/vendorType/{vendorType}")
     public ResponseEntity<?> getVendorByVendorType(
-            @PathVariable String vendorType){
+            @PathVariable String vendorType,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails){
 
         ResponseDTO<VendorDTO> response = new ResponseDTO<>();
 
@@ -183,10 +192,9 @@ public class VendorController {
 
 
     //메뉴 타입별 가게 정보 조회
-
     @GetMapping("/menuType/{menuType}")
-    public ResponseEntity<?> getVendorByMenuType(
-            @PathVariable String menuType){
+    public ResponseEntity<?> getVendorByMenuType(@PathVariable String menuType,
+                                                 @AuthenticationPrincipal CustomUserDetails customUserDetails){
 
         ResponseDTO<VendorDTO> response = new ResponseDTO<>();
 
@@ -204,11 +212,35 @@ public class VendorController {
         }
     }
 
+    //리뷰 100개 이상인 vendor 중 별점 높은 순 정렬
+    @GetMapping("/review/averageReviewScore")
+    public ResponseEntity<?> getVendorByReview(@AuthenticationPrincipal CustomUserDetails customUserDetails){
+        ResponseDTO<VendorDTO> response = new ResponseDTO<>();
+
+        try{
+            List<VendorDTO> vendorDTOList = vendorService.getVendorByReview();
+
+            response.setItemlist(vendorDTOList);
+            response.setStatusCode(HttpStatus.OK.value());
+
+            return ResponseEntity.ok().body(response);
+        }catch(Exception e) {
+            response.setErrorMessage(e.getMessage());
+            response.setStatusCode(HttpStatus.BAD_REQUEST.value());
+            return ResponseEntity.badRequest().body(response);
+        }
+    }
 
 
+    
     //개별 상점 상세 정보 확인
+
     @GetMapping("/infoDetail/{id}")
-    public VendorDTO getVendorInfoDetail(@PathVariable Long id){
+    public VendorDTO getVendorInfoDetail(@PathVariable Long id,
+                                         @AuthenticationPrincipal CustomUserDetails customUserDetails){
+        System.out.println("infoDetail");
+        System.out.println(id);
+        System.out.println(vendorService.getVendorDetail(id));
         return vendorService.getVendorDetail(id);
     }
 
@@ -221,22 +253,21 @@ public class VendorController {
             @ApiResponse(responseCode = "400", description = "실패")
     })
     @PostMapping("/info")
-    public ResponseEntity<?> insertVendorInfo(VendorDTO vendorDTO, @RequestParam(required = false, value = "file")MultipartFile[] uploadFiles){
+    public ResponseEntity<?> insertVendorInfo(VendorDTO vendorDTO, @RequestParam(required = false, value = "file")MultipartFile[] uploadFiles,
+                                              @AuthenticationPrincipal CustomUserDetails customUserDetails){
+        System.out.println("info!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         System.out.println(vendorDTO);
+        System.out.println(uploadFiles.length);
 //        vendorDTO null 일때 vaildation
         if(vendorDTO.equals(null)){
             new BaseResponse<>(VENDORDTO_NUTNULL);
         }
         ResponseDTO<VendorDTO> response = new ResponseDTO<>();
-
         try{
             vendorService.insertVendor(vendorDTO, uploadFiles);
-
             List<VendorDTO> vendorDTOList = vendorService.getVendorList();
-
             response.setItemlist(vendorDTOList);
             response.setStatusCode(HttpStatus.OK.value());
-
             return ResponseEntity.ok().body(response);
         }catch(Exception e) {
             response.setErrorMessage(e.getMessage());
@@ -249,7 +280,8 @@ public class VendorController {
 
     //가게 정보 수정
     @PutMapping("/info")
-    public ResponseEntity<?> updateVendorInfo(VendorDTO vendorDTO, @RequestParam(required = false, value = "file")MultipartFile[] uploadFiles){
+    public ResponseEntity<?> updateVendorInfo(VendorDTO vendorDTO, @RequestParam(required = false, value = "file")MultipartFile[] uploadFiles,
+                                              @AuthenticationPrincipal CustomUserDetails customUserDetails){
         ResponseDTO<VendorDTO> response = new ResponseDTO<>();
 
         try{
@@ -261,6 +293,7 @@ public class VendorController {
             response.setStatusCode(HttpStatus.OK.value());
 
             return ResponseEntity.ok().body(response);
+
         }catch(Exception e) {
             response.setErrorMessage(e.getMessage());
             response.setStatusCode(HttpStatus.BAD_REQUEST.value());
@@ -272,7 +305,8 @@ public class VendorController {
 
     //가게 정보 삭제
     @DeleteMapping("/info")
-    public ResponseEntity<?> deleteVendorInfo(@RequestBody VendorDTO vendorDTO){
+    public ResponseEntity<?> deleteVendorInfo(@RequestBody VendorDTO vendorDTO,
+                                              @AuthenticationPrincipal CustomUserDetails customUserDetails){
         ResponseDTO<VendorDTO> response = new ResponseDTO<>();
 
         try{

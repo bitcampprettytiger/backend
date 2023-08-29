@@ -53,6 +53,7 @@ public class SwggerConfig {
                 .pathsToMatch(paths)
                 .build();
     }
+
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
         return web -> web.ignoring().requestMatchers("/h2-console/**",

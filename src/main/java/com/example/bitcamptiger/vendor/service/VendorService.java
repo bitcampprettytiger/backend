@@ -27,7 +27,7 @@ public interface VendorService {
     //리뷰 100개 이상인 vendor 중 별점 높은 순 정렬
     List<VendorDTO> getVendorByReview();
 
-    List<VendorDTO> getVendorByCategory(String address, String menuName, String vendorName);
+    List<VendorDTO> getVendorByCategory(String address, String menuName, String vendorName, String orderBy);
 
     List<VendorDTO> getVendorByVendorType(String vendorType);
 

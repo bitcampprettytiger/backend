@@ -116,6 +116,7 @@ public class CartServiceImpl implements CartService {
         List<CartItem> cartItemList = cartItemRepository.findByCartMember(cartItemDTO.getCart().getMember());
 
         cartItemRepository.deleteAll(cartItemList);
+        cartItemRepository.flush();
 
     }
 

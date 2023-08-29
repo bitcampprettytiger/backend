@@ -1,6 +1,7 @@
 package com.example.bitcamptiger.payments.entity;
 
 import com.example.bitcamptiger.member.entity.Member;
+import com.example.bitcamptiger.order.entity.Orders;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -43,6 +44,10 @@ public class Payments {
     @Column
     private String applyNum;
 
+    //결제 일시
     @Column
     private LocalDateTime payDate;
+
+    @OneToOne(mappedBy = "payments")
+    private Orders orders;
 }

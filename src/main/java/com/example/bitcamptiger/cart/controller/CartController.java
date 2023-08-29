@@ -6,6 +6,7 @@ import com.example.bitcamptiger.cart.repository.CartItemRepository;
 import com.example.bitcamptiger.cart.repository.CartRepository;
 import com.example.bitcamptiger.cart.service.CartService;
 import com.example.bitcamptiger.dto.ResponseDTO;
+import com.example.bitcamptiger.member.entity.CustomUserDetails;
 import com.example.bitcamptiger.member.entity.Member;
 import com.example.bitcamptiger.member.reposiitory.MemberRepository;
 import com.example.bitcamptiger.menu.entity.Menu;
@@ -13,6 +14,7 @@ import com.example.bitcamptiger.menu.repository.MenuRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,14 +31,14 @@ public class CartController {
     public final MenuRepository menuRepository;
 
     //내 장바구니 조회
-    @GetMapping("/member/{memberId}")
-    public ResponseEntity<?> getMyCart(@PathVariable Member memberId){
+    @GetMapping("/member")
+    public ResponseEntity<?> getMyCart(@AuthenticationPrincipal CustomUserDetails customUserDetails){
         ResponseDTO<CartItemDTO> response = new ResponseDTO<>();
         try{
-            Member member = memberRepository.findById(memberId.getId()).orElseThrow();
-            Cart cart = cartRepository.findByMemberId(member.getId());
+            Member loggedInMember = customUserDetails.getUser(); // 로그인한 사용자 정보에 접근
+            Cart cart = cartRepository.findByMemberId(loggedInMember.getId());
 
-            List<CartItemDTO> cartItemDTOList = cartService.getCartList(memberId);
+            List<CartItemDTO> cartItemDTOList = cartService.getCartList(loggedInMember);
 
             response.setItemlist(cartItemDTOList);
             response.setStatusCode(HttpStatus.OK.value());
@@ -52,12 +54,15 @@ public class CartController {
 
     // 장바구니에 메뉴 추가
     @PostMapping("/info")
-    public ResponseEntity<ResponseDTO<CartItemDTO>> addMenuToCart(@RequestBody CartItemDTO cartItemDTO) {
-        ResponseDTO<CartItemDTO> response = new ResponseDTO<>();
 
+    public ResponseEntity<ResponseDTO<CartItemDTO>> addMenuToCart(@AuthenticationPrincipal CustomUserDetails customUserDetails,@RequestBody CartItemDTO cartItemDTO) {
+
+        ResponseDTO<CartItemDTO> response = new ResponseDTO<>();
+        System.out.println(cartItemDTO);
         try {
-            Member member = memberRepository.findById(cartItemDTO.getCart().getMember().getId())
-                    .orElseThrow(() -> new RuntimeException("회원 정보를 찾을 수 없습니다."));
+
+            Member member = customUserDetails.getUser(); // 로그인한 사용자 정보에 접근
+
             Menu menu = menuRepository.findById(cartItemDTO.getMenu().getId())
                     .orElseThrow(() -> new RuntimeException("메뉴 정보를 찾을 수 없습니다."));
 
@@ -83,14 +88,15 @@ public class CartController {
 
     //장바구니 menu 삭제
     @DeleteMapping("/deletecartitem")
-    public ResponseEntity<?> deleteCartItem(@RequestBody CartItemDTO cartItemDTO){
+    public ResponseEntity<?> deleteCartItem(@AuthenticationPrincipal CustomUserDetails customUserDetails,@RequestBody CartItemDTO cartItemDTO){
         System.out.println(cartItemDTO);
         ResponseDTO<CartItemDTO> response = new ResponseDTO<>();
 
         try{
+            Member loggedInMember = customUserDetails.getUser(); // 로그인한 사용자 정보에 접근
             cartService.deleteCartItem(cartItemDTO.getCart().getId(), cartItemDTO.getMenu().getId());
 
-            List<CartItemDTO> cartItemDTOList = cartService.getCartList(cartItemDTO.getCart().getMember());
+            List<CartItemDTO> cartItemDTOList = cartService.getCartList(loggedInMember);
 
             response.setItemlist(cartItemDTOList);
             response.setStatusCode(HttpStatus.OK.value());
@@ -106,11 +112,14 @@ public class CartController {
 
     //장바구니 menu 전체 삭제
     @DeleteMapping("/info")
-    public ResponseEntity<?> deleteCart(@RequestBody CartItemDTO cartItemDTO){
+    public ResponseEntity<?> deleteCart(@AuthenticationPrincipal CustomUserDetails customUserDetails,@RequestBody CartItemDTO cartItemDTO){
         ResponseDTO<CartItemDTO> response = new ResponseDTO<>();
 
         try{
-            cartService.deleteCart(cartItemDTO);
+
+            Member loggedInMember = customUserDetails.getUser(); // 로그인한 사용자 정보에 접근
+
+            cartService.deleteCart(loggedInMember, cartItemDTO);
 
             response.setStatusCode(HttpStatus.OK.value());
 

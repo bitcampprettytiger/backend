@@ -18,6 +18,8 @@ public class QVendor extends EntityPathBase<Vendor> {
 
     private static final long serialVersionUID = 158633305L;
 
+    private static final PathInits INITS = PathInits.DIRECT2;
+
     public static final QVendor vendor = new QVendor("vendor");
 
     public final StringPath address = createString("address");
@@ -37,6 +39,8 @@ public class QVendor extends EntityPathBase<Vendor> {
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
     public final StringPath location = createString("location");
+
+    public final com.example.bitcamptiger.member.entity.QMember member;
 
     public final ListPath<com.example.bitcamptiger.menu.entity.Menu, com.example.bitcamptiger.menu.entity.QMenu> menuList = this.<com.example.bitcamptiger.menu.entity.Menu, com.example.bitcamptiger.menu.entity.QMenu>createList("menuList", com.example.bitcamptiger.menu.entity.Menu.class, com.example.bitcamptiger.menu.entity.QMenu.class, PathInits.DIRECT2);
 
@@ -69,15 +73,24 @@ public class QVendor extends EntityPathBase<Vendor> {
     public final StringPath y = createString("y");
 
     public QVendor(String variable) {
-        super(Vendor.class, forVariable(variable));
+        this(Vendor.class, forVariable(variable), INITS);
     }
 
     public QVendor(Path<? extends Vendor> path) {
-        super(path.getType(), path.getMetadata());
+        this(path.getType(), path.getMetadata(), PathInits.getFor(path.getMetadata(), INITS));
     }
 
     public QVendor(PathMetadata metadata) {
-        super(Vendor.class, metadata);
+        this(metadata, PathInits.getFor(metadata, INITS));
+    }
+
+    public QVendor(PathMetadata metadata, PathInits inits) {
+        this(Vendor.class, metadata, inits);
+    }
+
+    public QVendor(Class<? extends Vendor> type, PathMetadata metadata, PathInits inits) {
+        super(type, metadata, inits);
+        this.member = inits.isInitialized("member") ? new com.example.bitcamptiger.member.entity.QMember(forProperty("member")) : null;
     }
 
 }

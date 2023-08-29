@@ -2,6 +2,7 @@ package com.example.bitcamptiger.menu.service.Impl;
 
 import com.example.bitcamptiger.common.FileUtils;
 import com.example.bitcamptiger.common.service.S3UploadService;
+import com.example.bitcamptiger.member.entity.Member;
 import com.example.bitcamptiger.menu.dto.MenuDTO;
 import com.example.bitcamptiger.menu.dto.MenuImageDTO;
 import com.example.bitcamptiger.menu.entity.Menu;
@@ -33,7 +34,7 @@ public class MenuServiceImpl implements MenuService {
     private final MenuImageRepository menuImageRepository;
     private final VendorRepository vendorRepository;
     private final FileUtils fileUtils;
-//    public  final S3UploadService s3UploadService;
+    public  final S3UploadService s3UploadService;
 
 
     //메뉴 리스트
@@ -56,12 +57,15 @@ public class MenuServiceImpl implements MenuService {
             List<MenuImage> menuImageList = menuImageRepository.findByMenu(menu);
 
             List<MenuImageDTO> menuImageDTOList = new ArrayList<>();
-            for (MenuImage  menuImage: menuImageList){
-//                String geturl = s3UploadService.geturl(menuImage.getUrl() + menuImage.getFileName());
+            if(!menuImageDTOList.isEmpty()) {
+                for (MenuImage menuImage : menuImageList) {
+                    String geturl = s3UploadService.geturl(menuImage.getUrl() + menuImage.getFileName());
 //                menuImage.setUrl(geturl);
-                //MenuImage 객체를 MenuImageDTO 객체로 변환
-                MenuImageDTO menuImageDTO = MenuImageDTO.of(menuImage);
-                menuImageDTOList.add(menuImageDTO);
+                    //MenuImage 객체를 MenuImageDTO 객체로 변환
+                    MenuImageDTO menuImageDTO = MenuImageDTO.of(menuImage);
+                    menuImageDTO.setUrl(geturl);
+                    menuImageDTOList.add(menuImageDTO);
+                }
             }
 
             // MenuDTO 객체에 메뉴 이미지 리스트를 설정
@@ -81,7 +85,7 @@ public class MenuServiceImpl implements MenuService {
     //메뉴 등록
     @Override
 
-    public void insertMenu(MenuDTO menuDTO, MultipartFile[] uploadFiles) throws IOException {
+    public void insertMenu(Member loggedInMember, MenuDTO menuDTO, MultipartFile[] uploadFiles) throws IOException {
 
 
         //Menu 엔티티 생성 후 저장.
@@ -144,7 +148,7 @@ public class MenuServiceImpl implements MenuService {
 
     //메뉴 수정
     @Override
-    public void updateMenu(MenuDTO menuDTO, MultipartFile[] uploadFiles) throws IOException {
+    public void updateMenu(Member loggedInMember, MenuDTO menuDTO, MultipartFile[] uploadFiles) throws IOException {
 
         // MenuDTO에서 id로 기존의 Menu 엔티티를 찾음
         Menu menu = menuRepository.findById(menuDTO.getId()).orElseThrow(EntityNotFoundException::new);

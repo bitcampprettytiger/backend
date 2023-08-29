@@ -54,7 +54,7 @@ public class QVendorImage extends EntityPathBase<VendorImage> {
 
     public QVendorImage(Class<? extends VendorImage> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.vendor = inits.isInitialized("vendor") ? new QVendor(forProperty("vendor")) : null;
+        this.vendor = inits.isInitialized("vendor") ? new QVendor(forProperty("vendor"), inits.get("vendor")) : null;
     }
 
 }

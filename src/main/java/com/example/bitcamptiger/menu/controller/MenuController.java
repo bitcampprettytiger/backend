@@ -3,6 +3,7 @@ package com.example.bitcamptiger.menu.controller;
 import com.example.bitcamptiger.common.service.S3UploadService;
 import com.example.bitcamptiger.dto.ResponseDTO;
 import com.example.bitcamptiger.member.entity.CustomUserDetails;
+import com.example.bitcamptiger.member.entity.Member;
 import com.example.bitcamptiger.menu.dto.MenuDTO;
 import com.example.bitcamptiger.menu.repository.MenuRepository;
 import com.example.bitcamptiger.menu.service.Impl.MenuServiceImpl;
@@ -52,13 +53,16 @@ public class MenuController {
 
 
     //메뉴 등록
-    @PostMapping("/info")
-    public ResponseEntity<?> insertMenu(MenuDTO menuDTO, @RequestParam(required = false, value = "file") MultipartFile[] uploadFiles,
-                                        @AuthenticationPrincipal CustomUserDetails customUserDetails){
+
+    @PostMapping("/info/insertMenu")
+    public ResponseEntity<?> insertMenu(@AuthenticationPrincipal CustomUserDetails customUserDetails, MenuDTO menuDTO, @RequestParam(required = false, value = "file") MultipartFile[] uploadFiles){
         ResponseDTO<MenuDTO> response = new ResponseDTO<>();
 
         try{
-            menuService.insertMenu(menuDTO, uploadFiles);
+            // 로그인한 사용자의 정보에 접근
+            Member loggedInMember = customUserDetails.getUser();
+
+            menuService.insertMenu(loggedInMember,menuDTO, uploadFiles);
 
             List<MenuDTO> menuDTOList = menuService.getMenuList(menuDTO.getVendor().getId());
 
@@ -78,10 +82,14 @@ public class MenuController {
     @PostMapping("/UpdateVendor")
     public ResponseEntity<?> vendorupdateMenu(VendorMenuDto vendorMenuDto,
                                               @AuthenticationPrincipal CustomUserDetails customUserDetails){
+
         ResponseDTO<String> response = new ResponseDTO<>();
         System.out.println(vendorMenuDto);
 
         try{
+            // 로그인한 사용자의 정보에 접근
+            Member loggedInMember = customUserDetails.getUser();
+
             response.setItem("수정완료");
             response.setStatusCode(HttpStatus.OK.value());
 
@@ -93,12 +101,17 @@ public class MenuController {
         }
     }
     // 메뉴 수정
-    @PutMapping("/info")
-    public ResponseEntity<?> updateMenu(MenuDTO menuDTO, @RequestParam(required = false, value = "file") MultipartFile[] uploadFiles,
-                                        @AuthenticationPrincipal CustomUserDetails customUserDetails){
+    @PutMapping("/info/changeMenu")
+    public ResponseEntity<?> updateMenu(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,MenuDTO menuDTO,
+            @RequestParam(required = false, value = "file") MultipartFile[] uploadFiles){
+
         ResponseDTO<MenuDTO> response = new ResponseDTO<>();
         try{
-            menuService.updateMenu(menuDTO, uploadFiles);
+            // 로그인한 사용자의 정보에 접근
+            Member loggedInMember = customUserDetails.getUser();
+
+            menuService.updateMenu(loggedInMember, menuDTO, uploadFiles);
 
             List<MenuDTO> menuDTOList = menuService.getMenuList(menuDTO.getVendor().getId());
 
@@ -116,9 +129,9 @@ public class MenuController {
 
 
     // 메뉴 삭제
-    @DeleteMapping("/info")
-    public ResponseEntity<?> deleteMenu(MenuDTO menuDTO,
-                                        @AuthenticationPrincipal CustomUserDetails customUserDetails){
+
+    @DeleteMapping("/info/deleteMenu")
+    public ResponseEntity<?> deleteMenu(MenuDTO menuDTO){
         ResponseDTO<MenuDTO> response = new ResponseDTO<>();
         try{
             menuService.deleteMenu(menuDTO);

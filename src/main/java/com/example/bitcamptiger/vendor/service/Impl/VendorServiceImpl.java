@@ -2,6 +2,9 @@ package com.example.bitcamptiger.vendor.service.Impl;
 
 import com.example.bitcamptiger.common.FileUtils;
 import com.example.bitcamptiger.common.service.S3UploadService;
+import com.example.bitcamptiger.member.dto.MemberDTO;
+import com.example.bitcamptiger.member.entity.Member;
+import com.example.bitcamptiger.member.reposiitory.MemberRepository;
 import com.example.bitcamptiger.menu.dto.MenuDTO;
 import com.example.bitcamptiger.menu.dto.MenuImageDTO;
 import com.example.bitcamptiger.menu.entity.Menu;
@@ -33,6 +36,7 @@ import java.io.IOException;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -50,6 +54,7 @@ public class VendorServiceImpl implements VendorService {
     private final VendorImageRepository vendorImageRepository;
     private final NowLocationRepository nowLocationRepository;
     public  final S3UploadService s3UploadService;
+    public  final MemberRepository memberRepository;
 
 //    public final GeoService geoService;
     @Override
@@ -323,10 +328,19 @@ public class VendorServiceImpl implements VendorService {
 //                vendorDTO.setPerNo(roadOcuuCertiData.getPerNo());
 //                vendorDTO.setRlAppiNm(roadOcuuCertiData.getRlAppiNm());
 
-
-                Vendor vendor = vendorDTO.createVendor();
-                vendor.setClose(vendorDTO.getClose());
+        Optional<Member> byUsername = memberRepository.findByUsername(vendorDTO.getUsername());
+        Vendor vendor = vendorDTO.createVendor();
+                vendor.setVendorType(vendorDTO.getVendorType());
+                vendor.setVendorName(vendorDTO.getVendorName());
+                vendor.setSIGMenu(vendorDTO.getSIGMenu());
+                vendor.setVendorInfo(vendorDTO.getVendorInfo());
+                vendor.setVendorOpenStatus(vendorDTO.getVendorOpenStatus());
+                vendor.setTel(vendorDTO.getTel());
+                vendor.setBusinessDay(vendorDTO.getBusinessDay());
                 vendor.setOpen(vendorDTO.getOpen());
+                vendor.setClose(vendorDTO.getClose());
+                vendor.setHelpCheck(vendorDTO.getHelpCheck());
+                vendor.setMember(byUsername.orElseThrow(EntityNotFoundException::new));
                 Vendor savedVendor = vendorRepository.save(vendor);
 
                 List<Randmark> randmarkBydistinct = nowLocationRepository.findRandmarkBydistinct(vendor);
@@ -398,12 +412,15 @@ public class VendorServiceImpl implements VendorService {
 
         Vendor vendor  =  vendorRepository.findById(vendorDTO.getId()).orElseThrow(EntityNotFoundException::new);
         //수정 가능한 필드만 업데이트
+        vendor.setSIGMenu(vendorDTO.getSIGMenu());
+        vendor.setVendorInfo(vendorDTO.getVendorInfo());
         vendor.setVendorOpenStatus(vendorDTO.getVendorOpenStatus());
         vendor.setAddress(vendorDTO.getAddress());
         vendor.setTel(vendorDTO.getTel());
         vendor.setBusinessDay(vendorDTO.getBusinessDay());
         vendor.setOpen(vendorDTO.getOpen());
         vendor.setClose(vendorDTO.getClose());
+        vendor.setHelpCheck(vendorDTO.getHelpCheck());
 
         //주소가 변경된 경우에만 경도와 위도를 업데이트
         if(!vendor.getAddress().equals(vendorDTO.getAddress())){

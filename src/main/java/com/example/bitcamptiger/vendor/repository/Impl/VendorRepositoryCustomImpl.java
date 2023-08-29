@@ -5,6 +5,7 @@ import com.example.bitcamptiger.vendor.entity.QVendor;
 import com.example.bitcamptiger.vendor.entity.Vendor;
 import com.example.bitcamptiger.vendor.repository.VendorRepositoryCustom;
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 
@@ -24,7 +25,7 @@ public class VendorRepositoryCustomImpl implements VendorRepositoryCustom {
 
     //검색어에 해당하는 모든 가게 정보 조회
     @Override
-    public List<Vendor> findVendorByCategory(String address, String menuName, String vendorName) {
+    public List<Vendor> findVendorByCategory(String address, String menuName, String vendorName, String orderBy) {
 
         //vedor라는 별칭 중복으로 인한 혼동을 방지하기 위해 별칭 설정
        // QVendor otherVendor = QVendor.vendor;
@@ -45,6 +46,20 @@ public class VendorRepositoryCustomImpl implements VendorRepositoryCustom {
             builder.or(QVendor.vendor.vendorName.contains(vendorName));
         }
 
+        //정렬 조건 설정
+        OrderSpecifier<?> orderSpecifier;
+        switch (orderBy){
+            case "reviewCount" :
+                orderSpecifier = QVendor.vendor.reviewCount.desc();
+                break;
+            case "favoriteCount" :
+                orderSpecifier = QVendor.vendor.favoriteVendors.size().desc();
+                break;
+            default:
+                orderSpecifier = QVendor.vendor.vendorName.asc();
+                break;
+        }
+
 
         //selectFrom은 select와 from을 한 번에 같이 불러올 수 있음.
         List<Vendor> content = queryFactory.selectFrom(QVendor.vendor)
@@ -52,9 +67,10 @@ public class VendorRepositoryCustomImpl implements VendorRepositoryCustom {
                 //  or 조건을 사용하려면 BooleanBuilder 클래스를 사용하여 동적 쿼리 생성하는 것이 좋음.
                 // 조건을 여러개를 걸 수 있다. 그러나 모든 조건을 써야하는 것은 아니고 null값으로 생략도 가능하다.
                 // 즉, 갖고 있는 값에 따라 조건을 다양하게 걸 수 있다. (동적 쿼리. 쿼리dsl)
-                .leftJoin(QVendor.vendor.menuList, QMenu.menu)
+//                .leftJoin(QVendor.vendor, QMenu.menu.vendor)
+                .leftJoin(QMenu.menu).on(QVendor.vendor.id.eq(QMenu.menu.vendor.id))
                 .where(builder)
-                .orderBy(QVendor.vendor.vendorName.asc())
+                .orderBy(orderSpecifier)
                 .fetch();
 
         // Wildcard.count는 count(*)와 동일. 갯수 세는 집합함수
@@ -81,7 +97,6 @@ public class VendorRepositoryCustomImpl implements VendorRepositoryCustom {
                 .where(builder)
                 .orderBy(QVendor.vendor.vendorName.asc())
                 .fetch();
-
         return content;
     }
 
@@ -109,29 +124,17 @@ public class VendorRepositoryCustomImpl implements VendorRepositoryCustom {
 
     //리뷰 가장 많은 순 / 별점 높은 순 정렬
     @Override
-    public List<Vendor> findByReview(Double weightedAverageScore) {
+    public List<Vendor> findByReviewScore(Long reviewCount) {
 
             List<Vendor> content = queryFactory.selectFrom(QVendor.vendor)
-                    .orderBy(QVendor.vendor.weightedAverageScore.desc())
+                    .where(QVendor.vendor.reviewCount.gt(reviewCount))
+                    .orderBy(QVendor.vendor.averageReviewScore.desc())
                     .fetch();
         
         return content;
     }
 
 
-    //Query dsl의 메소드
-    //vendorType을 기준으로 분류
-//    private BooleanExpression searchVendorType(String vendorType){
-//        return QVendor.vendor.vendorType.contains(vendorType);
-//    }
-
-
-    //Query dsl의 메소드
-    //null이거나 null이 아닌 값을 같은지 확인해서 boolean 비교
-    //VendorOpenStatus가 OPEN인 vendor만 검색
-//    private BooleanExpression searchOpenStatusEq(VendorOpenStatus vendorOpenStatus){
-//        return vendorOpenStatus == null ? null : QVendor.vendor.vendorOpenStatus.eq(vendorOpenStatus);
-//    }
 
 
 

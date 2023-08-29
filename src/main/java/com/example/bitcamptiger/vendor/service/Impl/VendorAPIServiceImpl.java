@@ -52,7 +52,7 @@ public class VendorAPIServiceImpl implements VendorAPIService {
         // RestTemplate을 사용하여 POST 요청 보내기
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<BusinessResponseDto> response = restTemplate.exchange(url, HttpMethod.POST, entity, BusinessResponseDto.class);
-
+        System.out.println(response);
         // API 응답으로 받은 BusinessResponseDto
         BusinessResponseDto responseDto = response.getBody();
 

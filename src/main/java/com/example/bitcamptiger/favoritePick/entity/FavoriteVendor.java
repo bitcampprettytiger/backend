@@ -2,6 +2,7 @@ package com.example.bitcamptiger.favoritePick.entity;
 
 import com.example.bitcamptiger.member.entity.Member;
 import com.example.bitcamptiger.vendor.entity.Vendor;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -23,6 +24,7 @@ public class FavoriteVendor {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "vendor_id", nullable = false)   // 가게랑 각각 조인
+    @JsonBackReference
     private Vendor vendor;
 
     // 추가적인 정보나 필드들도 포함할 수 있습니다.

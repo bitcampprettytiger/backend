@@ -24,6 +24,8 @@ public class QMenu extends EntityPathBase<Menu> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
+    public final ListPath<MenuImage, QMenuImage> images = this.<MenuImage, QMenuImage>createList("images", MenuImage.class, QMenuImage.class, PathInits.DIRECT2);
+
     public final StringPath menuContent = createString("menuContent");
 
     public final StringPath menuName = createString("menuName");
@@ -56,7 +58,7 @@ public class QMenu extends EntityPathBase<Menu> {
 
     public QMenu(Class<? extends Menu> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.vendor = inits.isInitialized("vendor") ? new com.example.bitcamptiger.vendor.entity.QVendor(forProperty("vendor")) : null;
+        this.vendor = inits.isInitialized("vendor") ? new com.example.bitcamptiger.vendor.entity.QVendor(forProperty("vendor"), inits.get("vendor")) : null;
     }
 
 }

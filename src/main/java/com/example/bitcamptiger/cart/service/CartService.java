@@ -14,11 +14,13 @@ public interface CartService {
     Cart addCart(Member member, Menu menu, int cartQuantity);
 
     //장바구니 조회
-    List<CartItemDTO> getCartList(Cart cart);
+    List<CartItemDTO> getCartList(Member member);
 
     //장바구니 menu 삭제
     void deleteCartItem(Long cartId, Long menuId);
 
     //장바구니 menu 전체 삭제
-    void deleteCart(CartItemDTO cartItemDTO);
+    void deleteCart(Member loggedInMember, CartItemDTO cartItemDTO);
+
+
 }

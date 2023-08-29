@@ -24,23 +24,19 @@ public interface VendorService {
     // 주소에 따른 가게 목록 가져오기
     List<VendorDTO> getVendorByAddressCategory(String address);
 
-    //리뷰 가장 많은 순 / 별점 높은 순 정렬
-    List<VendorDTO> getVendorByReview(Double weightedAverageScore);
+    //리뷰 100개 이상인 vendor 중 별점 높은 순 정렬
+    List<VendorDTO> getVendorByReview();
 
-    // 가게 정보 추가
-    void insertVendor(VendorDTO vendorDTO) throws JsonProcessingException;
-
-    // 가게 정보 업데이트
-    void updateVendor(VendorDTO vendorDTO);
-
-    List<VendorDTO> getVendorByCategory(String address, String menuName, String vendorName);
+    List<VendorDTO> getVendorByCategory(String address, String menuName, String vendorName, String orderBy);
 
     List<VendorDTO> getVendorByVendorType(String vendorType);
 
     List<VendorDTO> getVendorByMenuType(String menuType);
 
+    // 가게 정보 추가
     void insertVendor(VendorDTO vendorDTO, MultipartFile[] uploadFiles) throws IOException;
 
+    // 가게 정보 업데이트
     void updateVendor(VendorDTO vendorDTO, MultipartFile[] uploadFiles) throws IOException;
 
 

@@ -3,63 +3,65 @@ package com.example.bitcamptiger.Review.dto;
 import com.example.bitcamptiger.Review.entity.Review;
 import com.example.bitcamptiger.Review.entity.ReviewFile;
 import com.example.bitcamptiger.member.entity.Member;
+import com.example.bitcamptiger.order.entity.Orders;
+import com.example.bitcamptiger.vendor.dto.VendorDTO;
 import com.example.bitcamptiger.vendor.entity.Vendor;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import net.minidev.json.annotate.JsonIgnore;
 import org.modelmapper.ModelMapper;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
-
-import static junit.runner.Version.id;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class ReviewDto {
-    private Long reviewNum;
-    private Long orderNum;
-    private Long vendorId;
-    private Long memberId;
+
+    private Long reviewId;
+    @JsonIgnore
+    private Long id;
+    private Orders orders;
+    private Vendor vendor;
+    private Member member;
     private String reviewContent;
-    private LocalDateTime reviewRegDate;
-    private int reviewScore;
-    private List<ReviewFileDto> reviewFileList;
+    private String reviewRegDate;
+    private long reviewScore;
+    private int likeCount;
+    private int disLikeCount;
+    private List<ReviewFile> reviewFileList;
+    private ReviewFileDto reviewFile;
 
-//    private static ModelMapper modelMapper = new ModelMapper();
-//
-//
-//    public Review createReview() {
-//        return modelMapper.map(this,Review.class);
-//    }
-//
-//    public static ReviewDto of(Review review){
-//        return modelMapper.map(review, ReviewDto.class);
-//    }
 
-//    public Review DtoToEntity() {
-//        return Review.builder()
-//                .reviewNum(this.reviewNum)
-//                .orderNum(this.orderNum)
-//                .reviewContent(this.reviewContent)
-//                .reviewScore(this.reviewScore)
-//                .reviewRegDate(this.reviewRegDate)
-//                .build();
-//    }
+    private static ModelMapper modelMapper = new ModelMapper();
 
-    public static ReviewDto entityToDto(Review review) {
-        ReviewDto reviewDto = new ReviewDto();
-        reviewDto.setReviewNum(review.getReviewNum());
-        reviewDto.setReviewContent(review.getReviewContent());
-        reviewDto.setReviewRegDate(review.getReviewRegDate());
-        reviewDto.setReviewScore(review.getReviewScore());
-        reviewDto.setVendorId(review.getVendor().getId());
-        reviewDto.setMemberId(review.getMember().getId());
-        return reviewDto;
+    public Review createReview() {
+        return modelMapper.map(this, Review.class);
     }
+
+    public static ReviewDto of(Review review){
+        return modelMapper.map(review, ReviewDto.class);
+    }
+
+    public boolean isLiked() {
+        return likeCount > 0;
+    }
+
+    public boolean isDisliked() {
+        return disLikeCount > 0;
+    }
+
+    // 포스트맨 출력시 변환된 형식으로 반환하는 메서드 추가
+    public String getReviewRegDateTimeFormatted() {
+        LocalDateTime dateTime = LocalDateTime.parse(reviewRegDate, DateTimeFormatter.ISO_DATE_TIME);
+        return dateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+    }
+
 }
 
 

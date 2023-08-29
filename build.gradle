@@ -17,9 +17,11 @@ configurations {
         extendsFrom annotationProcessor
     }
 }
-
-repositories {
-    mavenCentral()
+allprojects {
+    repositories {
+        mavenCentral()
+        maven { url 'https://jitpack.io' }
+    }
 }
 
 dependencies {
@@ -94,6 +96,9 @@ dependencies {
     //webSocket
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
 
+    //결제 아임포트
+    implementation 'com.github.iamport:iamport-rest-client-java:0.2.21'
+
 }
 
 tasks.named('test') {
@@ -104,10 +109,10 @@ bootJar {
     mainClass = "com.example.bitcamptiger.BitcamptigerApplication"
 //    java.util.jar.Attributes.Name.MAIN_CLASS
 }
-
-
+//
+//
 //    java.util.jar.Attributes.Name.MAIN_CLASS
-// queryDSL 추가 : QueryDSL 빌드 옵션
+//// queryDSL 추가 : QueryDSL 빌드 옵션
 //def querydslDir = 'src/main/generated'
 //
 //querydsl {

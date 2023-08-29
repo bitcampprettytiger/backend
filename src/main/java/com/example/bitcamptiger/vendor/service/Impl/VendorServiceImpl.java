@@ -2,6 +2,9 @@ package com.example.bitcamptiger.vendor.service.Impl;
 
 import com.example.bitcamptiger.common.FileUtils;
 import com.example.bitcamptiger.common.service.S3UploadService;
+import com.example.bitcamptiger.member.dto.MemberDTO;
+import com.example.bitcamptiger.member.entity.Member;
+import com.example.bitcamptiger.member.reposiitory.MemberRepository;
 import com.example.bitcamptiger.menu.dto.MenuDTO;
 import com.example.bitcamptiger.menu.dto.MenuImageDTO;
 import com.example.bitcamptiger.menu.entity.Menu;
@@ -33,6 +36,7 @@ import java.io.IOException;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -50,6 +54,7 @@ public class VendorServiceImpl implements VendorService {
     private final VendorImageRepository vendorImageRepository;
     private final NowLocationRepository nowLocationRepository;
     public  final S3UploadService s3UploadService;
+    public  final MemberRepository memberRepository;
 
 //    public final GeoService geoService;
     @Override
@@ -323,8 +328,8 @@ public class VendorServiceImpl implements VendorService {
 //                vendorDTO.setPerNo(roadOcuuCertiData.getPerNo());
 //                vendorDTO.setRlAppiNm(roadOcuuCertiData.getRlAppiNm());
 
-
-                Vendor vendor = vendorDTO.createVendor();
+        Optional<Member> byUsername = memberRepository.findByUsername(vendorDTO.getUsername());
+        Vendor vendor = vendorDTO.createVendor();
                 vendor.setVendorType(vendorDTO.getVendorType());
                 vendor.setVendorName(vendorDTO.getVendorName());
                 vendor.setSIGMenu(vendorDTO.getSIGMenu());
@@ -335,7 +340,7 @@ public class VendorServiceImpl implements VendorService {
                 vendor.setOpen(vendorDTO.getOpen());
                 vendor.setClose(vendorDTO.getClose());
                 vendor.setHelpCheck(vendorDTO.getHelpCheck());
-
+                vendor.setMember(byUsername.orElseThrow(EntityNotFoundException::new));
                 Vendor savedVendor = vendorRepository.save(vendor);
 
                 List<Randmark> randmarkBydistinct = nowLocationRepository.findRandmarkBydistinct(vendor);

@@ -1,6 +1,8 @@
 package com.example.bitcamptiger.vendor.dto;
 
 
+import com.example.bitcamptiger.member.dto.MemberDTO;
+import com.example.bitcamptiger.member.entity.Member;
 import com.example.bitcamptiger.menu.dto.MenuDTO;
 import com.example.bitcamptiger.vendor.entity.Vendor;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -22,12 +24,15 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class VendorDTO {
+
+    private String username;
+
     private Long id;
-//  구분(노점 포장마차)
+    //  구분(노점 포장마차)
     private String vendorType;
-//  가게이름
+    //  가게이름
     private String vendorName;
-//  시그니처메뉴(대표메뉴)
+    //  시그니처메뉴(대표메뉴)
     private String SIGMenu;
 
     private String vendorInfo;

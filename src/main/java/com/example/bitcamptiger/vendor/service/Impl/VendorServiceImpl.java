@@ -94,7 +94,7 @@ public class VendorServiceImpl implements VendorService {
 
         Optional<Randmark> byMapLocation = nowLocationRepository.findByMapLocation(nowLocationDto.getAddress());
 
-        if(nowLocationDto.getLatitude()==null&&nowLocationDto.getHardness()==null){
+        if(nowLocationDto.getLatitude().equals(null)&&nowLocationDto.getHardness().equals(null)){
             nowLocationDto.setLatitude(byMapLocation.orElseThrow(EntityNotFoundException::new).getLatitude());
             nowLocationDto.setHardness(byMapLocation.orElseThrow(EntityNotFoundException::new).getHardness());
         }

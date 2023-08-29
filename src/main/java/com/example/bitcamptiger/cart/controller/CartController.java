@@ -112,7 +112,7 @@ public class CartController {
 
     //장바구니 menu 전체 삭제
     @DeleteMapping("/info")
-    public ResponseEntity<?> deleteCart(@AuthenticationPrincipal CustomUserDetails customUserDetails,@RequestBody CartItemDTO cartItemDTO){
+    public ResponseEntity<?> deleteCart(@AuthenticationPrincipal CustomUserDetails customUserDetails, CartItemDTO cartItemDTO){
         ResponseDTO<CartItemDTO> response = new ResponseDTO<>();
 
         try{

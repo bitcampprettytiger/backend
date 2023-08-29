@@ -110,7 +110,7 @@ public class CartServiceImpl implements CartService {
     //장바구니 menu 전체 삭제
     @Override
     public void deleteCart(Member loggedInMember, CartItemDTO cartItemDTO) {
-        List<CartItem> cartItemList = cartItemRepository.findByCartMember(cartItemDTO.getCart().getMember());
+        List<CartItem> cartItemList = cartItemRepository.findByCartMember(loggedInMember);
 
         cartItemRepository.deleteAll(cartItemList);
         cartItemRepository.flush();

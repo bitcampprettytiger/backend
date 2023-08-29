@@ -6,6 +6,7 @@ import com.example.bitcamptiger.vendor.dto.VendorDTO;
 import com.example.bitcamptiger.vendor.entity.Vendor;
 import com.example.bitcamptiger.vendor.service.VendorService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -26,24 +27,26 @@ public class FavoritePickController {
 
     //해당 유저와 가게 정보를 받아와서 찜하기를 추가
     @PostMapping("/{memberId}/add/{vendorId}")
-    public void addFavorite(@PathVariable Long memberId, @PathVariable Long vendorId) {
+    public ResponseEntity<String> addFavorite(@PathVariable Long memberId, @PathVariable Long vendorId) {
         Member member = new Member();
         member.setId(memberId);
 
         Vendor vendor = favoriteService.getVendorById(vendorId);
 
         favoriteService.addFavoriteVendor(member, vendor);
+        return ResponseEntity.ok("찜하기 완료되었습니다.");
     }
 
     //유저와 가게 정보를 받아와서 찜하기를 삭제
-    @PostMapping("/{memberId}/remove/{vendorId}")
-    public void removeFavorite(@PathVariable Long memberId, @PathVariable Long vendorId) {
+    @DeleteMapping ("/{memberId}/remove/{vendorId}")
+    public ResponseEntity<String> removeFavorite(@PathVariable Long memberId, @PathVariable Long vendorId) {
         Member member = new Member();
         member.setId(memberId);
 
         Vendor vendor = favoriteService.getVendorById(vendorId);
 
         favoriteService.removeFavoriteVendor(member, vendor);
+        return ResponseEntity.ok("찜 목록에서 삭제되었습니다.");
     }
 
     //찜하기 많은 수 를 가진 가게를 탑 8 으로 표출할 수 있는 컨트롤러

@@ -39,10 +39,13 @@ public class VendorController {
 
 
     @PostMapping("/search")
-    public BaseResponse<?> getVendorOpenInfoList(@RequestBody NowLocationDto nowLocationDto) {
+    public BaseResponse<?> getVendorOpenInfoList(@RequestBody NowLocationDto nowLocationDto, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         System.out.println(nowLocationDto);
         ResponseDTO<LocationDto> response = new ResponseDTO<>();
         try{
+            // 로그인한 사용자의 정보에 접근 (필요한 경우)
+            Member loggedInMember = customUserDetails.getUser();
+
             List<LocationDto> nowLocationList = vendorService.getNowLocationList(nowLocationDto);
             if(nowLocationList.isEmpty()){
                return new BaseResponse<>(RESPONSE_ERROR);
@@ -66,11 +69,14 @@ public class VendorController {
 
     }
     @PostMapping("/locationsave")
-    public BaseResponse<?> saveVendorOpenInfoList(@RequestBody NowLocationDto nowLocationDto) {
+    public BaseResponse<?> saveVendorOpenInfoList(@AuthenticationPrincipal CustomUserDetails customUserDetails,@RequestBody NowLocationDto nowLocationDto) {
 
         ResponseDTO<NowLocationDto> response = new ResponseDTO<>();
 
         try{
+            // 로그인한 사용자의 정보에 접근 (필요한 경우)
+            Member loggedInMember = customUserDetails.getUser();
+
             NowLocationDto saverandmark = vendorService.saverandmark(nowLocationDto);
             if(saverandmark.equals(null)){
                 return new BaseResponse<>(POST_ISNULL);
@@ -97,10 +103,12 @@ public class VendorController {
             @ApiResponse(responseCode = "400", description = "실패")
     })
     @GetMapping("/openInfo")
-    public ResponseEntity<?> getVendorOpenInfoList(VendorDTO vendorDTO) {
+    public ResponseEntity<?> getVendorOpenInfoList(@AuthenticationPrincipal CustomUserDetails customUserDetails,VendorDTO vendorDTO) {
 
         ResponseDTO<VendorDTO> response = new ResponseDTO<>();
         try{
+            // 로그인한 사용자의 정보에 접근 (필요한 경우)
+            Member loggedInMember = customUserDetails.getUser();
 
             List<VendorDTO> VendorDTOList = vendorService.getOpenList(vendorDTO.getVendorOpenStatus());
 
@@ -119,9 +127,11 @@ public class VendorController {
 
     //모든 가게 정보 리스트
     @GetMapping("/info")
-    public ResponseEntity<?> getVendorInfoList(){
+    public ResponseEntity<?> getVendorInfoList(@AuthenticationPrincipal CustomUserDetails customUserDetails){
         ResponseDTO<VendorDTO> response = new ResponseDTO<>();
         try{
+            Member loggedInMember = customUserDetails.getUser();
+
             List<VendorDTO> vendorDTOList = vendorService.getVendorList();
 
             response.setItemlist(vendorDTOList);
@@ -141,6 +151,7 @@ public class VendorController {
     //가게명으로 검색
     @GetMapping("/category")
     public ResponseEntity<?> getVendorByCategory(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @RequestParam(required = false) String address,
             @RequestParam(required = false) String menuName,
             @RequestParam(required = false) String vendorName,
@@ -151,7 +162,11 @@ public class VendorController {
         System.out.println(vendorName);
         ResponseDTO<VendorDTO> response = new ResponseDTO<>();
         try{
+
+            Member loggedInMember = customUserDetails.getUser();
+            System.out.println(loggedInMember);
             List<VendorDTO> vendorDTOList = vendorService.getVendorByCategory(address, menuName, vendorName, orderBy);
+
 
             response.setItemlist(vendorDTOList);
             response.setStatusCode(HttpStatus.OK.value());
@@ -170,12 +185,14 @@ public class VendorController {
     //해당 타입에 포함되는 가게 조회하기
     @GetMapping("/vendorType/{vendorType}")
     public ResponseEntity<?> getVendorByVendorType(
-            @PathVariable String vendorType,
-            @AuthenticationPrincipal CustomUserDetails customUserDetails){
-
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @PathVariable String vendorType){
         ResponseDTO<VendorDTO> response = new ResponseDTO<>();
 
         try{
+            Member loggedInMember = customUserDetails.getUser();
+            System.out.println(loggedInMember);
+
             List<VendorDTO> vendorDTOList = vendorService.getVendorByVendorType(vendorType);
 
             response.setItemlist(vendorDTOList);
@@ -193,12 +210,13 @@ public class VendorController {
 
     //메뉴 타입별 가게 정보 조회
     @GetMapping("/menuType/{menuType}")
-    public ResponseEntity<?> getVendorByMenuType(@PathVariable String menuType,
-                                                 @AuthenticationPrincipal CustomUserDetails customUserDetails){
+    public ResponseEntity<?> getVendorByMenuType(@AuthenticationPrincipal CustomUserDetails customUserDetails,@PathVariable String menuType){
 
         ResponseDTO<VendorDTO> response = new ResponseDTO<>();
 
         try{
+            Member loggedInMember = customUserDetails.getUser();
+            System.out.println(loggedInMember);
             List<VendorDTO> vendorDTOList = vendorService.getVendorByMenuType(menuType);
 
             response.setItemlist(vendorDTOList);
@@ -218,6 +236,9 @@ public class VendorController {
         ResponseDTO<VendorDTO> response = new ResponseDTO<>();
 
         try{
+            Member loggedInMember = customUserDetails.getUser();
+            System.out.println(loggedInMember);
+
             List<VendorDTO> vendorDTOList = vendorService.getVendorByReview();
 
             response.setItemlist(vendorDTOList);

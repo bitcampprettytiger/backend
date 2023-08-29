@@ -5,22 +5,27 @@ import com.example.bitcamptiger.dto.ResponseDTO;
 import com.example.bitcamptiger.favoritePick.DTO.FavoriteVendorDTO;
 import com.example.bitcamptiger.favoritePick.service.FavoriteService;
 import com.example.bitcamptiger.member.dto.MemberDTO;
+import com.example.bitcamptiger.member.dto.MyInfoDTO;
+import com.example.bitcamptiger.member.entity.CustomUserDetails;
 import com.example.bitcamptiger.member.entity.Member;
 import com.example.bitcamptiger.member.service.MyPageService;
 import com.example.bitcamptiger.order.dto.OrderDTO;
 import com.example.bitcamptiger.order.dto.OrderMenuDTO;
 import com.example.bitcamptiger.order.entity.OrderMenu;
 import com.example.bitcamptiger.order.entity.Orders;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -33,6 +38,7 @@ public class MyPageController {
 
     public final MyPageService myPageService;
     public final FavoriteService favoriteService;
+    private final PasswordEncoder passwordEncoder;
 
     //내 정보 조회
     @GetMapping("/myInfo")
@@ -53,8 +59,72 @@ public class MyPageController {
         }
     }
 
-
     //내 정보 수정
+    @PutMapping("/member/update")
+    public ResponseEntity<?> updateMemberInfo(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @RequestBody @Valid MyInfoDTO updatedInfo,
+            BindingResult bindingResult
+    ) {
+        if (bindingResult.hasErrors()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(bindingResult.getAllErrors());
+        }
+
+        ResponseDTO<MyInfoDTO> responseDTO = new ResponseDTO<>();
+        try {
+            // 현재 로그인한 사용자의 정보를 가져옴
+            Member member = customUserDetails.getUser();
+
+            // 닉네임 및 비밀번호 수정 여부 확인
+            boolean updatedNickname = false;
+            boolean updatedPassword = false;
+
+            if (updatedInfo.getNickName() != null) {
+                member.setNickname(updatedInfo.getNickName());
+                updatedNickname = true;
+            }
+
+            if (updatedInfo.getPassword() != null && !updatedInfo.getPassword().isEmpty()) {
+                member.setPassword(passwordEncoder.encode(updatedInfo.getPassword()));
+                updatedPassword = true;
+            }
+
+            // 회원 정보 업데이트
+            MemberDTO updatedMemberDTO = myPageService.updateMemberInfo(
+                    member, updatedInfo.getNickName(), updatedInfo.getPassword()
+            );
+
+            // 응답 메시지 생성
+            String message = "";
+            if (updatedNickname && updatedPassword) {
+                message = "닉네임, 비밀번호 수정이 완료되었습니다.";
+            } else if (updatedNickname) {
+                message = "닉네임이 수정되었습니다.";
+            } else if (updatedPassword) {
+                message = "비밀번호가 수정되었습니다.";
+            }
+
+            // 응답 DTO 구성
+            MyInfoDTO updatedDTO = MyInfoDTO.builder()
+                    .password(updatedMemberDTO.getPassword())
+                    .username(updatedMemberDTO.getUsername())
+                    .role(updatedMemberDTO.getRole())
+                    .build();
+
+            responseDTO.setItem(updatedDTO);
+            responseDTO.setMessage(message);
+            responseDTO.setStatusCode(HttpStatus.OK.value());
+
+            return ResponseEntity.ok().body(responseDTO);
+        } catch (Exception exception) {
+            responseDTO.setErrorMessage(exception.getMessage());
+            responseDTO.setStatusCode(HttpStatus.BAD_REQUEST.value());
+
+            return ResponseEntity.badRequest().body(responseDTO);
+        }
+    }
+
+
 
     //회원 탈퇴
     @DeleteMapping("/outOfMember")

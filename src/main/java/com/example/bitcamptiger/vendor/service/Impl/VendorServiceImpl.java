@@ -190,8 +190,8 @@ public class VendorServiceImpl implements VendorService {
     // 주소, 메뉴명, 가게명
     @Override
     @Transactional(readOnly = true)
-    public List<VendorDTO> getVendorByCategory(String address, String menuName, String vendorName){
-        List<Vendor> vendorList = vendorRepository.findVendorByCategory(address, menuName, vendorName);
+    public List<VendorDTO> getVendorByCategory(String address, String menuName, String vendorName, String orderBy){
+        List<Vendor> vendorList = vendorRepository.findVendorByCategory(address, menuName, vendorName, orderBy);
 
         List<VendorDTO> vendorDTOList = new ArrayList<>();
 

@@ -1,5 +1,6 @@
 package com.example.bitcamptiger.vendor.controller;
 
+import com.example.bitcamptiger.member.entity.CustomUserDetails;
 import com.example.bitcamptiger.vendor.dto.BusinessResponseDto;
 import com.example.bitcamptiger.vendor.dto.ValidationResponseDto;
 import com.example.bitcamptiger.vendor.dto.VendorValidationDto;
@@ -10,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -26,7 +28,8 @@ public class RegistrationController {
 
     //사업자 번호조회 및 유효한 사업자인지 여부에 대한 정보
     @GetMapping("/checkBusiness/{name}")
-    public ResponseEntity<?> checkBusiness(@PathVariable String name) throws JsonProcessingException {
+    public ResponseEntity<?> checkBusiness(@PathVariable String name,
+                                           @AuthenticationPrincipal CustomUserDetails customUserDetails) throws JsonProcessingException {
 
         // VendorAPIService를 사용하여 비즈니스 유효성 검사 API 호출
         BusinessResponseDto responseDto = vendorAPIService.checkBusiness(name);

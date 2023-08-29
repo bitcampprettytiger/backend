@@ -3,13 +3,14 @@ package com.example.bitcamptiger.payments.controller;
 import com.example.bitcamptiger.dto.ResponseDTO;
 import com.example.bitcamptiger.jwt.JwtTokenProvider;
 import com.example.bitcamptiger.payments.dto.PaymentDTO;
+import com.example.bitcamptiger.payments.entity.Payments;
 import com.example.bitcamptiger.payments.repository.PaymentRepository;
 import com.example.bitcamptiger.payments.service.PaymentService;
-import com.nimbusds.oauth2.sdk.TokenResponse;
 import com.siot.IamportRestClient.IamportClient;
 import com.siot.IamportRestClient.exception.IamportResponseException;
 import com.siot.IamportRestClient.response.IamportResponse;
 import com.siot.IamportRestClient.response.Payment;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +18,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
-import retrofit2.http.Path;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -40,17 +40,19 @@ public class PaymentController {
 
     //토큰 발급을 위해 아임포트에서 제공해주는 rest api 사용
     private final IamportClient iamportClient;
-
     private final PaymentRepository paymentRepository;
     private final JwtTokenProvider jwtTokenProvider;
     private final PaymentService paymentService;
+    private final RestTemplate restTemplate;
+
 
     //생성자로 rest api key와 secret을 입력해서 토큰 생성
     @Autowired
-    public PaymentController(PaymentRepository paymentRepository, JwtTokenProvider jwtTokenProvider, PaymentService paymentService){
+    public PaymentController(PaymentRepository paymentRepository, JwtTokenProvider jwtTokenProvider, PaymentService paymentService, RestTemplate restTemplate){
         this.paymentRepository = paymentRepository;
         this.jwtTokenProvider = jwtTokenProvider;
         this.paymentService = paymentService;
+        this.restTemplate = restTemplate;
         this.iamportClient = new IamportClient(restApiKey, restApiSecret);
     }
 
@@ -64,19 +66,19 @@ public class PaymentController {
     }
 
 
-
     //결제하기
     @PostMapping("/addPayment")
-    public ResponseEntity<?> addPayment(@RequestHeader("Authorization")String token, @RequestBody PaymentDTO paymentDTO){
+    public ResponseEntity<?> addPayment(@RequestHeader("Authorization") String token, @RequestBody PaymentDTO paymentDTO){
 
         ResponseDTO<PaymentDTO> response = new ResponseDTO<>();
 
         try{
-            paymentService.addPayment(paymentDTO, token);
+            Payments payments = paymentService.addPayment(paymentDTO, token);
 
-            List<PaymentDTO> paymentDTOList = paymentService.getPaymentList(token);
+//            List<PaymentDTO> paymentDTOList = paymentService.getPaymentList(token);
 
-            response.setItemlist(paymentDTOList);
+//            response.setItemlist(paymentDTOList);
+            response.setItem(PaymentDTO.of(payments));
             response.setStatusCode(HttpStatus.OK.value());
 
             return ResponseEntity.ok().body(response);
@@ -108,11 +110,10 @@ public class PaymentController {
 
     }
 
-
     //결제 취소하기
-    @PostMapping("cancelPayment/{id}")
+    @PostMapping("/cancelPayment/{id}")
     public ResponseEntity<?> cancelPayment(@PathVariable String id){
-        ResponseDTO<Map<String, Objects>> response = new ResponseDTO<>();
+        ResponseDTO<Map<String, Object>> response = new ResponseDTO<>();
         try{
             String accessToken = getToken();
 
@@ -127,8 +128,24 @@ public class PaymentController {
 
             HttpEntity<Map<String, String>> requestEntity = new HttpEntity<>(body, headers);
 
-            CancelResponse response = restTemplate.postForObject(url, requestEntity, CancelResponse.class);
+            CancelResponse cancelResponse = restTemplate.postForObject(url, requestEntity, CancelResponse.class);
             Map<String, Object> returnMap = new HashMap<>();
+
+            if (cancelResponse.getCode() == 0) {
+                returnMap.put("msg", "취소가 완료되었습니다.");
+
+                response.setItem(returnMap);
+                response.setStatusCode(HttpStatus.OK.value());
+                return ResponseEntity.ok().body(response);
+            } else {
+                returnMap.put("msg", "결제 취소가 실패하였습니다.");
+
+                response.setStatusCode(HttpStatus.BAD_REQUEST.value());
+                response.setErrorMessage(cancelResponse.getMessage());
+                response.setItem(returnMap);
+
+                return ResponseEntity.badRequest().body(response);
+            }
 
 
 
@@ -159,8 +176,28 @@ public class PaymentController {
         //API 호출 및 응답 수신
         TokenResponse response = restTemplate.postForObject(url, requestEntity, TokenResponse.class);
 
-        return response.get
+        return response.getResponse().getAccess_token();
 
     }
+
+    @Data
+    public static class TokenResponse {
+        private int code;
+        private String message;
+        private TokenDetails response;
+    }
+    @Data
+    public static class TokenDetails {
+        private String access_token;
+        private long now;
+        private long expired_at;
+    }
+    @Data
+    public static class CancelResponse {
+        private int code;
+        private String message;
+        private Map<String, Object> response;
+    }
+
 
 }

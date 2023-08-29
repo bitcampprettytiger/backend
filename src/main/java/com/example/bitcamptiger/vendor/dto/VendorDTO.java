@@ -57,6 +57,7 @@ public class VendorDTO {
     private String primaryimgurl;
 
     private String location;
+    private String helpCheck;
 
     private Double totalReviewScore;
     private Long reviewCount;

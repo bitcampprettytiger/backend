@@ -27,15 +27,14 @@ public class PaymentServiceImpl implements PaymentService {
 
 
     //결제하기
-    public void addPayment(PaymentDTO paymentDTO, String token){
+    public Payments addPayment(PaymentDTO paymentDTO, String token){
 
         String userId = jwtTokenProvider.validateAndGetUsername(token);
 
         //Member 엔티티 조회
-        ///////////여기 findByUsername가 반환하는것 뭐지>?????
         Member member = memberRepository.findByUsername(userId).orElseThrow();
 
-        Payments payment = paymentDTO.createPayment();
+        Payments payment = new Payments();
         payment.setPayMethod(paymentDTO.getPayMethod());
         payment.setImpUid(paymentDTO.getImpUid());
         payment.setMerchantUid(paymentDTO.getMerchantUid());
@@ -46,7 +45,7 @@ public class PaymentServiceImpl implements PaymentService {
         ///////////////////////// jwt //////////////////////////////////
         payment.setMember(member);
 
-        paymentRepository.save(payment);
+        return paymentRepository.save(payment);
 
 
 
@@ -57,7 +56,9 @@ public class PaymentServiceImpl implements PaymentService {
     public List<PaymentDTO> getPaymentList(String token) {
 
         String userId = jwtTokenProvider.validateAndGetUsername(token);
-        List<Payments> paymentsList = paymentRepository.findByMemberIdOrderByPayDateDesc(userId);
+        List<Payments> paymentsList = paymentRepository.findByMemberIdOrderByPayDateDesc(Member.builder()
+                        .id(Long.valueOf(userId))
+                .build());
 
         List<PaymentDTO> paymentDTOList = new ArrayList<>();
 

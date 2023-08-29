@@ -36,8 +36,8 @@ class VendorServiceImplTest {
             vendor.setY("98.333" + i);
             vendor.setTel("전화번호 테스트" + i);
             vendor.setBusinessDay("FRI");
-            vendor.setOpen(LocalTime.now());
-            vendor.setClose(LocalTime.now());
+            vendor.setOpen("16");
+            vendor.setClose("16");
 
             Vendor savedVendor = vendorRepository.save(vendor);
 
@@ -58,8 +58,8 @@ class VendorServiceImplTest {
         vendor.setY("165.566555");
         vendor.setTel("01022226666");
         vendor.setBusinessDay("FRI");
-        vendor.setOpen(LocalTime.now());
-        vendor.setClose(LocalTime.now());
+        vendor.setOpen("16");
+        vendor.setClose("16");
 
         Vendor savedVendor = vendorRepository.save(vendor);
 
@@ -78,8 +78,8 @@ class VendorServiceImplTest {
         vendor.setY("165.566555");
         vendor.setTel("01022226666");
         vendor.setBusinessDay("FRI");
-        vendor.setOpen(LocalTime.now());
-        vendor.setClose(LocalTime.now());
+        vendor.setOpen("16");
+        vendor.setClose("16");
 
         Vendor savedVendor = vendorRepository.save(vendor);
 
@@ -107,8 +107,8 @@ class VendorServiceImplTest {
         vendor.setY("165.566555");
         vendor.setTel("01022226666");
         vendor.setBusinessDay("FRI");
-        vendor.setOpen(LocalTime.now());
-        vendor.setClose(LocalTime.now());
+        vendor.setOpen("16");
+        vendor.setClose("16");
 
         Vendor savedVendor = vendorRepository.save(vendor);
         System.out.println(savedVendor.toString());

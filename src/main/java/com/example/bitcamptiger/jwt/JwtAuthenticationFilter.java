@@ -48,6 +48,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 //       request에서 token꺼내오기
 //        token 값이 있으면 토큰값이 담기고 토큰 값이 없으면 null이 담긴다.
+
             String token = parseBearerToken(request);
             System.out.println("token"+token);
 

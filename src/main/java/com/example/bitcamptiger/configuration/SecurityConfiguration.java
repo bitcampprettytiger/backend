@@ -55,18 +55,13 @@ public class SecurityConfiguration {
         authorizeHttpRequests((authorizaRequests) -> {
 //                    /요청은 모든 사용자가 이용가능
 //
-    authorizaRequests.requestMatchers("/member/**").permitAll();
-//    authorizaRequests.requestMatchers("/board/**", "/menu/**", "/cart/**", "/reviews/**", "/orders/**","/upload/**").hasAuthority("ROLE_BASIC");
-    authorizaRequests.requestMatchers("/favorite-Test/**","/businessApi/**","/API/**").hasAuthority("ROLE_BASIC");
-//    authorizaRequests.requestMatchers("/vendor/**","/reviews/**").hasAuthority("ROLE_BASIC");
-//     authorizaRequests.requestMatchers("/**").hasAuthority("ROLE_VENDOR");
-//    authorizaRequests.requestMatchers("/api/**").hasAuthority("ROLE_BASIC");
-    authorizaRequests.requestMatchers("/refresh/**").hasAuthority("ROLE_BASIC");
-    authorizaRequests.requestMatchers("/refresh").hasAuthority("ROLE_BASIC");
-    authorizaRequests.requestMatchers("/api/**").hasAuthority("ROLE_BASIC");
-
-    authorizaRequests.requestMatchers("/board/**", "/menu/**", "/cart/**", "/reviews/**", "/orders/**","/upload/**").permitAll();
-    authorizaRequests.requestMatchers("/api/**").permitAll();
+//  authorizaRequests.requestMatchers("/board/**", "/menu/**", "/cart/**", "/reviews/**", "/orders/**","/upload/**").hasAuthority("ROLE_BASIC");
+//  authorizaRequests.requestMatchers("/vendor/**","/reviews/**").hasAuthority("ROLE_BASIC");
+//  authorizaRequests.requestMatchers("/**").hasAuthority("ROLE_VENDOR");
+//  authorizaRequests.requestMatchers("/api/**").hasAuthority("ROLE_BASIC");
+    authorizaRequests.requestMatchers("/api/**","/member/**","/vendor/join","/API/validateByRegion","/vendor/info").permitAll();
+    authorizaRequests.requestMatchers("/board/**", "/menu/**", "/cart/**", "/reviews/**", "/orders/**","/upload/**","/api/**","/refresh","/refresh/**","/favorite-Test/**","/businessApi/**","/API/**").hasAnyAuthority("ROLE_VENDOR","ROLE_BASIC");
+    authorizaRequests.requestMatchers("/vendor/**").hasAnyAuthority("ROLE_VENDOR","ROLE_BASIC");
     authorizaRequests.anyRequest().authenticated();
 
 

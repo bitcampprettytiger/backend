@@ -28,4 +28,12 @@ public class FavoriteVendorDTO {
     public static FavoriteVendorDTO of(FavoriteVendor favoriteVendor){
         return modelMapper.map(favoriteVendor, FavoriteVendorDTO.class);
     }
+
+    public static FavoriteVendorDTO customMap(FavoriteVendor favoriteVendor) {
+        FavoriteVendorDTO favoriteVendorDTO = new FavoriteVendorDTO();
+        favoriteVendorDTO.setId(favoriteVendor.getId());
+        favoriteVendorDTO.setMember(favoriteVendor.getMember());
+        favoriteVendorDTO.setVendor(favoriteVendor.getVendor());
+        return favoriteVendorDTO;
+    }
 }

@@ -62,8 +62,7 @@ public class VendorServiceImpl implements VendorService {
 
 //        List<NowLocationDto> nowLocationDtoList = new ArrayList<>();
 //        List<Randmark> Randmark = nowLocationRepository.findAll();
-        if(nowLocationDto.getHardness()==null&&nowLocationDto.getLatitude()==null){
-
+        if(nowLocationDto.getHardness().equals(null)&&nowLocationDto.getLatitude().equals(null)){
             JSONObject geocoding = geoService.geocoding(nowLocationDto.getAddress());
             System.out.println(geocoding.toString());
             nowLocationDto.setHardness(geocoding.get("x").toString());

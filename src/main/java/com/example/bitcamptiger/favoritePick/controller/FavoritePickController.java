@@ -32,11 +32,12 @@ public class FavoritePickController {
     }
 
     //해당 유저와 가게 정보를 받아와서 찜하기를 추가
-    @PostMapping("/add/{vendorId}")
-    public void addFavorite(@AuthenticationPrincipal CustomUserDetails customUserDetails,@PathVariable Long vendorId) {
-        System.out.println(customUserDetails.getUser());
+    @PostMapping("/{memberId}/add/{vendorId}")
+    public void addFavorite(@PathVariable Long memberId, @PathVariable Long vendorId,
+                            @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        System.out.println(memberId);
         Member member = new Member();
-        member.setId(customUserDetails.getUser().getId());
+        member.setId(memberId);
 
         Vendor vendor = favoriteService.getVendorById(vendorId);
 
@@ -45,7 +46,8 @@ public class FavoritePickController {
 
     //유저와 가게 정보를 받아와서 찜하기를 삭제
     @DeleteMapping("/{memberId}/remove/{vendorId}")
-    public void removeFavorite(@PathVariable Long memberId, @PathVariable Long vendorId) {
+    public void removeFavorite(@PathVariable Long memberId, @PathVariable Long vendorId,
+                               @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         Member member = new Member();
         member.setId(memberId);
 
@@ -56,12 +58,13 @@ public class FavoritePickController {
 
     //찜하기 많은 수 를 가진 가게를 탑 8 으로 표출할 수 있는 컨트롤러
     @GetMapping("/top8Favorites")
-    public List<VendorDTO> getTop8FavoriteVendors() {
+    public List<VendorDTO> getTop8FavoriteVendors(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
         List<Vendor> top8Vendors = favoriteService.getTop8FavoriteVendors();
 
         List<VendorDTO> top8VendorDTOs = new ArrayList<>();
         for (Vendor vendor : top8Vendors) {
             VendorDTO vendorDTO = vendorService.getVendorDetail(vendor.getId());
+            System.out.println(vendorDTO);
             top8VendorDTOs.add(vendorDTO);
         }
 
@@ -71,7 +74,8 @@ public class FavoritePickController {
 
 //    //내 찜하기 리스트 조회하기
     @GetMapping("/{memberId}")
-    public ResponseEntity<?> getMyFavoriteVendor(@PathVariable Long memberId){
+    public ResponseEntity<?> getMyFavoriteVendor(@PathVariable Long memberId,
+                                                 @AuthenticationPrincipal CustomUserDetails customUserDetails){
         ResponseDTO<FavoriteVendorDTO> response = new ResponseDTO<>();
 
         try{

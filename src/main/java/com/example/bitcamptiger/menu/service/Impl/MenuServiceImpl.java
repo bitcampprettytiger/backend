@@ -235,7 +235,7 @@ public class MenuServiceImpl implements MenuService {
 //조회수가 높은 순서대로 상위 5개의 메뉴 정보를 추천
     public List<String> getRecommendedMenuTypes() {
         // 조회수가 높은 상위 5개의 메뉴를 가져옴
-        List<Menu> recommendedMenus = menuRepository.findTop5ByOrderByViewsDesc();
+        List<Menu> recommendedMenus = menuRepository.findTop10ByOrderByViewsDesc();
 
         // 메뉴 타입별로 조회수를 누적할 Map을 생성
         Map<String, Integer> menuTypeViewsMap = new HashMap<>();
@@ -252,7 +252,7 @@ public class MenuServiceImpl implements MenuService {
         List<String> recommendedMenuTypes = menuTypeViewsMap.entrySet()
                 .stream()
                 .sorted((entry1, entry2) -> entry2.getValue().compareTo(entry1.getValue()))
-                .limit(5) // 상위 5개 메뉴 타입만 추출
+                .limit(10) // 상위 5개 메뉴 타입만 추출
                 .map(Map.Entry::getKey)
                 .collect(Collectors.toList());
 

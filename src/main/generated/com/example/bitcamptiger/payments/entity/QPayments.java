@@ -32,6 +32,8 @@ public class QPayments extends EntityPathBase<Payments> {
 
     public final StringPath merchantUid = createString("merchantUid");
 
+    public final com.example.bitcamptiger.order.entity.QOrders orders;
+
     public final NumberPath<Long> paidAmount = createNumber("paidAmount", Long.class);
 
     public final DateTimePath<java.time.LocalDateTime> payDate = createDateTime("payDate", java.time.LocalDateTime.class);
@@ -57,6 +59,7 @@ public class QPayments extends EntityPathBase<Payments> {
     public QPayments(Class<? extends Payments> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.member = inits.isInitialized("member") ? new com.example.bitcamptiger.member.entity.QMember(forProperty("member")) : null;
+        this.orders = inits.isInitialized("orders") ? new com.example.bitcamptiger.order.entity.QOrders(forProperty("orders"), inits.get("orders")) : null;
     }
 
 }

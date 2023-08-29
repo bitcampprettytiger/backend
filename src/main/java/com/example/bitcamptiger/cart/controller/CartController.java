@@ -35,10 +35,11 @@ public class CartController {
     public ResponseEntity<?> getMyCart(@AuthenticationPrincipal CustomUserDetails customUserDetails){
         ResponseDTO<CartItemDTO> response = new ResponseDTO<>();
         try{
-            Member member = memberRepository.findById(customUserDetails.getUser().getId()).orElseThrow();
-            Cart cart = cartRepository.findByMemberId(member.getId());
 
-            List<CartItemDTO> cartItemDTOList = cartService.getCartList(customUserDetails.getUser());
+            Member loggedInMember = customUserDetails.getUser(); // 로그인한 사용자 정보에 접근
+            Cart cart = cartRepository.findByMemberId(loggedInMember.getId());
+
+            List<CartItemDTO> cartItemDTOList = cartService.getCartList(loggedInMember);
 
             response.setItemlist(cartItemDTOList);
             response.setStatusCode(HttpStatus.OK.value());
@@ -54,11 +55,15 @@ public class CartController {
 
     // 장바구니에 메뉴 추가
     @PostMapping("/info")
-    public ResponseEntity<ResponseDTO<CartItemDTO>> addMenuToCart(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody CartItemDTO cartItemDTO) {
+
+    public ResponseEntity<ResponseDTO<CartItemDTO>> addMenuToCart(@AuthenticationPrincipal CustomUserDetails customUserDetails,@RequestBody CartItemDTO cartItemDTO) {
+
         ResponseDTO<CartItemDTO> response = new ResponseDTO<>();
         System.out.println(cartItemDTO);
         try {
-            Member member = memberRepository.findById(customUserDetails.getUser().getId()).orElseThrow(() -> new RuntimeException("회원 정보를 찾을 수 없습니다."));
+
+            Member member = customUserDetails.getUser(); // 로그인한 사용자 정보에 접근
+
             Menu menu = menuRepository.findById(cartItemDTO.getMenu().getId())
                     .orElseThrow(() -> new RuntimeException("메뉴 정보를 찾을 수 없습니다."));
 
@@ -84,14 +89,15 @@ public class CartController {
 
     //장바구니 menu 삭제
     @DeleteMapping("/deletecartitem")
-    public ResponseEntity<?> deleteCartItem(@RequestBody CartItemDTO cartItemDTO){
+    public ResponseEntity<?> deleteCartItem(@AuthenticationPrincipal CustomUserDetails customUserDetails,@RequestBody CartItemDTO cartItemDTO){
         System.out.println(cartItemDTO);
         ResponseDTO<CartItemDTO> response = new ResponseDTO<>();
 
         try{
+            Member loggedInMember = customUserDetails.getUser(); // 로그인한 사용자 정보에 접근
             cartService.deleteCartItem(cartItemDTO.getCart().getId(), cartItemDTO.getMenu().getId());
 
-            List<CartItemDTO> cartItemDTOList = cartService.getCartList(cartItemDTO.getCart().getMember());
+            List<CartItemDTO> cartItemDTOList = cartService.getCartList(loggedInMember);
 
             response.setItemlist(cartItemDTOList);
             response.setStatusCode(HttpStatus.OK.value());
@@ -107,11 +113,14 @@ public class CartController {
 
     //장바구니 menu 전체 삭제
     @DeleteMapping("/info")
-    public ResponseEntity<?> deleteCart(@RequestBody CartItemDTO cartItemDTO){
+    public ResponseEntity<?> deleteCart(@AuthenticationPrincipal CustomUserDetails customUserDetails, CartItemDTO cartItemDTO){
         ResponseDTO<CartItemDTO> response = new ResponseDTO<>();
 
         try{
-            cartService.deleteCart(cartItemDTO);
+
+            Member loggedInMember = customUserDetails.getUser(); // 로그인한 사용자 정보에 접근
+
+            cartService.deleteCart(loggedInMember, cartItemDTO);
 
             response.setStatusCode(HttpStatus.OK.value());
 

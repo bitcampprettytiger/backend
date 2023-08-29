@@ -1,9 +1,11 @@
 package com.example.bitcamptiger.vendor.controller;
 
+import com.example.bitcamptiger.member.entity.CustomUserDetails;
 import com.example.bitcamptiger.vendor.dto.RoadOcuuCertiData;
 import com.example.bitcamptiger.vendor.service.RoadOccuCertiService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,7 +20,7 @@ public class RoadOcuuCertiController {
     private RoadOccuCertiService roadOccuCertiService;
 
     @GetMapping("/test")
-    public ResponseEntity<List<RoadOcuuCertiData>> fetchDataFromExternalApi() {
+    public ResponseEntity<List<RoadOcuuCertiData>> fetchDataFromExternalApi(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
         // 외부 API에서 데이터 가져오기
         List<RoadOcuuCertiData> dataList = roadOccuCertiService.fetchDataFromExternalApi();
 
@@ -33,6 +35,7 @@ public class RoadOcuuCertiController {
 
     @GetMapping("/{perNo}/{rlAppiNm}")
     public ResponseEntity<?> authenticateAndReturnMessage(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @PathVariable String perNo,
             @PathVariable String rlAppiNm
     )

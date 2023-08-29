@@ -31,28 +31,43 @@ public class FavoritePickController {
     }
 
     //해당 유저와 가게 정보를 받아와서 찜하기를 추가
-    @PostMapping("/{memberId}/add/{vendorId}")
-    public ResponseEntity<String> addFavorite(@PathVariable Long memberId, @PathVariable Long vendorId, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
-        Member member = new Member();
-        member.setId(memberId);
+    @PostMapping("/add/{vendorId}")
+    public ResponseEntity<?> addFavorite(@AuthenticationPrincipal CustomUserDetails customUserDetails,@PathVariable Long vendorId) {
+        ResponseDTO<FavoriteVendorDTO> response = new ResponseDTO<>();
+        try {
+            Member member = customUserDetails.getUser(); // 로그인한 사용자 정보에 접근
 
-        Vendor vendor = favoriteService.getVendorById(vendorId);
+            Vendor vendor = favoriteService.getVendorById(vendorId);
 
-        favoriteService.addFavoriteVendor(member, vendor);
-        return ResponseEntity.ok("찜하기 완료되었습니다.");
+            favoriteService.addFavoriteVendor(member, vendor);
+
+            response.setStatusCode(HttpStatus.OK.value());
+            return ResponseEntity.ok("찜하기 완료되었습니다.");
+        }catch(Exception e) {
+            response.setErrorMessage(e.getMessage());
+            response.setStatusCode(HttpStatus.BAD_REQUEST.value());
+            return ResponseEntity.badRequest().body(response);
+        }
     }
 
     //유저와 가게 정보를 받아와서 찜하기를 삭제
-    @DeleteMapping ("/{memberId}/remove/{vendorId}")
-    public ResponseEntity<String> removeFavorite(@PathVariable Long memberId, @PathVariable Long vendorId, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+    @DeleteMapping("/remove/{vendorId}")
+    public ResponseEntity<?> removeFavorite(@AuthenticationPrincipal CustomUserDetails customUserDetails, @PathVariable Long vendorId) {
+        ResponseDTO<FavoriteVendorDTO> response = new ResponseDTO<>();
+        try {
+            Member member = customUserDetails.getUser();
 
-        Member member = new Member();
-        member.setId(memberId);
+            Vendor vendor = favoriteService.getVendorById(vendorId);
 
-        Vendor vendor = favoriteService.getVendorById(vendorId);
+            favoriteService.removeFavoriteVendor(member, vendor);
+            response.setStatusCode(HttpStatus.OK.value());
 
-        favoriteService.removeFavoriteVendor(member, vendor);
-        return ResponseEntity.ok("찜 목록에서 삭제되었습니다.");
+            return ResponseEntity.ok("찜 목록에서 삭제되었습니다.");
+        }catch(Exception e) {
+            response.setErrorMessage(e.getMessage());
+            response.setStatusCode(HttpStatus.BAD_REQUEST.value());
+            return ResponseEntity.badRequest().body(response);
+        }
     }
 
     //찜하기 많은 수 를 가진 가게를 탑 8 으로 표출할 수 있는 컨트롤러
@@ -70,25 +85,5 @@ public class FavoritePickController {
         return top8VendorDTOs;
     }
 
-
-//    //내 찜하기 리스트 조회하기
-    @GetMapping("/{memberId}")
-    public ResponseEntity<?> getMyFavoriteVendor(@PathVariable Long memberId,
-                                                 @AuthenticationPrincipal CustomUserDetails customUserDetails){
-        ResponseDTO<FavoriteVendorDTO> response = new ResponseDTO<>();
-
-        try{
-
-            List<FavoriteVendorDTO> myFavoriteVendor = favoriteService.getMyFavoriteVendor(memberId);
-            System.out.println(myFavoriteVendor);
-            response.setItemlist(myFavoriteVendor);
-            response.setStatusCode(HttpStatus.OK.value());
-            return  ResponseEntity.ok().body(myFavoriteVendor);
-        }catch(Exception e) {
-            response.setErrorMessage(e.getMessage());
-            response.setStatusCode(HttpStatus.BAD_REQUEST.value());
-            return ResponseEntity.badRequest().body(response);
-        }
-    }
 
 }

@@ -95,4 +95,22 @@ public class FavoriteServiceImpl implements FavoriteService {
         }
         return favoriteVendorDTOS;
     }
+
+
+//    @Transactional
+//    @Override
+//    public List<FavoriteVendorDTO> getMyFavoriteVendors(String username) {
+//        Member member = memberRepository.findByUsername(username)
+//                .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다."));
+//
+//        List<FavoriteVendor> favoriteVendors = favoriteVendorRepository.findByMember(member);
+//
+//        List<FavoriteVendorDTO> favoriteVendorDTOs = new ArrayList<>();
+//        for (FavoriteVendor favoriteVendor : favoriteVendors) {
+//            FavoriteVendorDTO favoriteVendorDTO = FavoriteVendorDTO.of(favoriteVendor);
+//            favoriteVendorDTOs.add(favoriteVendorDTO);
+//        }
+//
+//        return favoriteVendorDTOs;
+//    }
 }

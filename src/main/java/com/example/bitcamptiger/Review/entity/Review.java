@@ -49,7 +49,4 @@ public class Review {
     @Column
     private Integer disLikeCount = 0; // 싫어요 수
 
-
-
-
 }

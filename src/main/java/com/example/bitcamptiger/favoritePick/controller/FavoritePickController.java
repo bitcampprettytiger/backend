@@ -72,7 +72,7 @@ public class FavoritePickController {
     }
 
 
-    //내 찜하기 리스트 조회하기
+//    //내 찜하기 리스트 조회하기
     @GetMapping("/{memberId}")
     public ResponseEntity<?> getMyFavoriteVendor(@PathVariable Long memberId,
                                                  @AuthenticationPrincipal CustomUserDetails customUserDetails){

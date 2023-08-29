@@ -39,7 +39,7 @@ public class JwtTokenProvider {
 
     //    SCERET_KEY를 Key 객체로 변환
     Key key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
-    Key key2 = Keys.hmacShaKeyFor(RE_KEY.getBytes(StandardCharsets.UTF_8));
+//    Key key2 = Keys.hmacShaKeyFor(RE_KEY.getBytes(StandardCharsets.UTF_8));
 
 //   *
 //        사용자 정보를 받아서 JWT Token을 생성해주는 메소드
@@ -76,7 +76,7 @@ public class JwtTokenProvider {
 //       JWT Token 생성하여 반환
         return Jwts.builder()
 //                시그니쳐(서명) 부분에 들어갈 key값 지정
-                .signWith(key2, SignatureAlgorithm.HS256)
+                .signWith(key, SignatureAlgorithm.HS256)
 //               페이로드에 들어갈 내용
 //                토큰의 주인(sub)
                 .setSubject(member.getUsername())
@@ -108,9 +108,11 @@ public class JwtTokenProvider {
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
+
         System.out.println(claims.getSubject());
 
         String scope = claims.get("scope", String.class);
+
         if ("refresh".equals(scope)) {
             String username = claims.getSubject();
 //            UserDetails userDetails =
@@ -138,7 +140,8 @@ public class JwtTokenProvider {
 //
 //            throw new BaseException(BaseResponseStatus.FAIL_LOGIN_REFRESH);
 //            return null;
-        } else if ("access".equals(scope)) {
+        }
+        else if ("access".equals(scope)) {
             try {
                 // 검증
                 //refresh 토큰의 만료시간이 지나지 않았을 경우, 새로운 access 토큰을 생성합니다.
@@ -158,9 +161,9 @@ public class JwtTokenProvider {
                             .getBody();
 //            refreshclaim.getSubject();
                     if(refreshclaim.getExpiration().before(new Date())){
+                        System.out.println("refreshclaim.getExpiration().before(new Date())");
                         throw new BaseException(BaseResponseStatus.EMPTY_JWT);
                     }
-
                     String accessToken = recreationAccessToken(subject);
 
                     return accessToken;
@@ -168,6 +171,7 @@ public class JwtTokenProvider {
 
                 return claims.getSubject();
             }catch (Exception e) {
+                System.out.println("e.getMessage()"+e.getMessage());
                 //refresh 토큰이 만료되었을 경우, 로그인이 필요합니다.
                 return null;
             }

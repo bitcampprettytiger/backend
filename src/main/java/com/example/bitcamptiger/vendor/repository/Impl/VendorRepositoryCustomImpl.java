@@ -1,15 +1,22 @@
 package com.example.bitcamptiger.vendor.repository.Impl;
 
 import com.example.bitcamptiger.menu.entity.QMenu;
+import com.example.bitcamptiger.vendor.dto.NowLocationDto;
+import com.example.bitcamptiger.vendor.entity.QRandmark;
 import com.example.bitcamptiger.vendor.entity.QVendor;
 import com.example.bitcamptiger.vendor.entity.Vendor;
 import com.example.bitcamptiger.vendor.repository.VendorRepositoryCustom;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.types.dsl.NumberExpression;
+import com.querydsl.core.types.dsl.NumberTemplate;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 
 import java.util.List;
+
+import static com.example.bitcamptiger.vendor.entity.QVendor.vendor;
 
 public class VendorRepositoryCustomImpl implements VendorRepositoryCustom {
 
@@ -35,7 +42,7 @@ public class VendorRepositoryCustomImpl implements VendorRepositoryCustom {
         BooleanBuilder builder = new BooleanBuilder();
 
         if(address != null && !address.isEmpty()){
-            builder.or(QVendor.vendor.address.contains(address));
+            builder.or(vendor.address.contains(address));
         }
 
         if(menuName != null && !menuName.isEmpty()){
@@ -43,32 +50,32 @@ public class VendorRepositoryCustomImpl implements VendorRepositoryCustom {
         }
 
         if(vendorName != null && !vendorName.isEmpty()){
-            builder.or(QVendor.vendor.vendorName.contains(vendorName));
+            builder.or(vendor.vendorName.contains(vendorName));
         }
 
         //정렬 조건 설정
         OrderSpecifier<?> orderSpecifier;
         switch (orderBy){
             case "reviewCount" :
-                orderSpecifier = QVendor.vendor.reviewCount.desc();
+                orderSpecifier = vendor.reviewCount.desc();
                 break;
             case "favoriteCount" :
-                orderSpecifier = QVendor.vendor.favoriteVendors.size().desc();
+                orderSpecifier = vendor.favoriteVendors.size().desc();
                 break;
             default:
-                orderSpecifier = QVendor.vendor.vendorName.asc();
+                orderSpecifier = vendor.vendorName.asc();
                 break;
         }
 
 
         //selectFrom은 select와 from을 한 번에 같이 불러올 수 있음.
-        List<Vendor> content = queryFactory.selectFrom(QVendor.vendor)
+        List<Vendor> content = queryFactory.selectFrom(vendor)
                 // where절에서 ,로 이어진 부분은 and의 의미.
                 //  or 조건을 사용하려면 BooleanBuilder 클래스를 사용하여 동적 쿼리 생성하는 것이 좋음.
                 // 조건을 여러개를 걸 수 있다. 그러나 모든 조건을 써야하는 것은 아니고 null값으로 생략도 가능하다.
                 // 즉, 갖고 있는 값에 따라 조건을 다양하게 걸 수 있다. (동적 쿼리. 쿼리dsl)
 //                .leftJoin(QVendor.vendor, QMenu.menu.vendor)
-                .leftJoin(QMenu.menu).on(QVendor.vendor.id.eq(QMenu.menu.vendor.id))
+                .leftJoin(QMenu.menu).on(vendor.id.eq(QMenu.menu.vendor.id))
                 .where(builder)
                 .orderBy(orderSpecifier)
                 .fetch();
@@ -90,12 +97,12 @@ public class VendorRepositoryCustomImpl implements VendorRepositoryCustom {
         BooleanBuilder builder = new BooleanBuilder();
 
         if(vendorType != null && !vendorType.isEmpty()){
-            builder.and(QVendor.vendor.vendorType.contains(vendorType));
+            builder.and(vendor.vendorType.contains(vendorType));
         }
 
-        List<Vendor> content = queryFactory.selectFrom(QVendor.vendor)
+        List<Vendor> content = queryFactory.selectFrom(vendor)
                 .where(builder)
-                .orderBy(QVendor.vendor.vendorName.asc())
+                .orderBy(vendor.vendorName.asc())
                 .fetch();
         return content;
     }
@@ -112,10 +119,10 @@ public class VendorRepositoryCustomImpl implements VendorRepositoryCustom {
         //vedor라는 별칭 중복으로 인한 혼동을 방지하기 위해 별칭 설정
         //QVendor otherVendor = QVendor.vendor;
 
-        List<Vendor> content = queryFactory.selectFrom(QVendor.vendor)
-                .leftJoin(QVendor.vendor.menuList, QMenu.menu)
+        List<Vendor> content = queryFactory.selectFrom(vendor)
+                .leftJoin(vendor.menuList, QMenu.menu)
                 .where(builder)
-                .orderBy(QVendor.vendor.vendorName.asc())
+                .orderBy(vendor.vendorName.asc())
                 .fetch();
 
 
@@ -126,21 +133,32 @@ public class VendorRepositoryCustomImpl implements VendorRepositoryCustom {
     @Override
     public List<Vendor> findByReviewScore(Long reviewCount) {
 
-            List<Vendor> content = queryFactory.selectFrom(QVendor.vendor)
-                    .where(QVendor.vendor.reviewCount.gt(reviewCount))
-                    .orderBy(QVendor.vendor.averageReviewScore.desc())
+            List<Vendor> content = queryFactory.selectFrom(vendor)
+                    .where(vendor.reviewCount.gt(reviewCount))
+                    .orderBy(vendor.averageReviewScore.desc())
                     .fetch();
         
         return content;
     }
 
+    @Override
+    public List<Vendor> findByrandmart(NowLocationDto nowLocationDto) {
 
 
+        double vendorLatitude = Double.parseDouble(nowLocationDto.getLatitude()); // 위도를 가져옴
+        double vendorLongitude = Double.parseDouble(nowLocationDto.getLatitude()); // 경도를 가져옴
 
+        double maxDistance = 3000.0; // 3 키로미터
 
-
-
-
+        NumberTemplate<Double> doubleNumberTemplate = Expressions.numberTemplate(Double.class,
+                "ST_Distance_Sphere(POINT({0}, {1}), POINT({2}, {3}))",
+                vendorLatitude, vendorLongitude, vendor.x, vendor.y
+        );
+        return queryFactory.selectFrom(vendor)
+                .where(doubleNumberTemplate.loe(maxDistance))
+                .orderBy(doubleNumberTemplate.asc())
+                .fetch();
+    }
 
 
 }

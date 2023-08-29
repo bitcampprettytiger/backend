@@ -1,25 +1,35 @@
 package com.example.bitcamptiger.jwt;
 
 import com.example.bitcamptiger.common.exception.BaseException;
+import com.example.bitcamptiger.jwt.entity.RefreshToken;
+import com.example.bitcamptiger.jwt.repository.RefreshTokenRepository;
 import com.example.bitcamptiger.member.entity.Member;
+import com.example.bitcamptiger.member.service.Impl.UserDetailsServiceImpl;
 import com.example.bitcamptiger.response.BaseResponseStatus;
-import com.nimbusds.oauth2.sdk.token.RefreshToken;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import javax.persistence.EntityNotFoundException;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
+import java.util.Optional;
 
 @Component
+@RequiredArgsConstructor
 public class JwtTokenProvider {
+    
+    private final UserDetailsServiceImpl userDetailsServiceImpl;
 
+    private final RefreshTokenRepository refreshTokenRepository;
 
 //    Jwt Token의 signature의 유효성 검사에 사용될 키 값
 //    BASE64 인코딩된 값
@@ -37,7 +47,7 @@ public class JwtTokenProvider {
 //
     public String create(Member member){
 //        토큰 만료일 설정. 현재로부터 1일뒤로 설정
-        Date expireDate = Date.from(Instant.now().plus(1, ChronoUnit.MINUTES));
+        Date expireDate = Date.from(Instant.now().plus(1, ChronoUnit.SECONDS));
 
 //       JWT Token 생성하여 반환
         return Jwts.builder()
@@ -102,15 +112,60 @@ public class JwtTokenProvider {
 
         String scope = claims.get("scope", String.class);
         if ("refresh".equals(scope)) {
-            throw new BaseException(BaseResponseStatus.FAIL_LOGIN_REFRESH);
+            String username = claims.getSubject();
+//            UserDetails userDetails =
+//                    userDetailsServiceImpl.loadUserByUsername(username);
+            Optional<RefreshToken> refreshToken = refreshTokenRepository.findByName(username);
+            if(refreshToken.isEmpty()){
+                throw new BaseException(BaseResponseStatus.FAIL_LOGIN_REFRESH);
+            }
+            Claims refreshclaim
+                    = Jwts.parserBuilder()
+                    //                시그니쳐에 담겨있느 토큰의값이랑 시크릿 키랑 비교
+                    .setSigningKey(SECRET_KEY.getBytes())
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+//            refreshclaim.getSubject();
+            if(refreshclaim.getExpiration().before(new Date())){
+                throw new BaseException(BaseResponseStatus.EMPTY_JWT);
+            }
+            String accessToken = recreationAccessToken(username);
+
+            return accessToken;
+
+//           return refreshToken
+//
+//            throw new BaseException(BaseResponseStatus.FAIL_LOGIN_REFRESH);
+//            return null;
         } else if ("access".equals(scope)) {
             try {
                 // 검증
                 //refresh 토큰의 만료시간이 지나지 않았을 경우, 새로운 access 토큰을 생성합니다.
+                System.out.println("11111111111111111111"+claims.getExpiration().before(new Date()));
                 if (claims.getExpiration().before(new Date())) {
-                    System.out.println("여기가 들어가?");
-                    throw new BaseException(BaseResponseStatus.EMPTY_JWT);
+                    String subject = claims.getSubject();
+                    Optional<RefreshToken> refreshToken = refreshTokenRepository.findByName(subject);
+                    if(refreshToken.isEmpty()){
+                        throw new BaseException(BaseResponseStatus.FAIL_LOGIN_REFRESH);
+                    }
+                    Claims refreshclaim
+                            = Jwts.parserBuilder()
+                            //                시그니쳐에 담겨있느 토큰의값이랑 시크릿 키랑 비교
+                            .setSigningKey(SECRET_KEY.getBytes())
+                            .build()
+                            .parseClaimsJws(token)
+                            .getBody();
+//            refreshclaim.getSubject();
+                    if(refreshclaim.getExpiration().before(new Date())){
+                        throw new BaseException(BaseResponseStatus.EMPTY_JWT);
+                    }
+
+                    String accessToken = recreationAccessToken(subject);
+
+                    return accessToken;
                 }
+
                 return claims.getSubject();
             }catch (Exception e) {
                 //refresh 토큰이 만료되었을 경우, 로그인이 필요합니다.

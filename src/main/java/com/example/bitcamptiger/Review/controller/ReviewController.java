@@ -63,6 +63,7 @@ public class ReviewController {
         }
     }
 
+
     //리뷰 등록
     //multipart form 데이터 형식을 받기 위해 consumes 속성 지정
     @PostMapping(value = "/review", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

@@ -7,13 +7,10 @@ import com.example.bitcamptiger.cart.repository.CartItemRepository;
 import com.example.bitcamptiger.cart.repository.CartRepository;
 import com.example.bitcamptiger.cart.service.CartService;
 import com.example.bitcamptiger.member.entity.Member;
-import com.example.bitcamptiger.member.reposiitory.MemberRepository;
 import com.example.bitcamptiger.menu.dto.MenuImageDTO;
 import com.example.bitcamptiger.menu.entity.Menu;
 import com.example.bitcamptiger.menu.entity.MenuImage;
 import com.example.bitcamptiger.menu.repository.MenuImageRepository;
-import com.example.bitcamptiger.menu.repository.MenuRepository;
-import com.example.bitcamptiger.order.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -112,7 +109,7 @@ public class CartServiceImpl implements CartService {
 
     //장바구니 menu 전체 삭제
     @Override
-    public void deleteCart(CartItemDTO cartItemDTO) {
+    public void deleteCart(Member loggedInMember, CartItemDTO cartItemDTO) {
         List<CartItem> cartItemList = cartItemRepository.findByCartMember(cartItemDTO.getCart().getMember());
 
         cartItemRepository.deleteAll(cartItemList);

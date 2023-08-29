@@ -149,13 +149,13 @@ public class MyPageController {
 
     // 내 주문 내역을 조회하는 엔드포인트
     @GetMapping("/myOrders")
-    public ResponseEntity<?> getMyOrders(@AuthenticationPrincipal UserDetails userDetails) {
+    public ResponseEntity<?> getMyOrders(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
         // 응답을 담을 DTO 생성
         ResponseDTO<List<OrderDTO>> response = new ResponseDTO<>();
 
         try {
             // 로그인한 사용자의 주문 내역을 조회하고 DTO로 변환
-            List<OrderDTO> orderDTOList = myPageService.getMyOrderDTOs(userDetails.getUsername());
+            List<OrderDTO> orderDTOList = myPageService.getMyOrderDTOs(customUserDetails.getUsername());
 
             // 응답 데이터를 설정하고 OK 상태로 반환
             response.setItem(orderDTOList);
@@ -172,11 +172,11 @@ public class MyPageController {
 
     //내 리뷰 내역
     @GetMapping("/myReviews")
-    public ResponseEntity<?> getMyReviews(@AuthenticationPrincipal UserDetails userDetails) {
+    public ResponseEntity<?> getMyReviews(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
         ResponseDTO<List<Review>> response = new ResponseDTO<>();
 
         try {
-            List<Review> reviewList = myPageService.getMyReviews(userDetails.getUsername());
+            List<Review> reviewList = myPageService.getMyReviews(customUserDetails.getUsername());
 
             if (reviewList.isEmpty()) {
                 //리뷰 내역 없을 경우
@@ -199,13 +199,13 @@ public class MyPageController {
 
     //내 찜 가게 내역
     @GetMapping("/myFavoriteVendors")
-    public ResponseEntity<?> getMyFavoriteVendors(@AuthenticationPrincipal UserDetails userDetails) {
+    public ResponseEntity<?> getMyFavoriteVendors(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
         // 응답을 담을 DTO 생성
         ResponseDTO<List<FavoriteVendorDTO>> response = new ResponseDTO<>();
 
         try {
             // 로그인한 사용자의 찜한 가게 내역을 조회하고 DTO로 변환
-            List<FavoriteVendorDTO> favoriteVendorDTOList = myPageService.getMyFavoriteVendorDTOs(userDetails.getUsername());
+            List<FavoriteVendorDTO> favoriteVendorDTOList = myPageService.getMyFavoriteVendorDTOs(customUserDetails.getUsername());
 
             if (favoriteVendorDTOList.isEmpty()) {
                 // 찜한 가게 내역이 없는 경우에 대한 처리

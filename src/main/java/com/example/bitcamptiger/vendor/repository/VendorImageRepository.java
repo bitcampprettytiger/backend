@@ -14,4 +14,6 @@ public interface VendorImageRepository extends JpaRepository<VendorImage, Long> 
 
     List<VendorImage> findByVendorId(Long vendorId);
 
+
+
 }

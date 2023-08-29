@@ -31,7 +31,7 @@ public class ReviewDto {
     private Member member;
     private String reviewContent;
     private String reviewRegDate;
-    private int reviewScore;
+    private long reviewScore;
     private int likeCount;
     private int disLikeCount;
     private List<ReviewFile> reviewFileList;

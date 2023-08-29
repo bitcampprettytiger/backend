@@ -55,6 +55,7 @@ public class ReviewServiceImpl implements ReviewService {
         return reviewRepository.findById(id).get();
     }
 
+    //리뷰작성
     @Override
     @Transactional
     public Map<String, Object> processReview(ReviewDto reviewDto, MultipartHttpServletRequest mphsRequest) throws IOException {
@@ -204,7 +205,10 @@ public class ReviewServiceImpl implements ReviewService {
         ResponseDTO<Map<String, Object>> responseDTO = new ResponseDTO<>();
         List<ReviewFileDto> originFiles = parseOriginFiles(originFileList);
 
-        Review review = reviewDto.createReview();
+        Review review = getReview(reviewDto.getReviewId());
+
+        review.setReviewContent(reviewDto.getReviewContent());
+        review.setReviewScore(reviewDto.getReviewScore());
 
         List<ReviewFile> uFileList = processReviewFiles(reviewDto, originFiles, uploadFiles, changeFileList);
 
@@ -253,12 +257,15 @@ public class ReviewServiceImpl implements ReviewService {
             MultipartFile[] uploadFiles,
             MultipartFile[] changeFileList
     ) throws IOException {
+        //DB에서 수정, 삭제, 추가 될 파일 정보를 담는 리스트
         List<ReviewFile> uFileList = new ArrayList<>();
 
         Review review = reviewDto.createReview();
 
         if (originFiles != null) {
+            //파일처리
             for (ReviewFileDto originFile : originFiles) {
+                //수정되는 파일 처리
                 if ("U".equals(originFile.getReviewFileStatus())) {
                     for (MultipartFile changeFile : changeFileList) {
                         if (originFile.getNewFileName().equals(changeFile.getOriginalFilename())) {
@@ -269,6 +276,7 @@ public class ReviewServiceImpl implements ReviewService {
                             uFileList.add(reviewFile);
                         }
                     }
+                //삭제되는 파일처리
                 } else if ("D".equals(originFile.getReviewFileStatus())) {
                     ReviewFile reviewFile = new ReviewFile();
                     reviewFile.setReview(review);

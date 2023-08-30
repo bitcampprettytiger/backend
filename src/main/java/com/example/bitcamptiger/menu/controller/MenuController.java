@@ -141,9 +141,12 @@ public class MenuController {
     // 메뉴 삭제
 
     @DeleteMapping("/info/deleteMenu")
-    public ResponseEntity<?> deleteMenu(MenuDTO menuDTO){
+    public ResponseEntity<?> deleteMenu(@AuthenticationPrincipal CustomUserDetails customUserDetails,MenuDTO menuDTO){
         ResponseDTO<MenuDTO> response = new ResponseDTO<>();
         try{
+            // customUserDetails 객체에서 현재 사용자 정보를 가져와 활용할 수 있음
+            String username = customUserDetails.getUsername();
+
             menuService.deleteMenu(menuDTO);
 
             List<MenuDTO> menuDTOList = menuService.getMenuList(menuDTO.getVendor().getId());

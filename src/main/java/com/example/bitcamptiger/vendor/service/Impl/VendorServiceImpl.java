@@ -62,8 +62,7 @@ public class VendorServiceImpl implements VendorService {
 
 //        List<NowLocationDto> nowLocationDtoList = new ArrayList<>();
 //        List<Randmark> Randmark = nowLocationRepository.findAll();
-        if(nowLocationDto.getHardness()==null&&nowLocationDto.getLatitude()==null){
-
+        if(nowLocationDto.getHardness().equals(null)&&nowLocationDto.getLatitude().equals(null)){
             JSONObject geocoding = geoService.geocoding(nowLocationDto.getAddress());
             System.out.println(geocoding.toString());
             nowLocationDto.setHardness(geocoding.get("x").toString());
@@ -94,7 +93,7 @@ public class VendorServiceImpl implements VendorService {
 
         Optional<Randmark> byMapLocation = nowLocationRepository.findByMapLocation(nowLocationDto.getAddress());
 
-        if(nowLocationDto.getLatitude()==null&&nowLocationDto.getHardness()==null){
+        if(nowLocationDto.getLatitude().equals(null)&&nowLocationDto.getHardness().equals(null)){
             nowLocationDto.setLatitude(byMapLocation.orElseThrow(EntityNotFoundException::new).getLatitude());
             nowLocationDto.setHardness(byMapLocation.orElseThrow(EntityNotFoundException::new).getHardness());
         }
@@ -119,9 +118,9 @@ public class VendorServiceImpl implements VendorService {
         nowLocationDto.setHardness(geocoding.get("x").toString());
         nowLocationDto.setLatitude(geocoding.get("y").toString());
         Randmark createrandmark = nowLocationDto.createrandmark();
-        if(nowLocationDto.getName()!=null) {
+        if(!nowLocationDto.getName().equals(null)&&!nowLocationDto.getAddress().equals(null)) {
             createrandmark.setLocation(nowLocationDto.getName());
-            createrandmark.setMapLocation(nowLocationDto.getName());
+            createrandmark.setMapLocation(nowLocationDto.getAddress());
         }
         System.out.println(createrandmark);
         System.out.println(nowLocationDto);

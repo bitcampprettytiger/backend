@@ -71,6 +71,7 @@ public class VendorController {
 
     @PostMapping("/search10vendor")
     public BaseResponse<?> getVendorrandmark(@RequestBody NowLocationDto nowLocationDto) {
+        System.out.println(nowLocationDto);
         ResponseDTO<VendorDTO> response = new ResponseDTO<>();
         try{
             List<VendorDTO> vendorDTOList = vendorService.giveLandmarkvendor(nowLocationDto);

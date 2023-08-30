@@ -62,8 +62,7 @@ public class PaymentServiceImpl implements PaymentService {
         payment.setPayMethod(paymentDTO.getPayMethod());
         payment.setImpUid(paymentDTO.getImpUid());
         payment.setMerchantUid(paymentDTO.getMerchantUid());
-        payment.setPaidAmount(paymentDTO.getPaidAmount());
-        payment.setApplyNum(paymentDTO.getApplyNum());
+        payment.setAmount(paymentDTO.getAmount());
         payment.setPayDate(LocalDateTime.now());
 
         ///////////////////////// jwt //////////////////////////////////

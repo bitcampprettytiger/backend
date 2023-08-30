@@ -2,6 +2,7 @@ package com.example.bitcamptiger.cart.controller;
 
 import com.example.bitcamptiger.cart.dto.CartItemDTO;
 import com.example.bitcamptiger.cart.entity.Cart;
+import com.example.bitcamptiger.cart.entity.CartItem;
 import com.example.bitcamptiger.cart.repository.CartItemRepository;
 import com.example.bitcamptiger.cart.repository.CartRepository;
 import com.example.bitcamptiger.cart.service.CartService;
@@ -9,6 +10,7 @@ import com.example.bitcamptiger.dto.ResponseDTO;
 import com.example.bitcamptiger.member.entity.CustomUserDetails;
 import com.example.bitcamptiger.member.entity.Member;
 import com.example.bitcamptiger.member.reposiitory.MemberRepository;
+import com.example.bitcamptiger.menu.dto.MenuDTO;
 import com.example.bitcamptiger.menu.entity.Menu;
 import com.example.bitcamptiger.menu.repository.MenuRepository;
 import lombok.RequiredArgsConstructor;
@@ -89,13 +91,13 @@ public class CartController {
 
     //장바구니 menu 삭제
     @DeleteMapping("/deletecartitem")
-    public ResponseEntity<?> deleteCartItem(@AuthenticationPrincipal CustomUserDetails customUserDetails,@RequestBody CartItemDTO cartItemDTO){
-        System.out.println(cartItemDTO);
+    public ResponseEntity<?> deleteCartItem(@AuthenticationPrincipal CustomUserDetails customUserDetails,
+                                            @RequestParam Long cartId, @RequestParam Long menuId){
         ResponseDTO<CartItemDTO> response = new ResponseDTO<>();
 
         try{
             Member loggedInMember = customUserDetails.getUser(); // 로그인한 사용자 정보에 접근
-            cartService.deleteCartItem(cartItemDTO.getCart().getId(), cartItemDTO.getMenu().getId());
+            cartService.deleteCartItem(cartId, menuId);
 
             List<CartItemDTO> cartItemDTOList = cartService.getCartList(loggedInMember);
 

@@ -22,7 +22,7 @@ public class QPayments extends EntityPathBase<Payments> {
 
     public static final QPayments payments = new QPayments("payments");
 
-    public final StringPath applyNum = createString("applyNum");
+    public final NumberPath<Long> amount = createNumber("amount", Long.class);
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
@@ -32,9 +32,9 @@ public class QPayments extends EntityPathBase<Payments> {
 
     public final StringPath merchantUid = createString("merchantUid");
 
-    public final com.example.bitcamptiger.order.entity.QOrders orders;
+    public final StringPath name = createString("name");
 
-    public final NumberPath<Long> paidAmount = createNumber("paidAmount", Long.class);
+    public final com.example.bitcamptiger.order.entity.QOrders orders;
 
     public final DateTimePath<java.time.LocalDateTime> payDate = createDateTime("payDate", java.time.LocalDateTime.class);
 

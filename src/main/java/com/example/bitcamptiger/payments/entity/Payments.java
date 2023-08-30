@@ -38,11 +38,15 @@ public class Payments {
 
     //결제 금액
     @Column
-    private Long paidAmount;
+    private Long amount;
+
+    //결제처명
+    @Column
+    private String name;
 
     //카드 승인번호
-    @Column
-    private String applyNum;
+//    @Column
+//    private String applyNum;
 
     //결제 일시
     @Column

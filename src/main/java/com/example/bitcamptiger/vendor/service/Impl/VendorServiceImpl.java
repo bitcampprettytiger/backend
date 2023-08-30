@@ -90,6 +90,25 @@ public class VendorServiceImpl implements VendorService {
     }
 
     @Override
+    public List<VendorDTO> giveLandmarkvendor(NowLocationDto nowLocationDto) {
+
+        Optional<Randmark> byMapLocation = nowLocationRepository.findByMapLocation(nowLocationDto.getAddress());
+
+        if(nowLocationDto.getLatitude()==null&&nowLocationDto.getHardness()==null){
+            nowLocationDto.setLatitude(byMapLocation.orElseThrow(EntityNotFoundException::new).getLatitude());
+            nowLocationDto.setHardness(byMapLocation.orElseThrow(EntityNotFoundException::new).getHardness());
+        }
+        List<Vendor> byrandmart = vendorRepository.findByrandmart(nowLocationDto);
+        List<VendorDTO> vendorDTOList = new ArrayList<>();
+        for(Vendor vendor:byrandmart){
+            VendorDTO of = VendorDTO.of(vendor);
+            vendorDTOList.add(of);
+        }
+
+        return vendorDTOList;
+    }
+
+    @Override
     public NowLocationDto saverandmark(NowLocationDto nowLocationDto) {
 
 //        List<NowLocationDto> nowLocationDtoList = new ArrayList<>();

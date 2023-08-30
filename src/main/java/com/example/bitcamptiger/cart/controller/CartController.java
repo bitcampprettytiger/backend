@@ -35,6 +35,7 @@ public class CartController {
     public ResponseEntity<?> getMyCart(@AuthenticationPrincipal CustomUserDetails customUserDetails){
         ResponseDTO<CartItemDTO> response = new ResponseDTO<>();
         try{
+
             Member loggedInMember = customUserDetails.getUser(); // 로그인한 사용자 정보에 접근
             Cart cart = cartRepository.findByMemberId(loggedInMember.getId());
 
@@ -112,7 +113,7 @@ public class CartController {
 
     //장바구니 menu 전체 삭제
     @DeleteMapping("/info")
-    public ResponseEntity<?> deleteCart(@AuthenticationPrincipal CustomUserDetails customUserDetails,@RequestBody CartItemDTO cartItemDTO){
+    public ResponseEntity<?> deleteCart(@AuthenticationPrincipal CustomUserDetails customUserDetails, CartItemDTO cartItemDTO){
         ResponseDTO<CartItemDTO> response = new ResponseDTO<>();
 
         try{

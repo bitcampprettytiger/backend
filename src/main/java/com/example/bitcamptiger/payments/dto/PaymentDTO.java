@@ -27,10 +27,13 @@ public class PaymentDTO {
     private String merchantUid;
 
     //결제 금액
-    private Long paidAmount;
+    private Long amount;
+
+    //결제처명
+    private String name;
 
     //카드 승인번호
-    private String applyNum;
+//    private String applyNum;
 
     private LocalDateTime payDate;
 

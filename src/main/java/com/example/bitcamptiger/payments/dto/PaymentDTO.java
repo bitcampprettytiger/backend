@@ -1,6 +1,7 @@
 package com.example.bitcamptiger.payments.dto;
 
 import com.example.bitcamptiger.member.entity.Member;
+import com.example.bitcamptiger.order.dto.OrderDTO;
 import com.example.bitcamptiger.payments.entity.Payments;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -34,6 +35,7 @@ public class PaymentDTO {
     private LocalDateTime payDate;
 
     private String memberId;
+
 
 
 

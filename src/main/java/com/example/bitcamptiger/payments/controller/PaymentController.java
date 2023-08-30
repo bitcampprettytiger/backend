@@ -2,6 +2,8 @@ package com.example.bitcamptiger.payments.controller;
 
 import com.example.bitcamptiger.dto.ResponseDTO;
 import com.example.bitcamptiger.jwt.JwtTokenProvider;
+import com.example.bitcamptiger.member.entity.CustomUserDetails;
+import com.example.bitcamptiger.member.entity.Member;
 import com.example.bitcamptiger.payments.dto.PaymentDTO;
 import com.example.bitcamptiger.payments.entity.Payments;
 import com.example.bitcamptiger.payments.repository.PaymentRepository;
@@ -16,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
@@ -69,18 +72,14 @@ public class PaymentController {
 
     //결제하기
     @PostMapping("/addPayment")
-    public ResponseEntity<?> addPayment(@RequestHeader("Authorization") String token, @RequestBody PaymentDTO paymentDTO){
-//        System.out.println(token);
-
-//        if(StringUtils.hasText(token)&& token.startsWith("Bearer ")){
-////        실제 token의 값만 리턴
-//            token.substring(7);
-//        }
-//        System.out.println(token);
+    public ResponseEntity<?> addPayment(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody PaymentDTO paymentDTO){
 
         ResponseDTO<PaymentDTO> response = new ResponseDTO<>();
         try{
-            Payments payments = paymentService.addPayment(paymentDTO, token);
+            //CustomUserDetails로부터 회원 정보를 가져옴
+            Member member = customUserDetails.getUser();
+
+            Payments payments = paymentService.addPayment(paymentDTO, member);
 
             response.setItem(PaymentDTO.of(payments));
             response.setStatusCode(HttpStatus.OK.value());
@@ -97,10 +96,11 @@ public class PaymentController {
 
     //결제 내역 조회
     @GetMapping("/paymentList")
-    public ResponseEntity<?> paymentList(@RequestHeader("Authorization")String token){
+    public ResponseEntity<?> paymentList(@AuthenticationPrincipal CustomUserDetails customUserDetails){
         ResponseDTO<PaymentDTO> response = new ResponseDTO<>();
         try{
-            List<PaymentDTO> paymentDTOList = paymentService.getPaymentList(token);
+            Member member = customUserDetails.getUser();
+            List<PaymentDTO> paymentDTOList = paymentService.getPaymentList(member);
 
             response.setItemlist(paymentDTOList);
             response.setStatusCode(HttpStatus.OK.value());

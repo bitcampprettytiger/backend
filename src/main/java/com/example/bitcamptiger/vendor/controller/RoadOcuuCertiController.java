@@ -3,6 +3,9 @@ package com.example.bitcamptiger.vendor.controller;
 import com.example.bitcamptiger.member.entity.CustomUserDetails;
 import com.example.bitcamptiger.vendor.dto.RoadOcuuCertiData;
 import com.example.bitcamptiger.vendor.service.RoadOccuCertiService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -19,6 +22,11 @@ public class RoadOcuuCertiController {
     @Autowired
     private RoadOccuCertiService roadOccuCertiService;
 
+    @Operation(summary = "roadOcuuCertiDataTest", description = "도로점유허가증 데이터 조회")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "통과"),
+            @ApiResponse(responseCode = "400", description = "실패")
+    })
     @GetMapping("/test")
     public ResponseEntity<List<RoadOcuuCertiData>> fetchDataFromExternalApi(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
         // 외부 API에서 데이터 가져오기
@@ -33,6 +41,11 @@ public class RoadOcuuCertiController {
         }
     }
 
+    @Operation(summary = "checkRoadOcuuCertiData", description = "도로점유허가증 유효성 검사")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "통과"),
+            @ApiResponse(responseCode = "400", description = "실패")
+    })
     @GetMapping("/{perNo}/{rlAppiNm}")
     public ResponseEntity<?> authenticateAndReturnMessage(
             @AuthenticationPrincipal CustomUserDetails customUserDetails,

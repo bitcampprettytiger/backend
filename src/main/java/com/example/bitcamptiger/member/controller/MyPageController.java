@@ -41,6 +41,11 @@ public class MyPageController {
     private final PasswordEncoder passwordEncoder;
 
     //내 정보 조회
+    @Operation(summary = "myInfo", description = "회원 정보 조회")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "통과"),
+            @ApiResponse(responseCode = "400", description = "실패")
+    })
     @GetMapping("/myInfo")
     public ResponseEntity<?> getMyInfo(@AuthenticationPrincipal UserDetails userDetails) throws UsernameNotFoundException{
         ResponseDTO<MemberDTO> response = new ResponseDTO<>();
@@ -60,6 +65,11 @@ public class MyPageController {
     }
 
     //내 정보 수정
+    @Operation(summary = "changeInfo", description = "회원 정보 수정")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "통과"),
+            @ApiResponse(responseCode = "400", description = "실패")
+    })
     @PutMapping("/member/update")
     public ResponseEntity<?> updateMemberInfo(
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
@@ -127,6 +137,11 @@ public class MyPageController {
 
 
     //회원 탈퇴
+    @Operation(summary = "outOfMember", description = "회원 탈퇴")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "통과"),
+            @ApiResponse(responseCode = "400", description = "실패")
+    })
     @DeleteMapping("/outOfMember")
     public ResponseEntity<?> outOfMember(@AuthenticationPrincipal UserDetails userDetails) {
         ResponseDTO<String> response = new ResponseDTO<>();
@@ -148,6 +163,11 @@ public class MyPageController {
 
 
     // 내 주문 내역을 조회하는 엔드포인트
+    @Operation(summary = "myOrder", description = "회원 주문내역 조회")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "통과"),
+            @ApiResponse(responseCode = "400", description = "실패")
+    })
     @GetMapping("/myOrders")
     public ResponseEntity<?> getMyOrders(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
         // 응답을 담을 DTO 생성
@@ -171,6 +191,11 @@ public class MyPageController {
     }
 
     //내 리뷰 내역
+    @Operation(summary = "myReviews", description = "회원 리뷰내역 조회")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "통과"),
+            @ApiResponse(responseCode = "400", description = "실패")
+    })
     @GetMapping("/myReviews")
     public ResponseEntity<?> getMyReviews(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
         ResponseDTO<List<Review>> response = new ResponseDTO<>();
@@ -198,6 +223,11 @@ public class MyPageController {
     }
 
     //내 찜 가게 내역
+    @Operation(summary = "myFavoriteVendors", description = "회원 찜내역 조회")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "통과"),
+            @ApiResponse(responseCode = "400", description = "실패")
+    })
     @GetMapping("/myFavoriteVendors")
     public ResponseEntity<?> getMyFavoriteVendors(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
         // 응답을 담을 DTO 생성

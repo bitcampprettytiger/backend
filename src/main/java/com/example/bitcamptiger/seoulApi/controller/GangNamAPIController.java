@@ -5,6 +5,9 @@ import com.example.bitcamptiger.seoulApi.dto.GangNamAPIDTO;
 import com.example.bitcamptiger.seoulApi.entity.GangNamVenders;
 import com.example.bitcamptiger.seoulApi.service.GangNamAPIService;
 import com.example.bitcamptiger.seoulApi.service.userValidaionService.UserValiService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +28,11 @@ public class GangNamAPIController {
 
     }
 
+    @Operation(summary = "GangNamData", description = "강남구 노점 유효성 검사")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "통과"),
+            @ApiResponse(responseCode = "400", description = "실패")
+    })
     @GetMapping("/GangNamData")
     public ResponseEntity<List<GangNamAPIDTO>> getExtractGangNamData() {
         try {

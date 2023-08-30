@@ -5,6 +5,9 @@ import com.example.bitcamptiger.gyeongGiApi.dto.RowDTO;
 import com.example.bitcamptiger.gyeongGiApi.service.GyeongGiApiService;
 import com.example.bitcamptiger.gyeongGiApi.service.gyeonggiValidationService.GyeonggiValiService;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,14 +27,22 @@ public class GyeongGiController {
         this.userValiService = userValiService;
     }
 
-
+    @Operation(summary = "GyeonggiData", description = "경기도 노점 전체 데이터")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "통과"),
+            @ApiResponse(responseCode = "400", description = "실패")
+    })
     @GetMapping("/GyeonggiData")
     public List<RowDTO> getAllVendors() throws JsonProcessingException {
         ResponseDTO<List<Map<String, Object>>> responseDTO = new ResponseDTO<>();
         return gyeongGiApiService.getAllStreetVendorInfo();
     }
 
-
+    @Operation(summary = "validateGyeonggi", description = "경기도 노점 유효성 검사")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "통과"),
+            @ApiResponse(responseCode = "400", description = "실패")
+    })
     @PostMapping("validateGyeonggi")
     public ResponseEntity<?> validateGyeonggiInfo(@RequestBody RowDTO rowDTO){
         String prmsnNm = rowDTO.getPrmsnNm();

@@ -19,6 +19,7 @@ import com.example.bitcamptiger.vendor.entity.Vendor;
 import com.example.bitcamptiger.vendor.repository.VendorRepository;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -43,6 +44,8 @@ public class ReviewServiceImpl implements ReviewService {
     private final UserReviewActionRepository userReviewActionRepository;
     private final OrderRepository orderRepository;
 
+    private final EntityManager entityManager;
+
     @Value("${reviewFile.path}")
     String attachPath;
 
@@ -55,19 +58,21 @@ public class ReviewServiceImpl implements ReviewService {
         return reviewRepository.findById(id).get();
     }
 
-    //리뷰작성
     @Override
-    public Map<String, Object> processReview(ReviewDto reviewDto, MultipartHttpServletRequest mphsRequest) throws IOException {
-        Review review = createReviewEntity(reviewDto);
+    public Map<String, Object> processReview(ReviewDto reviewDto, MultipartHttpServletRequest mphsRequest, Member loggedInMember) throws IOException {
+        Review review = reviewDto.createReview();
 
         Vendor vendor = getVendorFromRepository(reviewDto.getVendor().getId());
-        Member member = getMemberFromRepository(reviewDto.getMember().getId());
-        Orders completedOrders = getCompletedOrders(member.getId(), review.getOrders().getId());
+        Member member = getMemberFromRepository(loggedInMember.getId());
+
+        review.setVendor(vendor);
+        review.setMember(member);
+
+        Review savedReview = reviewRepository.save(review);
 
         updateVendorReviewInfo(vendor, review);
 
-        List<ReviewFile> uploadFileList = saveReviewFiles(review, mphsRequest);
-
+        List<ReviewFile> uploadFileList = saveReviewFiles(savedReview, mphsRequest);
         if (reviewDto.isLiked()) {
             likeReview(member, review);
         }
@@ -75,24 +80,11 @@ public class ReviewServiceImpl implements ReviewService {
             disLikeReview(member, review);
         }
 
-        saveReviewAndFiles(review, uploadFileList);
-
         Map<String, Object> returnMap = new HashMap<>();
         returnMap.put("msg", "정상적으로 저장되었습니다.");
         returnMap.put("review", uploadFileList);
 
         return returnMap;
-    }
-
-    private Review createReviewEntity(ReviewDto reviewDto) {
-        Review review = reviewDto.createReview();
-        Vendor vendor = getVendorFromRepository(reviewDto.getVendor().getId());
-        Member member = getMemberFromRepository(reviewDto.getMember().getId());
-
-        review.setVendor(vendor);
-        review.setMember(member);
-
-        return review;
     }
 
     private Vendor getVendorFromRepository(Long vendorId) {
@@ -154,7 +146,7 @@ public class ReviewServiceImpl implements ReviewService {
                 if (!multipartFile.isEmpty()) {
                     ReviewFile reviewFile = new ReviewFile();
                     reviewFile = reviewFileUtils.parseFileInfo(multipartFile, attachPath);
-                    reviewFile.setReview(review);
+                    reviewFile.setReview(review); // 여기에서 Review를 설정합니다.
                     uploadFileList.add(reviewFile);
                 }
             }
@@ -165,20 +157,20 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     @Transactional
-    public void likeReview(Member member, Review review) {
-        updateUserReviewAction(member, review, true, false);
+    public void likeReview(Member loggedInMember, Review review) {
+        updateUserReviewAction(loggedInMember, review, true, false);
         review.setLikeCount(review.getLikeCount() + 1);
     }
 
     @Override
     @Transactional
-    public void disLikeReview(Member member, Review review) {
-        updateUserReviewAction(member, review, false, true);
+    public void disLikeReview(Member loggedInMember, Review review) {
+        updateUserReviewAction(loggedInMember, review, false, true);
         review.setDisLikeCount(review.getDisLikeCount() + 1);
     }
 
-    private void updateUserReviewAction(Member member, Review review, boolean liked, boolean disliked) {
-        Optional<UserReviewAction> userReviewAction = userReviewActionRepository.findByMemberAndReview(member, review);
+    private void updateUserReviewAction(Member loggedInMember, Review review, boolean liked, boolean disliked) {
+        Optional<UserReviewAction> userReviewAction = userReviewActionRepository.findByMemberAndReview(loggedInMember, review);
 
         if (userReviewAction.isPresent()) {
             UserReviewAction action = userReviewAction.get();
@@ -187,13 +179,14 @@ public class ReviewServiceImpl implements ReviewService {
             userReviewActionRepository.save(action);
         } else {
             UserReviewAction newAction = new UserReviewAction();
-            newAction.setMember(member);
+            newAction.setMember(loggedInMember);
             newAction.setReview(review);
             newAction.setLiked(liked);
             newAction.setDisliked(disliked);
             userReviewActionRepository.save(newAction);
         }
     }
+
 
     //리뷰 수정
     @Override

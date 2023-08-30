@@ -8,7 +8,10 @@ import com.example.bitcamptiger.menu.dto.MenuDTO;
 import com.example.bitcamptiger.menu.repository.MenuRepository;
 import com.example.bitcamptiger.menu.service.Impl.MenuServiceImpl;
 import com.example.bitcamptiger.menu.service.MenuService;
+import com.example.bitcamptiger.vendor.dto.VendorDTO;
 import com.example.bitcamptiger.vendor.dto.VendorMenuDto;
+import com.example.bitcamptiger.vendor.entity.Vendor;
+import com.example.bitcamptiger.vendor.service.VendorService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +31,7 @@ public class MenuController {
 
     public final MenuRepository menuRepository;
     public final MenuServiceImpl menuServiceImpl;
+    public final VendorService vendorService;
 
 
 
@@ -55,14 +59,19 @@ public class MenuController {
     //메뉴 등록
 
     @PostMapping("/info/insertMenu")
-    public ResponseEntity<?> insertMenu(@AuthenticationPrincipal CustomUserDetails customUserDetails, MenuDTO menuDTO, @RequestParam(required = false, value = "file") MultipartFile[] uploadFiles){
+    public ResponseEntity<?> insertMenu(@AuthenticationPrincipal CustomUserDetails customUserDetails, MenuDTO menuDTO, @RequestParam(required = false, value = "file") MultipartFile[] uploadFiles, Long vendorId){
         ResponseDTO<MenuDTO> response = new ResponseDTO<>();
 
         try{
+
+            Vendor vendor = vendorService.getVendorDetail(vendorId).createVendor();
+
+            menuDTO.setVendor(vendor);
             // 로그인한 사용자의 정보에 접근
             Member loggedInMember = customUserDetails.getUser();
 
             menuService.insertMenu(loggedInMember,menuDTO, uploadFiles);
+
 
             List<MenuDTO> menuDTOList = menuService.getMenuList(menuDTO.getVendor().getId());
 
@@ -71,6 +80,7 @@ public class MenuController {
 
             return ResponseEntity.ok().body(response);
         }catch(Exception e) {
+            System.out.println(e.getMessage()+"============");
             response.setErrorMessage(e.getMessage());
             response.setStatusCode(HttpStatus.BAD_REQUEST.value());
             return ResponseEntity.badRequest().body(response);

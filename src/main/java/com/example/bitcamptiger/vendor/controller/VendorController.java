@@ -266,6 +266,24 @@ public class VendorController {
     }
 
 
+    //토큰 안의 사용자 id에 해당되는 vendor 정보 가져오기
+    @GetMapping("/getVendorInfo")
+    public ResponseEntity<?> getVendorInfo(@AuthenticationPrincipal CustomUserDetails customUserDetails){
+        ResponseDTO<VendorDTO> response = new ResponseDTO();
+        try{
+            Member member = customUserDetails.getUser();
+            Vendor vendor = vendorRepository.findByMember(member);
+            response.setItem(VendorDTO.of(vendor));
+            response.setStatusCode(HttpStatus.OK.value());
+
+            return ResponseEntity.ok().body(response);
+        }catch(Exception e) {
+            response.setErrorMessage(e.getMessage());
+            response.setStatusCode(HttpStatus.BAD_REQUEST.value());
+            return ResponseEntity.badRequest().body(response);
+        }
+    }
+
     //신규 가게 등록
 
     @Operation(summary = "postinfo", description = "가게 등록하기")

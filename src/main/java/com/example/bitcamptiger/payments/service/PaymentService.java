@@ -11,5 +11,5 @@ public interface PaymentService {
 
     Payments addPayment(PaymentDTO paymentDTO, Member member);
 
-    List<PaymentDTO> getPaymentList(String token);
+    List<PaymentDTO> getPaymentList(Member member);
 }

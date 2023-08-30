@@ -1,5 +1,6 @@
 package com.example.bitcamptiger.vendor.repository;
 
+import com.example.bitcamptiger.member.entity.Member;
 import com.example.bitcamptiger.vendor.entity.Vendor;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -19,4 +20,6 @@ public interface VendorRepository extends JpaRepository<Vendor, Long>,
     @Query("SELECT v.address FROM Vendor v")
     List<String> findAllAddresses();
 
+
+    Vendor findByMember(Member member);
 }

@@ -96,10 +96,11 @@ public class PaymentController {
 
     //결제 내역 조회
     @GetMapping("/paymentList")
-    public ResponseEntity<?> paymentList(@RequestHeader("Authorization")String token){
+    public ResponseEntity<?> paymentList(@AuthenticationPrincipal CustomUserDetails customUserDetails){
         ResponseDTO<PaymentDTO> response = new ResponseDTO<>();
         try{
-            List<PaymentDTO> paymentDTOList = paymentService.getPaymentList(token);
+            Member member = customUserDetails.getUser();
+            List<PaymentDTO> paymentDTOList = paymentService.getPaymentList(member);
 
             response.setItemlist(paymentDTOList);
             response.setStatusCode(HttpStatus.OK.value());

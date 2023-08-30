@@ -52,6 +52,7 @@ public class PaymentServiceImpl implements PaymentService {
 
         //결제 전에 주문을 생성하고 예약 상태로 설정
         OrderDTO orderDTO = new OrderDTO();
+        orderDTO.setMember(member);
         Orders orders = orderService.createOrder(orderDTO);
         orders.setOrderStatus(OrderStatus.RESERVATION);
         orderRepository.save(orders);
@@ -67,6 +68,8 @@ public class PaymentServiceImpl implements PaymentService {
 
         ///////////////////////// jwt //////////////////////////////////
         payment.setMember(member);
+
+        paymentRepository.save(payment);
 
         //결제 서비스를 호출해서 결제가 진행된 결과
         boolean isPaymentSuccessful = true;
@@ -86,18 +89,18 @@ public class PaymentServiceImpl implements PaymentService {
 
     //결제 내역 조회
     @Override
-    public List<PaymentDTO> getPaymentList(String token) {
+    public List<PaymentDTO> getPaymentList(Member member) {
 
-        String newtoken = new String();
-        if(StringUtils.hasText(token)&& token.startsWith("Bearer ")){
-            //실제 token의 값만 리턴
-            newtoken = token.substring(7);
-        }
+//        String newtoken = new String();
+//        if(StringUtils.hasText(token)&& token.startsWith("Bearer ")){
+//            //실제 token의 값만 리턴
+//            newtoken = token.substring(7);
+//        }
 
         //jwt에서 사용자 추출
-        String userName = jwtTokenProvider.validateAndGetUsername(newtoken);
+//        String userName = jwtTokenProvider.validateAndGetUsername(newtoken);
 
-        Member member = memberRepository.findByUsername(userName).get();
+//        Member member = memberRepository.findByUsername(userName).get();
 
         //해당 멤버의 결제 내역 조회
         List<Payments> paymentsList = paymentRepository.findByMemberIdOrderByPayDateDesc(member.getId());

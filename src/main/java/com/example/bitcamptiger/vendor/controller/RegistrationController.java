@@ -8,6 +8,9 @@ import com.example.bitcamptiger.vendor.dto.VendorValidationDto;
 import com.example.bitcamptiger.vendor.service.VendorAPIService;
 import com.example.bitcamptiger.vendor.service.VendorValidationService;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONException;
@@ -26,7 +29,11 @@ public class RegistrationController {
 //    private final VendorValidationService vendorValidationService;
 
 
-
+    @Operation(summary = "checkBusinessNumber", description = "사업자등록번호 유효성 검사")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "통과"),
+            @ApiResponse(responseCode = "400", description = "실패")
+    })
     //사업자 번호조회 및 유효한 사업자인지 여부에 대한 정보
     @GetMapping("/checkBusiness/{name}")
 

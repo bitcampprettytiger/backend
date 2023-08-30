@@ -3,6 +3,9 @@ package com.example.bitcamptiger.seoulApi.controller;
 import com.example.bitcamptiger.seoulApi.dto.DongdaemunAPIDTO;
 import com.example.bitcamptiger.seoulApi.service.DongdaemunAPIService;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +22,11 @@ public class DongdaemunAPIController {
     @Autowired
     private DongdaemunAPIService dongdaemunAPIService;
 
+    @Operation(summary = "DongdaemunData", description = "동대문 노점 유효성 검사")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "통과"),
+            @ApiResponse(responseCode = "400", description = "실패")
+    })
     @GetMapping("/DongdaemunData")
     public  ResponseEntity<List<DongdaemunAPIDTO>> getExtractDongdaemunData() throws JsonProcessingException {
         try {

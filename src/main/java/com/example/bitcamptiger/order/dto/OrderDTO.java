@@ -20,6 +20,7 @@ import java.util.List;
 @Builder
 public class OrderDTO {
 
+    @JsonIgnore
     private Member member;
 
     private String orderDate;   //주문한 날짜

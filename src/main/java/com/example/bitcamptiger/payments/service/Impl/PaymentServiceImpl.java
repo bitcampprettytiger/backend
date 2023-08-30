@@ -71,16 +71,16 @@ public class PaymentServiceImpl implements PaymentService {
         paymentRepository.save(payment);
 
         //결제 서비스를 호출해서 결제가 진행된 결과
-        boolean isPaymentSuccessful = true;
-
-        if(isPaymentSuccessful) {
-            orders.setPayments(payment);
-            orders.setOrderStatus(OrderStatus.CONFIRMED);
-            orderRepository.save(orders);
-        }else{
-            orders.setOrderStatus(OrderStatus.CANCELED);
-            orderRepository.save(orders);
-        }
+//        boolean isPaymentSuccessful = true;
+//
+//        if(isPaymentSuccessful) {
+//            orders.setPayments(payment);
+//            orders.setOrderStatus(OrderStatus.CONFIRMED);
+//            orderRepository.save(orders);
+//        }else{
+//            orders.setOrderStatus(OrderStatus.CANCELED);
+//            orderRepository.save(orders);
+//        }
 
         return payment;
 

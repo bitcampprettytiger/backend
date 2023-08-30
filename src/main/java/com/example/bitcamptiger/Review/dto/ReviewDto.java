@@ -6,11 +6,11 @@ import com.example.bitcamptiger.member.entity.Member;
 import com.example.bitcamptiger.order.entity.Orders;
 import com.example.bitcamptiger.vendor.dto.VendorDTO;
 import com.example.bitcamptiger.vendor.entity.Vendor;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import net.minidev.json.annotate.JsonIgnore;
 import org.modelmapper.ModelMapper;
 
 import java.time.LocalDateTime;
@@ -24,9 +24,9 @@ import java.util.List;
 public class ReviewDto {
 
     private Long reviewId;
-    @JsonIgnore
     private Long id;
     private Orders orders;
+    @JsonIgnore
     private Vendor vendor;
     private Member member;
     private String reviewContent;

@@ -312,9 +312,9 @@ public class VendorController {
             @ApiResponse(responseCode = "400", description = "실패")
     })
     @PostMapping("/info")
-    public ResponseEntity<?> insertVendorInfo(VendorDTO vendorDTO, @RequestParam(required = false, value = "file")MultipartFile[] uploadFiles,
+    public ResponseEntity<?> insertVendorInfo(VendorDTO vendorDTO,
+                                              @RequestParam(required = false, value = "file")MultipartFile[] uploadFiles,
                                               @AuthenticationPrincipal CustomUserDetails customUserDetails){
-        System.out.println("info!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         System.out.println(vendorDTO);
         System.out.println(uploadFiles.length);
 //        vendorDTO null 일때 vaildation
@@ -324,7 +324,9 @@ public class VendorController {
 
         ResponseDTO<VendorDTO> response = new ResponseDTO<>();
         try{
-            vendorService.insertVendor(vendorDTO, uploadFiles);
+
+            Member member = customUserDetails.getUser();
+            vendorService.insertVendor(member, vendorDTO, uploadFiles);
             List<VendorDTO> vendorDTOList = vendorService.getVendorList();
             response.setItemlist(vendorDTOList);
             response.setStatusCode(HttpStatus.OK.value());
@@ -345,7 +347,9 @@ public class VendorController {
         ResponseDTO<VendorDTO> response = new ResponseDTO<>();
 
         try{
-            vendorService.updateVendor(vendorDTO, uploadFiles);
+            Member member = customUserDetails.getUser();
+
+            vendorService.updateVendor(member, vendorDTO, uploadFiles);
 
             List<VendorDTO> vendorDTOList = vendorService.getVendorList();
 
@@ -365,12 +369,13 @@ public class VendorController {
 
     //가게 정보 삭제
     @DeleteMapping("/info")
-    public ResponseEntity<?> deleteVendorInfo(@RequestBody VendorDTO vendorDTO,
+    public ResponseEntity<?> deleteVendorInfo(VendorDTO vendorDTO,
                                               @AuthenticationPrincipal CustomUserDetails customUserDetails){
         ResponseDTO<VendorDTO> response = new ResponseDTO<>();
 
         try{
-            vendorService.deleteVendor(vendorDTO);
+            Member member = customUserDetails.getUser();
+            vendorService.deleteVendor(member, vendorDTO);
 
             List<VendorDTO> vendorDTOList = vendorService.getVendorList();
 

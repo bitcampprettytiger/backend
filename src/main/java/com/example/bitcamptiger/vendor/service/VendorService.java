@@ -1,5 +1,6 @@
 package com.example.bitcamptiger.vendor.service;
 
+import com.example.bitcamptiger.member.entity.Member;
 import com.example.bitcamptiger.vendor.dto.LocationDto;
 import com.example.bitcamptiger.vendor.dto.NowLocationDto;
 import com.example.bitcamptiger.vendor.dto.VendorDTO;
@@ -35,14 +36,14 @@ public interface VendorService {
     List<VendorDTO> getVendorByMenuType(String menuType);
 
     // 가게 정보 추가
-    void insertVendor(VendorDTO vendorDTO, MultipartFile[] uploadFiles) throws IOException;
+    void insertVendor(Member member, VendorDTO vendorDTO, MultipartFile[] uploadFiles) throws IOException;
 
     // 가게 정보 업데이트
-    void updateVendor(VendorDTO vendorDTO, MultipartFile[] uploadFiles) throws IOException;
+    void updateVendor(Member member, VendorDTO vendorDTO, MultipartFile[] uploadFiles) throws IOException;
 
 
     // 가게 정보 삭제
-    void deleteVendor(VendorDTO vendorDTO);
+    void deleteVendor(Member member, VendorDTO vendorDTO);
 
 
     // 특정 가게의 상세 정보 가져오기

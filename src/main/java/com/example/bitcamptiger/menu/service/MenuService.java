@@ -12,9 +12,9 @@ public interface MenuService {
 
     void insertMenu(Member member, MenuDTO menuDTO, MultipartFile[] uploadFiles) throws IOException;
 
-    void updateMenu(Member loggedInMember, MenuDTO menuDTO, MultipartFile[] uploadFiles) throws IOException;
+    void updateMenu(Member member, MenuDTO menuDTO, MultipartFile[] uploadFiles) throws IOException;
 
-    void deleteMenu(MenuDTO menuDTO);
+    void deleteMenu(Member member, MenuDTO menuDTO);
 
     List<String> getRecommendedMenuTypes();
 }

@@ -11,6 +11,7 @@ import com.example.bitcamptiger.menu.service.MenuService;
 import com.example.bitcamptiger.vendor.dto.VendorDTO;
 import com.example.bitcamptiger.vendor.dto.VendorMenuDto;
 import com.example.bitcamptiger.vendor.entity.Vendor;
+import com.example.bitcamptiger.vendor.repository.VendorRepository;
 import com.example.bitcamptiger.vendor.service.VendorService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -32,6 +33,7 @@ public class MenuController {
     public final MenuRepository menuRepository;
     public final MenuServiceImpl menuServiceImpl;
     public final VendorService vendorService;
+    public final VendorRepository vendorRepository;
 
 
 
@@ -59,19 +61,17 @@ public class MenuController {
     //메뉴 등록
 
     @PostMapping("/info/insertMenu")
-    public ResponseEntity<?> insertMenu(@AuthenticationPrincipal CustomUserDetails customUserDetails, MenuDTO menuDTO, @RequestParam(required = false, value = "file") MultipartFile[] uploadFiles, Long vendorId){
+    public ResponseEntity<?> insertMenu(@AuthenticationPrincipal CustomUserDetails customUserDetails,
+                                        MenuDTO menuDTO,
+                                        @RequestParam(required = false, value = "file") MultipartFile[] uploadFiles, Long vendorId){
         ResponseDTO<MenuDTO> response = new ResponseDTO<>();
 
         try{
 
-            Vendor vendor = vendorService.getVendorDetail(vendorId).createVendor();
-
-            menuDTO.setVendor(vendor);
             // 로그인한 사용자의 정보에 접근
-            Member loggedInMember = customUserDetails.getUser();
+            Member member = customUserDetails.getUser();
 
-            menuService.insertMenu(loggedInMember,menuDTO, uploadFiles);
-
+            menuService.insertMenu(member, menuDTO, uploadFiles);
 
             List<MenuDTO> menuDTOList = menuService.getMenuList(menuDTO.getVendor().getId());
 
@@ -113,16 +113,18 @@ public class MenuController {
     // 메뉴 수정
     @PutMapping("/info/changeMenu")
     public ResponseEntity<?> updateMenu(
-            @AuthenticationPrincipal CustomUserDetails customUserDetails,MenuDTO menuDTO,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            MenuDTO menuDTO,
             @RequestParam(required = false, value = "file") MultipartFile[] uploadFiles){
 
         ResponseDTO<MenuDTO> response = new ResponseDTO<>();
         try{
+
             // 로그인한 사용자의 정보에 접근
-            Member loggedInMember = customUserDetails.getUser();
+            Member member = customUserDetails.getUser();
 
-            menuService.updateMenu(loggedInMember, menuDTO, uploadFiles);
-
+            menuService.updateMenu(member, menuDTO, uploadFiles);
+            System.out.println("!!!!!!!!!!!!!!!!");
             List<MenuDTO> menuDTOList = menuService.getMenuList(menuDTO.getVendor().getId());
 
             response.setItemlist(menuDTOList);

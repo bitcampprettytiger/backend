@@ -18,6 +18,7 @@ public class FavoriteVendorDTO {
     private Long id;
     private Member member;
     private Vendor vendor;
+    private int totalCount;
 
     private static ModelMapper modelMapper = new ModelMapper();
 

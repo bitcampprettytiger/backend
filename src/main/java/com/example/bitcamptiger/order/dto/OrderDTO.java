@@ -28,6 +28,8 @@ public class OrderDTO {
     private int totalQuantity; // 총 주문메뉴 수량
     private int totalPrice; // 총 결제 금액
 
+    private int orderCount;
+
     private String orderStatus;
 
     private List<OrderMenuDTO> orderedMenuDTOList = new ArrayList<>();

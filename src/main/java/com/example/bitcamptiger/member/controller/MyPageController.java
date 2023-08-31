@@ -1,5 +1,7 @@
 package com.example.bitcamptiger.member.controller;
 
+import com.example.bitcamptiger.Review.dto.MyReviewResponse;
+import com.example.bitcamptiger.Review.dto.ReviewDto;
 import com.example.bitcamptiger.Review.entity.Review;
 import com.example.bitcamptiger.dto.ResponseDTO;
 import com.example.bitcamptiger.favoritePick.DTO.FavoriteVendorDTO;
@@ -13,6 +15,8 @@ import com.example.bitcamptiger.order.dto.OrderDTO;
 import com.example.bitcamptiger.order.dto.OrderMenuDTO;
 import com.example.bitcamptiger.order.entity.OrderMenu;
 import com.example.bitcamptiger.order.entity.Orders;
+import com.example.bitcamptiger.payments.dto.PaymentDTO;
+import com.example.bitcamptiger.payments.service.PaymentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -39,6 +43,7 @@ public class MyPageController {
     public final MyPageService myPageService;
     public final FavoriteService favoriteService;
     private final PasswordEncoder passwordEncoder;
+    private final PaymentService paymentService;
 
     //내 정보 조회
     @Operation(summary = "myInfo", description = "회원 정보 조회")
@@ -161,67 +166,119 @@ public class MyPageController {
         }
     }
 
-
     // 내 주문 내역을 조회하는 엔드포인트
-    @Operation(summary = "myOrder", description = "회원 주문내역 조회")
+    @Operation(summary = "myOrders", description = "회원 주문 내역 조회")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "통과"),
             @ApiResponse(responseCode = "400", description = "실패")
     })
     @GetMapping("/myOrders")
     public ResponseEntity<?> getMyOrders(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
-        // 응답을 담을 DTO 생성
         ResponseDTO<List<OrderDTO>> response = new ResponseDTO<>();
-
         try {
-            // 로그인한 사용자의 주문 내역을 조회하고 DTO로 변환
-            List<OrderDTO> orderDTOList = myPageService.getMyOrderDTOs(customUserDetails.getUsername());
+            Member member = customUserDetails.getUser();
+            List<OrderDTO> orderDTOList = myPageService.getMyOrderDTOs(member.getUsername());
 
-            // 응답 데이터를 설정하고 OK 상태로 반환
-            response.setItem(orderDTOList);
-            response.setStatusCode(HttpStatus.OK.value());
+            if (orderDTOList.isEmpty()) {
+                // 주문 내역이 없는 경우
+                response.setErrorMessage("주문 내역이 없습니다.");
+                response.setStatusCode(HttpStatus.NOT_FOUND.value());
+            } else {
+                int totalOrderCount = orderDTOList.size();
+                // 각 주문 내역 DTO에 전체 주문 내역 개수를 설정
+                for (OrderDTO orderDTO : orderDTOList) {
+                    orderDTO.setOrderCount(totalOrderCount);
+                }
+
+                response.setItem(orderDTOList);
+                response.setMessage("총 " + totalOrderCount + "개의 주문 내역이 있습니다.");
+                response.setStatusCode(HttpStatus.OK.value());
+            }
 
             return ResponseEntity.ok().body(response);
         } catch (Exception e) {
-            // 오류 발생 시 에러 메시지를 설정하고 BAD_REQUEST 상태로 반환
-            response.setErrorMessage("주문 내역 조회 중 오류가 발생했습니다.");
+            response.setErrorMessage(e.getMessage());
             response.setStatusCode(HttpStatus.BAD_REQUEST.value());
             return ResponseEntity.badRequest().body(response);
         }
     }
 
-    //내 리뷰 내역
+
+    // 내 결제 내역을 조회하는 엔드포인트
+    @Operation(summary = "myPaymentList", description = "회원 결제내역 조회")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "통과"),
+            @ApiResponse(responseCode = "400", description = "실패")
+    })
+    @GetMapping("/myPaymentList")
+    public ResponseEntity<?> getMyPaymentList(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        ResponseDTO<List<PaymentDTO>> response = new ResponseDTO<>();
+        try {
+            // 로그인한 사용자의 정보를 가져옴
+            Member member = customUserDetails.getUser();
+
+            // 사용자의 결제 내역을 조회하고 DTO로 변환
+            List<PaymentDTO> paymentDTOList = paymentService.getPaymentList(member);
+
+            if (paymentDTOList.isEmpty()) {
+                // 결제 내역이 없는 경우
+                response.setErrorMessage("결제 내역이 없습니다.");
+                response.setStatusCode(HttpStatus.NOT_FOUND.value());
+            } else {
+                // 결제 내역이 있는 경우
+                int totalPaymentCount = paymentDTOList.size();
+
+                // 결제 내역 개수를 각 결제 내역 DTO에 추가
+                for (PaymentDTO paymentDTO : paymentDTOList) {
+                    paymentDTO.setPaymentCount(totalPaymentCount);
+                }
+
+                // 결제 내역 개수를 응답 DTO에 추가
+                response.setItem(paymentDTOList);
+                response.setMessage("총 " + totalPaymentCount + "개의 결제 내역이 있습니다.");
+                response.setStatusCode(HttpStatus.OK.value());
+            }
+
+            return ResponseEntity.ok().body(response);
+        } catch (Exception e) {
+            response.setErrorMessage(e.getMessage());
+            response.setStatusCode(HttpStatus.BAD_REQUEST.value());
+            return ResponseEntity.badRequest().body(response);
+        }
+    }
+
+
     @Operation(summary = "myReviews", description = "회원 리뷰내역 조회")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "통과"),
             @ApiResponse(responseCode = "400", description = "실패")
     })
     @GetMapping("/myReviews")
-    public ResponseEntity<?> getMyReviews(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
-        ResponseDTO<List<Review>> response = new ResponseDTO<>();
+    public ResponseEntity<ResponseDTO<MyReviewResponse>> getMyReviews(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        ResponseDTO<MyReviewResponse> response = new ResponseDTO<>();
 
         try {
-            List<Review> reviewList = myPageService.getMyReviews(customUserDetails.getUsername());
+            List<ReviewDto> reviewList = myPageService.getMyReviewDTOs(customUserDetails.getUsername());
+            int numberOfReviews = reviewList.size();
 
             if (reviewList.isEmpty()) {
-                //리뷰 내역 없을 경우
+                // 리뷰 내역 없을 경우
                 response.setErrorMessage("리뷰 내역이 존재하지 않습니다.");
                 response.setStatusCode(HttpStatus.NOT_FOUND.value());
             } else {
-                //리뷰 내역 있어야 반환 ok
-                response.setItem(reviewList);
+                MyReviewResponse myReviewResponse = new MyReviewResponse(reviewList, numberOfReviews);
+                response.setItem(myReviewResponse);
                 response.setStatusCode(HttpStatus.OK.value());
             }
 
             return ResponseEntity.ok().body(response);
         } catch (Exception e) {
-            //조회 실패
+            // 조회 실패
             response.setErrorMessage("리뷰 내역 조회 중 오류가 발생했습니다.");
             response.setStatusCode(HttpStatus.BAD_REQUEST.value());
             return ResponseEntity.badRequest().body(response);
         }
     }
-
     //내 찜 가게 내역
     @Operation(summary = "myFavoriteVendors", description = "회원 찜내역 조회")
     @ApiResponses({

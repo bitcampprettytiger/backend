@@ -17,6 +17,7 @@ import com.example.bitcamptiger.order.entity.OrderMenu;
 import com.example.bitcamptiger.order.entity.Orders;
 import com.example.bitcamptiger.payments.dto.PaymentDTO;
 import com.example.bitcamptiger.payments.service.PaymentService;
+import com.example.bitcamptiger.vendor.entity.Vendor;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -185,9 +186,13 @@ public class MyPageController {
                 response.setStatusCode(HttpStatus.NOT_FOUND.value());
             } else {
                 int totalOrderCount = orderDTOList.size();
-                // 각 주문 내역 DTO에 전체 주문 내역 개수를 설정
+                // 각 주문 내역 DTO에 전체 주문 내역 개수를 설정 및 vendorName을 추가
                 for (OrderDTO orderDTO : orderDTOList) {
                     orderDTO.setOrderCount(totalOrderCount);
+                    Vendor vendor = orderDTO.getVendor(); // 주문한 가게 엔티티 가져오기
+                    if (vendor != null) {
+                        orderDTO.setVendorName(vendor.getVendorName()); // vendorName 설정
+                    }
                 }
 
                 response.setItem(orderDTOList);
@@ -211,14 +216,14 @@ public class MyPageController {
             @ApiResponse(responseCode = "400", description = "실패")
     })
     @GetMapping("/myPaymentList")
-    public ResponseEntity<?> getMyPaymentList(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+    public ResponseEntity<ResponseDTO<List<PaymentDTO>>> getMyPaymentList(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
         ResponseDTO<List<PaymentDTO>> response = new ResponseDTO<>();
         try {
             // 로그인한 사용자의 정보를 가져옴
             Member member = customUserDetails.getUser();
 
             // 사용자의 결제 내역을 조회하고 DTO로 변환
-            List<PaymentDTO> paymentDTOList = paymentService.getPaymentList(member);
+            List<PaymentDTO> paymentDTOList = myPageService.getMyPaymentDTOs(member.getUsername());
 
             if (paymentDTOList.isEmpty()) {
                 // 결제 내역이 없는 경우
@@ -231,6 +236,11 @@ public class MyPageController {
                 // 결제 내역 개수를 각 결제 내역 DTO에 추가
                 for (PaymentDTO paymentDTO : paymentDTOList) {
                     paymentDTO.setPaymentCount(totalPaymentCount);
+
+                    // 결제와 연관된 Vendor 정보가 있다면 vendorName을 추가
+                    if (paymentDTO.getVendorName() != null) {
+                        paymentDTO.setVendorName(paymentDTO.getVendorName());
+                    }
                 }
 
                 // 결제 내역 개수를 응답 DTO에 추가
@@ -246,6 +256,8 @@ public class MyPageController {
             return ResponseEntity.badRequest().body(response);
         }
     }
+
+
 
 
     @Operation(summary = "myReviews", description = "회원 리뷰내역 조회")

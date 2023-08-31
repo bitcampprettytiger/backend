@@ -34,11 +34,11 @@ public class QPayments extends EntityPathBase<Payments> {
 
     public final StringPath name = createString("name");
 
-    public final com.example.bitcamptiger.order.entity.QOrders orders;
-
     public final DateTimePath<java.time.LocalDateTime> payDate = createDateTime("payDate", java.time.LocalDateTime.class);
 
     public final StringPath payMethod = createString("payMethod");
+
+    public final com.example.bitcamptiger.vendor.entity.QVendor vendor;
 
     public QPayments(String variable) {
         this(Payments.class, forVariable(variable), INITS);
@@ -59,7 +59,7 @@ public class QPayments extends EntityPathBase<Payments> {
     public QPayments(Class<? extends Payments> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.member = inits.isInitialized("member") ? new com.example.bitcamptiger.member.entity.QMember(forProperty("member")) : null;
-        this.orders = inits.isInitialized("orders") ? new com.example.bitcamptiger.order.entity.QOrders(forProperty("orders"), inits.get("orders")) : null;
+        this.vendor = inits.isInitialized("vendor") ? new com.example.bitcamptiger.vendor.entity.QVendor(forProperty("vendor"), inits.get("vendor")) : null;
     }
 
 }

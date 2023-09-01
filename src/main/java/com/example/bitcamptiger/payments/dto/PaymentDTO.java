@@ -41,6 +41,7 @@ public class PaymentDTO {
 
     private int paymentCount; //총 결제 내역 개수
 
+    private String vendorName;
 
 
     private static ModelMapper modelMapper = new ModelMapper();

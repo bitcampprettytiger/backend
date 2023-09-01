@@ -16,9 +16,11 @@ import com.example.bitcamptiger.order.dto.OrderMenuDTO;
 import com.example.bitcamptiger.order.entity.OrderMenu;
 import com.example.bitcamptiger.order.entity.Orders;
 import com.example.bitcamptiger.order.repository.OrderRepository;
+import com.example.bitcamptiger.vendor.repository.VendorRepository;
 import com.example.bitcamptiger.payments.dto.PaymentDTO;
 import com.example.bitcamptiger.payments.entity.Payments;
 import com.example.bitcamptiger.payments.repository.PaymentRepository;
+import com.example.bitcamptiger.vendor.entity.Vendor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -38,6 +40,7 @@ public class MyPageServiceImpl implements MyPageService {
     private final ReviewRepository reviewRepository;
     private final FavoriteService favoriteService;
     private final FavoriteVendorRepository favoriteVendorRepository;
+    private final VendorRepository vendorRepository;
     private final PaymentRepository paymentRepository;
 
     //내 정보 조회
@@ -87,19 +90,27 @@ public class MyPageServiceImpl implements MyPageService {
         }
     }
 
-    // 내 결제 내역을 조회하고 DTO로 변환하여 반환
+    //결제내역
     @Override
     public List<PaymentDTO> getMyPaymentDTOs(String username) {
         Optional<Member> optionalMember = memberRepository.findByUsername(username);
 
         if (optionalMember.isPresent()) {
             Member member = optionalMember.get();
+
             List<Payments> paymentsList = paymentRepository.findByMemberIdOrderByPayDateDesc(member.getId());
 
             List<PaymentDTO> paymentDTOList = new ArrayList<>();
 
             for (Payments payments : paymentsList) {
                 PaymentDTO paymentDTO = PaymentDTO.of(payments);
+
+                // Payments 엔티티에서 Vendor 정보 가져오기
+                Vendor vendor = payments.getVendor();
+                if (vendor != null) {
+                    paymentDTO.setVendorName(vendor.getVendorName());
+                }
+
                 paymentDTOList.add(paymentDTO);
             }
 
@@ -108,6 +119,7 @@ public class MyPageServiceImpl implements MyPageService {
             throw new RuntimeException("결제 내역을 조회할 회원을 찾을 수 없습니다.");
         }
     }
+
 
     // 내 주문 내역
     @Override
@@ -128,10 +140,16 @@ public class MyPageServiceImpl implements MyPageService {
             for (Orders orders : ordersList) {
                 // 주문 내역을 OrderDTO 형태로 변환
                 OrderDTO orderDTO = OrderDTO.of(orders);
+                orderDTO.setOrderId(orders.getId());
+
+                // 주문한 가게의 vendorName 가져오기
+                String vendorName = orders.getVendor().getVendorName();
+                orderDTO.setVendorName(vendorName); // vendorName 추가
 
                 // 주문 내역에 포함된 주문한 메뉴들을 변환하여 리스트에 추가
                 List<OrderMenuDTO> orderMenuDTOList = new ArrayList<>();
                 for (OrderMenu orderMenu : orders.getOrderMenuList()) {
+//                    vendorRepository.findByMenuList(orderMenu.getMenu())
                     // 주문한 메뉴를 OrderMenuDTO 형태로 변환
                     OrderMenuDTO orderMenuDTO = OrderMenuDTO.of(orderMenu);
                     orderMenuDTOList.add(orderMenuDTO);

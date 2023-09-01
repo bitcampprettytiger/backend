@@ -4,6 +4,7 @@ import com.example.bitcamptiger.member.entity.Member;
 import com.example.bitcamptiger.menu.entity.Menu;
 import com.example.bitcamptiger.order.entity.OrderMenu;
 import com.example.bitcamptiger.order.entity.Orders;
+import com.example.bitcamptiger.vendor.entity.Vendor;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,6 +21,10 @@ import java.util.List;
 @Builder
 public class OrderDTO {
 
+    private Long orderId;
+
+    private Long VendorId;
+
     @JsonIgnore
     private Member member;
 
@@ -30,7 +35,11 @@ public class OrderDTO {
 
     private int orderCount;
 
+    private String vendorName;
+
     private String orderStatus;
+
+    private Vendor vendor; // vendor 엔티티 추가
 
     private List<OrderMenuDTO> orderedMenuDTOList = new ArrayList<>();
 
@@ -48,4 +57,6 @@ public class OrderDTO {
 
     public void setOrderMenuList(List<OrderMenuDTO> orderMenuDTOList) {
     }
+
+
 }

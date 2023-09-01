@@ -2,6 +2,7 @@ package com.example.bitcamptiger.payments.entity;
 
 import com.example.bitcamptiger.member.entity.Member;
 import com.example.bitcamptiger.order.entity.Orders;
+import com.example.bitcamptiger.vendor.entity.Vendor;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -52,6 +53,7 @@ public class Payments {
     @Column
     private LocalDateTime payDate;
 
-    @OneToOne(mappedBy = "payments")
-    private Orders orders;
+    @ManyToOne(fetch = FetchType.LAZY) // Vendor 엔티티와 다대일 관계 설정
+    @JoinColumn(name = "vendor_id") // 관계를 맺을 컬럼명 지정
+    private Vendor vendor; // Vendor 엔티티와의 관계
 }

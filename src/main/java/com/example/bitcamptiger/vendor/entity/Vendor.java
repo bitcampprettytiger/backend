@@ -4,6 +4,7 @@ import com.example.bitcamptiger.Review.entity.Review;
 import com.example.bitcamptiger.favoritePick.entity.FavoriteVendor;
 import com.example.bitcamptiger.member.entity.Member;
 import com.example.bitcamptiger.menu.entity.Menu;
+import com.example.bitcamptiger.payments.entity.Payments;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
@@ -113,6 +114,9 @@ public class Vendor {
     @Column
     private Double averageReviewScore = 0.0;
 
+    @OneToMany(mappedBy = "vendor")
+    @JsonManagedReference
+    private List<Payments> paymentsList = new ArrayList<>();
 
 
 

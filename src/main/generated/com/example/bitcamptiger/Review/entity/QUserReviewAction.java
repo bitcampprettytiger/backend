@@ -28,8 +28,6 @@ public class QUserReviewAction extends EntityPathBase<UserReviewAction> {
 
     public final BooleanPath liked = createBoolean("liked");
 
-    public final com.example.bitcamptiger.member.entity.QMember member;
-
     public final QReview review;
 
     public QUserReviewAction(String variable) {
@@ -50,7 +48,6 @@ public class QUserReviewAction extends EntityPathBase<UserReviewAction> {
 
     public QUserReviewAction(Class<? extends UserReviewAction> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.member = inits.isInitialized("member") ? new com.example.bitcamptiger.member.entity.QMember(forProperty("member")) : null;
         this.review = inits.isInitialized("review") ? new QReview(forProperty("review"), inits.get("review")) : null;
     }
 

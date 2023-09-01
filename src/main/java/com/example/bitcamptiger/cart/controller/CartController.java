@@ -92,14 +92,14 @@ public class CartController {
     //장바구니 menu 삭제
     @DeleteMapping("/deletecartitem")
     public ResponseEntity<?> deleteCartItem(@AuthenticationPrincipal CustomUserDetails customUserDetails,
-                                            @RequestParam Long cartId, @RequestParam Long menuId){
+                                            @RequestParam Long menuId){
         ResponseDTO<CartItemDTO> response = new ResponseDTO<>();
 
         try{
-            Member loggedInMember = customUserDetails.getUser(); // 로그인한 사용자 정보에 접근
-            cartService.deleteCartItem(cartId, menuId);
+            Member member = customUserDetails.getUser(); // 로그인한 사용자 정보에 접근
+            cartService.deleteCartItem(member, menuId);
 
-            List<CartItemDTO> cartItemDTOList = cartService.getCartList(loggedInMember);
+            List<CartItemDTO> cartItemDTOList = cartService.getCartList(member);
 
             response.setItemlist(cartItemDTOList);
             response.setStatusCode(HttpStatus.OK.value());
@@ -115,14 +115,14 @@ public class CartController {
 
     //장바구니 menu 전체 삭제
     @DeleteMapping("/info")
-    public ResponseEntity<?> deleteCart(@AuthenticationPrincipal CustomUserDetails customUserDetails, CartItemDTO cartItemDTO){
+    public ResponseEntity<?> deleteCart(@AuthenticationPrincipal CustomUserDetails customUserDetails){
         ResponseDTO<CartItemDTO> response = new ResponseDTO<>();
 
         try{
 
-            Member loggedInMember = customUserDetails.getUser(); // 로그인한 사용자 정보에 접근
+            Member member = customUserDetails.getUser(); // 로그인한 사용자 정보에 접근
 
-            cartService.deleteCart(loggedInMember, cartItemDTO);
+            cartService.deleteCart(member);
 
             response.setStatusCode(HttpStatus.OK.value());
 

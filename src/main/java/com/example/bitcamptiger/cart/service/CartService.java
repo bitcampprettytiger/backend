@@ -17,10 +17,10 @@ public interface CartService {
     List<CartItemDTO> getCartList(Member member);
 
     //장바구니 menu 삭제
-    void deleteCartItem(Long cartId, Long menuId);
+    void deleteCartItem(Member member, Long menuId);
 
     //장바구니 menu 전체 삭제
-    void deleteCart(Member loggedInMember, CartItemDTO cartItemDTO);
+    void deleteCart(Member member);
 
 
 }

@@ -29,12 +29,12 @@ public class Review {
     @JoinColumn(name = "order_id")
     private Orders orders; //포장번호
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "vendor_id", referencedColumnName = "vendor_id")
     @JsonBackReference  //순환참조 문제를 해결하기 위해 참조속성 명시
     private Vendor vendor;//상점번호
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "member_id", referencedColumnName = "id")
     private Member member; //멤버 닉네임
 

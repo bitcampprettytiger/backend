@@ -16,6 +16,7 @@ import com.example.bitcamptiger.vendor.repository.VendorRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -84,12 +85,20 @@ public class MenuServiceImpl implements MenuService {
 
     //메뉴 등록
     @Override
+    public void insertMenu(Member member, MenuDTO menuDTO, MultipartFile[] uploadFiles) throws IOException {
 
-    public void insertMenu(Member loggedInMember, MenuDTO menuDTO, MultipartFile[] uploadFiles) throws IOException {
+        Vendor vendor = vendorRepository.findByMember(member);
 
-
+        //검증. 로그인한 유저와 vendor의 등록자가 다르면 예외 발생
+        if(!vendor.getMember().getId().equals(member.getId())){
+            throw new AccessDeniedException("등록 권한이 없습니다.");
+        }
+        //Menu와 Vendor 연결
+        menuDTO.setVendor(vendor);
         //Menu 엔티티 생성 후 저장.
-        Menu save = menuRepository.save(menuDTO.createMenu());
+        Menu menu = menuDTO.createMenu();
+
+        Menu save = menuRepository.save(menu);
 
         //attachPath 경로로 File 객체 생성
         File directory = new File(attachPath);
@@ -148,11 +157,24 @@ public class MenuServiceImpl implements MenuService {
 
     //메뉴 수정
     @Override
-    public void updateMenu(Member loggedInMember, MenuDTO menuDTO, MultipartFile[] uploadFiles) throws IOException {
+    public void updateMenu(Member member, MenuDTO menuDTO, MultipartFile[] uploadFiles) throws IOException {
 
+
+        Vendor vendor = vendorRepository.findByMember(member);
+
+        //검증. 로그인한 유저와 vendor의 등록자가 다르면 예외 발생
+        if(!vendor.getMember().getId().equals(member.getId())){
+            throw new AccessDeniedException("등록 권한이 없습니다.");
+        }
+
+        //Menu와 Vendor 연결
+        menuDTO.setVendor(vendor);
+        
         // MenuDTO에서 id로 기존의 Menu 엔티티를 찾음
         Menu menu = menuRepository.findById(menuDTO.getId()).orElseThrow(EntityNotFoundException::new);
 
+        //Menu와 Vendor 연결
+        menu.setVendor(menuDTO.getVendor());
         //수정 가능한 필드만 업데이트
         menu.setMenuName(menuDTO.getMenuName());
         menu.setPrice(menuDTO.getPrice());
@@ -161,7 +183,8 @@ public class MenuServiceImpl implements MenuService {
         menu.setMenuType(menuDTO.getMenuType());
 
         //기존 이미지 삭제
-        List<MenuImage> existingImages = menuImageRepository.findByMenu_Id(menu.getId());
+        List<MenuImage> existingImages = menuImageRepository.findByMenu(menu);
+
         Long lastImageId = 1L;
         if(existingImages != null && !existingImages.isEmpty()){
             for(MenuImage menuImage : existingImages){
@@ -182,35 +205,36 @@ public class MenuServiceImpl implements MenuService {
 
         //새로운 이미지 리스트 업데이트
         List<MenuImage> uploadFileList = new ArrayList<>();
-        for(MultipartFile file : uploadFiles){
-            if(file.getOriginalFilename() != null && !file.getOriginalFilename().isEmpty()){
-                MenuImage menuImage = fileUtils.parseFileInfo(file, attachPath);
-                menuImage.setMenu(menu);
+        if(uploadFiles != null && !uploadFiles.equals(null) ) {
 
-                //새로운 menuImage 객체에 imageId 설정
-                lastImageId = lastImageId + 1L;
-                menuImage.setId(lastImageId);
-                uploadFileList.add(menuImage);
+            for (MultipartFile file : uploadFiles) {
+                if (file.getOriginalFilename() != null && !file.getOriginalFilename().isEmpty()) {
+                    MenuImage menuImage = fileUtils.parseFileInfo(file, attachPath);
+                    menuImage.setMenu(menu);
+
+                    //새로운 menuImage 객체에 imageId 설정
+                    lastImageId = lastImageId + 1L;
+                    menuImage.setId(lastImageId);
+                    uploadFileList.add(menuImage);
+                }
             }
         }
+            //menuImage가 등록되지 않았을 경우 기본이미지 설정
+            if (uploadFileList.isEmpty()) {
+                MenuImage defaultMenuImage = fileUtils.getDefaultMenuImage();
+                defaultMenuImage.setMenu(menu);
 
-        //menuImage가 등록되지 않았을 경우 기본이미지 설정
-        if(uploadFileList.isEmpty()) {
-            MenuImage defaultMenuImage = fileUtils.getDefaultMenuImage();
-            defaultMenuImage.setMenu(menu);
+                //menuImage 객체에 imageId 설정.
+                lastImageId = lastImageId + 1L;
+                defaultMenuImage.setId(lastImageId);
+                uploadFileList.add(defaultMenuImage);
 
-            //menuImage 객체에 imageId 설정.
-            lastImageId = lastImageId + 1L;
-            defaultMenuImage.setId(lastImageId);
-            uploadFileList.add(defaultMenuImage);
+            }
 
-        }
-
-        //새로운 이미지 객체들을 메뉴이미지 데이터베이스에 저장
-        for(MenuImage menuImage : uploadFileList){
-            menuImageRepository.save(menuImage);
-        }
-
+            //새로운 이미지 객체들을 메뉴이미지 데이터베이스에 저장
+            for (MenuImage menuImage : uploadFileList) {
+                menuImageRepository.save(menuImage);
+            }
     }
 
 

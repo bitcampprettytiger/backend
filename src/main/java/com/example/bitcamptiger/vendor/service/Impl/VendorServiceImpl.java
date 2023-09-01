@@ -27,6 +27,7 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -325,7 +326,7 @@ public class VendorServiceImpl implements VendorService {
 
     // 가게 등록
     @Override
-    public void insertVendor(VendorDTO vendorDTO, MultipartFile[] uploadFiles) throws IOException {
+    public void insertVendor(Member member, VendorDTO vendorDTO, MultipartFile[] uploadFiles) throws IOException {
 
         //API를 사용해서 주소를 경도와 위도로 변환
         JSONObject point = geoService.geocoding(vendorDTO.getAddress());
@@ -346,7 +347,7 @@ public class VendorServiceImpl implements VendorService {
 //                vendorDTO.setPerNo(roadOcuuCertiData.getPerNo());
 //                vendorDTO.setRlAppiNm(roadOcuuCertiData.getRlAppiNm());
 
-        Optional<Member> byUsername = memberRepository.findByUsername(vendorDTO.getUsername());
+//        Optional<Member> byUsername = memberRepository.findByUsername(vendorDTO.getUsername());
         Vendor vendor = vendorDTO.createVendor();
                 vendor.setVendorType(vendorDTO.getVendorType());
                 vendor.setVendorName(vendorDTO.getVendorName());
@@ -358,7 +359,7 @@ public class VendorServiceImpl implements VendorService {
                 vendor.setOpen(vendorDTO.getOpen());
                 vendor.setClose(vendorDTO.getClose());
                 vendor.setHelpCheck(vendorDTO.getHelpCheck());
-                vendor.setMember(byUsername.orElseThrow(EntityNotFoundException::new));
+                vendor.setMember(member);
                 Vendor savedVendor = vendorRepository.save(vendor);
 
                 List<Randmark> randmarkBydistinct = nowLocationRepository.findRandmarkBydistinct(vendor);
@@ -426,9 +427,16 @@ public class VendorServiceImpl implements VendorService {
 
 
     @Override
-    public void updateVendor(VendorDTO vendorDTO, MultipartFile[] uploadFiles) throws IOException {
+    public void updateVendor(Member member, VendorDTO vendorDTO, MultipartFile[] uploadFiles) throws IOException {
 
-        Vendor vendor  =  vendorRepository.findById(vendorDTO.getId()).orElseThrow(EntityNotFoundException::new);
+        Vendor vendor  =  vendorRepository.findByMember(member);
+
+        //검증 : 로그인한 유저와 vendor의 등록자가 다르면 예외 발생
+        if(!vendor.getMember().getId().equals(member.getId())){
+            throw new AccessDeniedException("수정 권한이 없습니다.");
+        }
+
+
         //수정 가능한 필드만 업데이트
         vendor.setSIGMenu(vendorDTO.getSIGMenu());
         vendor.setVendorInfo(vendorDTO.getVendorInfo());
@@ -490,9 +498,14 @@ public class VendorServiceImpl implements VendorService {
     }
 
     @Override
-    public void deleteVendor(VendorDTO vendorDTO) {
+    public void deleteVendor(Member member, VendorDTO vendorDTO) {
 
-        Vendor vendor  =  vendorRepository.findById(vendorDTO.getId()).orElseThrow(EntityNotFoundException::new);
+        Vendor vendor  =  vendorRepository.findByMember(member);
+
+        //검증 : 로그인한 유저와 vendor의 등록자가 다르면 예외 발생
+        if(!vendor.getMember().getId().equals(member.getId())){
+            throw new AccessDeniedException("삭제 권한이 없습니다.");
+        }
 
 
         //연결될 이미지도 함께 삭제

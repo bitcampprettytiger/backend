@@ -39,7 +39,9 @@ public class PaymentDTO {
 
     private String memberId;
 
+    private int paymentCount; //총 결제 내역 개수
 
+    private String vendorName;
 
 
     private static ModelMapper modelMapper = new ModelMapper();
@@ -51,4 +53,6 @@ public class PaymentDTO {
     public static  PaymentDTO of(Payments payment){
         return modelMapper.map(payment, PaymentDTO.class);
     }
+
+
 }

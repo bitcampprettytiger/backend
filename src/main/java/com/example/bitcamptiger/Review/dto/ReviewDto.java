@@ -37,6 +37,8 @@ public class ReviewDto {
     private List<ReviewFile> reviewFileList;
     private ReviewFileDto reviewFile;
 
+    private int numberOfReviews;
+
 
     private static ModelMapper modelMapper = new ModelMapper();
 

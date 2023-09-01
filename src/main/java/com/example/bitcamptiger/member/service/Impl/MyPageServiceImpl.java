@@ -1,5 +1,6 @@
 package com.example.bitcamptiger.member.service.Impl;
 
+import com.example.bitcamptiger.Review.dto.ReviewDto;
 import com.example.bitcamptiger.Review.entity.Review;
 import com.example.bitcamptiger.Review.repository.ReviewRepository;
 import com.example.bitcamptiger.favoritePick.DTO.FavoriteVendorDTO;
@@ -15,6 +16,10 @@ import com.example.bitcamptiger.order.dto.OrderMenuDTO;
 import com.example.bitcamptiger.order.entity.OrderMenu;
 import com.example.bitcamptiger.order.entity.Orders;
 import com.example.bitcamptiger.order.repository.OrderRepository;
+import com.example.bitcamptiger.payments.dto.PaymentDTO;
+import com.example.bitcamptiger.payments.entity.Payments;
+import com.example.bitcamptiger.payments.repository.PaymentRepository;
+import com.example.bitcamptiger.vendor.entity.Vendor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -34,7 +39,7 @@ public class MyPageServiceImpl implements MyPageService {
     private final ReviewRepository reviewRepository;
     private final FavoriteService favoriteService;
     private final FavoriteVendorRepository favoriteVendorRepository;
-
+    private final PaymentRepository paymentRepository;
 
     //내 정보 조회
     @Override
@@ -83,8 +88,38 @@ public class MyPageServiceImpl implements MyPageService {
         }
     }
 
-    //내 주문 내역
-    // 내 주문 내역을 조회하고 DTO로 변환하여 반환
+    //결제내역
+    @Override
+    public List<PaymentDTO> getMyPaymentDTOs(String username) {
+        Optional<Member> optionalMember = memberRepository.findByUsername(username);
+
+        if (optionalMember.isPresent()) {
+            Member member = optionalMember.get();
+
+            List<Payments> paymentsList = paymentRepository.findByMemberIdOrderByPayDateDesc(member.getId());
+
+            List<PaymentDTO> paymentDTOList = new ArrayList<>();
+
+            for (Payments payments : paymentsList) {
+                PaymentDTO paymentDTO = PaymentDTO.of(payments);
+
+                // Payments 엔티티에서 Vendor 정보 가져오기
+                Vendor vendor = payments.getVendor();
+                if (vendor != null) {
+                    paymentDTO.setVendorName(vendor.getVendorName());
+                }
+
+                paymentDTOList.add(paymentDTO);
+            }
+
+            return paymentDTOList;
+        } else {
+            throw new RuntimeException("결제 내역을 조회할 회원을 찾을 수 없습니다.");
+        }
+    }
+
+
+    // 내 주문 내역
     @Override
     public List<OrderDTO> getMyOrderDTOs(String username) {
         // 현재 로그인한 사용자의 정보를 가져옴
@@ -99,9 +134,14 @@ public class MyPageServiceImpl implements MyPageService {
 
             // 주문 내역을 DTO로 변환한 결과를 담을 리스트
             List<OrderDTO> orderDTOList = new ArrayList<>();
+
             for (Orders orders : ordersList) {
                 // 주문 내역을 OrderDTO 형태로 변환
                 OrderDTO orderDTO = OrderDTO.of(orders);
+
+                // 주문한 가게의 vendorName 가져오기
+                String vendorName = orders.getVendor().getVendorName();
+                orderDTO.setVendorName(vendorName); // vendorName 추가
 
                 // 주문 내역에 포함된 주문한 메뉴들을 변환하여 리스트에 추가
                 List<OrderMenuDTO> orderMenuDTOList = new ArrayList<>();
@@ -116,6 +156,13 @@ public class MyPageServiceImpl implements MyPageService {
                 // 변환한 주문 내역 DTO를 리스트에 추가
                 orderDTOList.add(orderDTO);
             }
+
+            // 총 주문 내역 개수를 마지막에 한 번만 설정
+            int totalOrderCount = orderDTOList.size();
+            for (OrderDTO orderDTO : orderDTOList) {
+                orderDTO.setOrderCount(totalOrderCount);
+            }
+
             return orderDTOList;
         } else {
             // 사용자가 존재하지 않는 경우, 예외 발생
@@ -124,20 +171,38 @@ public class MyPageServiceImpl implements MyPageService {
     }
 
 
-    //내 리뷰 내역
+
+
+    // 내 리뷰 내역
     @Override
-    public List<Review> getMyReviews(String username) {
+    public List<ReviewDto> getMyReviewDTOs(String username) {
         Optional<Member> optionalMember = memberRepository.findByUsername(username);
 
         if (optionalMember.isPresent()) {
             Member member = optionalMember.get();
-            return reviewRepository.findByMember(member);
+            List<Review> reviews = reviewRepository.findByMember(member);
+
+            List<ReviewDto> reviewDtoList = new ArrayList<>();
+
+            // 로그에 리뷰 내역 개수를 출력
+            System.out.println("내 리뷰 내역 개수: " + reviews.size());
+
+            for (Review review : reviews) {
+                ReviewDto reviewDto = convertToReviewDto(review, reviews.size());
+                reviewDtoList.add(reviewDto);
+            }
+
+            return reviewDtoList;
         } else {
             throw new RuntimeException("리뷰 내역을 조회할 회원을 찾을 수 없습니다.");
         }
     }
 
-
+    private ReviewDto convertToReviewDto(Review review, int numberOfReviews) {
+        ReviewDto reviewDto = ReviewDto.of(review);
+        reviewDto.setNumberOfReviews(numberOfReviews);
+        return reviewDto;
+    }
 
     //내 찜 가게 내역
     @Override
@@ -152,6 +217,9 @@ public class MyPageServiceImpl implements MyPageService {
             // 사용자의 찜한 가게 내역을 조회
             List<FavoriteVendor> favoriteVendors = favoriteVendorRepository.findByMember(member);
 
+            // 로그에 찜한 가게의 개수를 출력
+            System.out.println("내 찜 가게 개수: " + favoriteVendors.size());
+
             // 찜한 가게 내역을 DTO로 변환한 결과를 담을 리스트
             List<FavoriteVendorDTO> favoriteVendorDTOList = new ArrayList<>();
             for (FavoriteVendor favoriteVendor : favoriteVendors) {
@@ -161,15 +229,18 @@ public class MyPageServiceImpl implements MyPageService {
                 favoriteVendorDTO.setMember(favoriteVendor.getMember());
                 favoriteVendorDTO.setVendor(favoriteVendor.getVendor());
 
+                // 찜한 가게 개수를 DTO에 추가
+                favoriteVendorDTO.setTotalCount(favoriteVendors.size());
+
                 favoriteVendorDTOList.add(favoriteVendorDTO);
             }
+
             return favoriteVendorDTOList;
         } else {
             // 사용자를 찾을 수 없는 경우에 대한 처리
             throw new RuntimeException("사용자를 찾을 수 없습니다.");
         }
     }
-
 
 
 

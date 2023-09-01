@@ -31,9 +31,9 @@ public interface ReviewService {
 
     List<ReviewDto> getAllReviewsWithFiles(Long vendorId);
 
-    void likeReview(Member member, Review review);
+    void likeReview(Review review);
 
-    void disLikeReview(Member member, Review review);
+    void disLikeReview(Review review);
 
 
 }

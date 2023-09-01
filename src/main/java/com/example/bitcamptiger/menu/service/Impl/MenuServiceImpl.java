@@ -164,14 +164,20 @@ public class MenuServiceImpl implements MenuService {
 
         //검증. 로그인한 유저와 vendor의 등록자가 다르면 예외 발생
         if(!vendor.getMember().getId().equals(member.getId())){
-            throw new AccessDeniedException("등록 권한이 없습니다.");
+            throw new AccessDeniedException("수정 권한이 없습니다.");
         }
 
         //Menu와 Vendor 연결
         menuDTO.setVendor(vendor);
-        
+
+
         // MenuDTO에서 id로 기존의 Menu 엔티티를 찾음
         Menu menu = menuRepository.findById(menuDTO.getId()).orElseThrow(EntityNotFoundException::new);
+
+        if(!menu.getVendor().getId().equals(vendor.getId())){
+            throw new AccessDeniedException("메뉴 수정 권한이 없습니다.");
+        }
+
 
         //Menu와 Vendor 연결
         menu.setVendor(menuDTO.getVendor());
@@ -240,10 +246,26 @@ public class MenuServiceImpl implements MenuService {
 
     //메뉴 삭제
     @Override
-    public void deleteMenu(MenuDTO menuDTO) {
+    public void deleteMenu(Member member, MenuDTO menuDTO) {
+
+
+        Vendor vendor = vendorRepository.findByMember(member);
+
+        //검증. 로그인한 유저와 vendor의 등록자가 다르면 예외 발생
+        if(!vendor.getMember().getId().equals(member.getId())){
+            throw new AccessDeniedException("삭제 권한이 없습니다.");
+        }
+
+        //Menu와 Vendor 연결
+        menuDTO.setVendor(vendor);
 
         // MenuDTO에서 id로 기존의 Menu 엔티티를 찾음
         Menu menu = menuRepository.findById(menuDTO.getId()).orElseThrow(EntityNotFoundException::new);
+
+        if(!menu.getVendor().getId().equals(vendor.getId())){
+            throw new AccessDeniedException("메뉴 삭제 권한이 없습니다.");
+        }
+
 
         //메뉴에 연결된 이미지도 함께 삭제
         for(MenuImage menuImage : menuImageRepository.findByMenu_Id(menu.getId())){

@@ -2,6 +2,7 @@ package com.example.bitcamptiger.order.entity;
 
 import com.example.bitcamptiger.member.entity.Member;
 import com.example.bitcamptiger.payments.entity.Payments;
+import com.example.bitcamptiger.vendor.entity.Vendor;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
@@ -41,6 +42,12 @@ public class Orders {
     @JoinColumn(name = "payment_id")
     private Payments payments;
 
+    ///////
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "vendor_id")
+    private Vendor vendor;
+    //////
     public void addOrderMenu(OrderMenu orderMenu) {
         orderMenuList.add(orderMenu);
         orderMenu.setOrder(this);

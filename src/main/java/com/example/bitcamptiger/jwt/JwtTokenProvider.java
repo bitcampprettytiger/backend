@@ -71,7 +71,7 @@ public class JwtTokenProvider {
     }
     public String accessToken(Member member){
 //        토큰 만료일 설정. 현재로부터 1일뒤로 설정
-        Date expireDate = Date.from(Instant.now().plus(1, ChronoUnit.DAYS));
+        Date expireDate = Date.from(Instant.now().plus(30, ChronoUnit.DAYS));
 
 //       JWT Token 생성하여 반환
         return Jwts.builder()

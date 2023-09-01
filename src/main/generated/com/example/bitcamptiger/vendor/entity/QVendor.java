@@ -46,6 +46,8 @@ public class QVendor extends EntityPathBase<Vendor> {
 
     public final StringPath open = createString("open");
 
+    public final ListPath<com.example.bitcamptiger.payments.entity.Payments, com.example.bitcamptiger.payments.entity.QPayments> paymentsList = this.<com.example.bitcamptiger.payments.entity.Payments, com.example.bitcamptiger.payments.entity.QPayments>createList("paymentsList", com.example.bitcamptiger.payments.entity.Payments.class, com.example.bitcamptiger.payments.entity.QPayments.class, PathInits.DIRECT2);
+
     public final StringPath perNo = createString("perNo");
 
     public final NumberPath<Integer> reviewCount = createNumber("reviewCount", Integer.class);

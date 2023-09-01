@@ -33,7 +33,7 @@ public class CartController {
     public final MenuRepository menuRepository;
 
     //내 장바구니 조회
-    @GetMapping("/member")
+    @GetMapping("/info")
     public ResponseEntity<?> getMyCart(@AuthenticationPrincipal CustomUserDetails customUserDetails){
         ResponseDTO<CartItemDTO> response = new ResponseDTO<>();
         try{

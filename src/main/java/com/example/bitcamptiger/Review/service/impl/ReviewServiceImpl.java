@@ -320,16 +320,16 @@ public class ReviewServiceImpl implements ReviewService {
     //리뷰 삭제
     @Override
     @Transactional
-    public void deleteReview(ReviewDto reviewDto, Member loggedInMember) {
+    public void deleteReview(Long reviewId, Member loggedInMember) {
 
-        Review review = reviewRepository.findById(reviewDto.getId())
+        Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new EntityNotFoundException("리뷰를 찾을 수 없습니다."));
 
-        Member reviewAuthor = review.getMember();
 
-        if (!loggedInMember.equals(reviewAuthor)) {
+        if(!review.getMember().getId().equals(loggedInMember.getId())){
             throw new RuntimeException("리뷰를 삭제할 권한이 없습니다.");
         }
+
 
         String bucketName = "springboot";
 

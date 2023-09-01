@@ -21,6 +21,10 @@ import java.util.List;
 @Builder
 public class OrderDTO {
 
+    private Long orderId;
+
+    private Long VendorId;
+
     @JsonIgnore
     private Member member;
 

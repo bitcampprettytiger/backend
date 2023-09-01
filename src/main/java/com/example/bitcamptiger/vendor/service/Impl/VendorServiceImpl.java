@@ -56,7 +56,7 @@ public class VendorServiceImpl implements VendorService {
     private final NowLocationRepository nowLocationRepository;
     public  final S3UploadService s3UploadService;
     public  final MemberRepository memberRepository;
-
+//    private final S3UploadService s3UploadService;
 //    public final GeoService geoService;
     @Override
     public List<LocationDto> getNowLocationList(NowLocationDto nowLocationDto) {
@@ -146,11 +146,20 @@ public class VendorServiceImpl implements VendorService {
 
             List<VendorImage> vendorImageList = vendorImageRepository.findByVendor(vendor);
 
+            String geturl = new String();
             List<VendorImageDTO> vendorImageDTOList = new ArrayList<>();
             for(VendorImage vendorImage : vendorImageList){
                 VendorImageDTO vendorImageDTO = VendorImageDTO.of(vendorImage);
+                if(vendorImage.getFileCate().equals("defaultImage")) {
+                    geturl = s3UploadService.geturl(vendorImage.getUrl() + vendorImage.getOriginName());
+                }else {
+                    geturl = s3UploadService.geturl(vendorImage.getUrl() + vendorImage.getFileName());
+                }
+
                 vendorImageDTOList.add(vendorImageDTO);
+
             }
+             vendorDTO.setPrimaryimgurl(geturl);
 
             vendorDTO.setVendorImageDTOList(vendorImageDTOList);
 //            vendorDTOList.add(vendorDTO);
@@ -557,6 +566,7 @@ public class VendorServiceImpl implements VendorService {
             List<MenuImageDTO> menuImageDTOList = new ArrayList<>();
             for (MenuImage menuImage : menuImageList) {
                 MenuImageDTO menuImageDTO = MenuImageDTO.of(menuImage);
+
                 menuImageDTOList.add(menuImageDTO);
             }
             menuDTO.setMenuImageList(menuImageDTOList);

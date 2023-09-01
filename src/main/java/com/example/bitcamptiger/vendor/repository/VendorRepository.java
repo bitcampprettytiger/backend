@@ -16,7 +16,7 @@ public interface VendorRepository extends JpaRepository<Vendor, Long>,
 
     List<Vendor> findByVendorName(String vendorName);
 
-    Vendor findByMenuList(List<Menu> menuList);
+//    Vendor findByMenuList(List<Menu> menuList);
 
     List<Vendor> findByVendorOpenStatus(String vendorOpenStatus);
 

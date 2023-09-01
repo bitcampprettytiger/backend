@@ -63,7 +63,7 @@ public class MenuController {
     @PostMapping("/info/insertMenu")
     public ResponseEntity<?> insertMenu(@AuthenticationPrincipal CustomUserDetails customUserDetails,
                                         MenuDTO menuDTO,
-                                        @RequestParam(required = false, value = "file") MultipartFile[] uploadFiles, Long vendorId){
+                                        @RequestParam(required = false, value = "file") MultipartFile[] uploadFiles){
         ResponseDTO<MenuDTO> response = new ResponseDTO<>();
 
         try{

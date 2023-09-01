@@ -1,6 +1,8 @@
 package com.example.bitcamptiger.cart.controller;
 
+import com.example.bitcamptiger.cart.dto.CartDTO;
 import com.example.bitcamptiger.cart.dto.CartItemDTO;
+import com.example.bitcamptiger.cart.dto.CartItemDTO2;
 import com.example.bitcamptiger.cart.entity.Cart;
 import com.example.bitcamptiger.cart.entity.CartItem;
 import com.example.bitcamptiger.cart.repository.CartItemRepository;
@@ -42,7 +44,7 @@ public class CartController {
             Cart cart = cartRepository.findByMemberId(loggedInMember.getId());
 
             List<CartItemDTO> cartItemDTOList = cartService.getCartList(loggedInMember);
-
+            System.out.println(cartItemDTOList);
             response.setItemlist(cartItemDTOList);
             response.setStatusCode(HttpStatus.OK.value());
 
@@ -57,21 +59,25 @@ public class CartController {
 
     // 장바구니에 메뉴 추가
     @PostMapping("/info")
-
-    public ResponseEntity<ResponseDTO<CartItemDTO>> addMenuToCart(@AuthenticationPrincipal CustomUserDetails customUserDetails,@RequestBody CartItemDTO cartItemDTO) {
-
+    public ResponseEntity<ResponseDTO<CartItemDTO>> addMenuToCart(@AuthenticationPrincipal CustomUserDetails customUserDetails,@RequestBody CartItemDTO2 cartItemDTO2) {
+        System.out.println(cartItemDTO2);
         ResponseDTO<CartItemDTO> response = new ResponseDTO<>();
-        System.out.println(cartItemDTO);
+//        System.out.println(cartItemDTO);
         try {
-
+            CartItemDTO cartItemDTO  = new CartItemDTO();
+//            Cart cart = new Cart();
+            Menu menu = new Menu();
+            menu.setId(cartItemDTO2.getMenu());
+//            cart.setId(cartItemDTO2.getId());
+            cartItemDTO.setMenu(menu);
             Member member = customUserDetails.getUser(); // 로그인한 사용자 정보에 접근
 
-            Menu menu = menuRepository.findById(cartItemDTO.getMenu().getId())
+            Menu menu2 = menuRepository.findById(cartItemDTO.getMenu().getId())
                     .orElseThrow(() -> new RuntimeException("메뉴 정보를 찾을 수 없습니다."));
-
-            // 회원과 메뉴 정보를 이용하여 장바구니에 메뉴를 추가하고 업데이트된 장바구니 정보를 가져옴.
-            Cart updatedCart = cartService.addCart(member, menu, cartItemDTO.getCartQuantity());
-            // 업데이트된 장바구니 정보로부터 장바구니에 담긴 메뉴들을 조회
+            System.out.println("!!!!!!");
+//             회원과 메뉴 정보를 이용하여 장바구니에 메뉴를 추가하고 업데이트된 장바구니 정보를 가져옴.
+            Cart updatedCart = cartService.addCart(member, menu2, cartItemDTO2.getCartQuantity());
+//             업데이트된 장바구니 정보로부터 장바구니에 담긴 메뉴들을 조회
             List<CartItemDTO> cartItemDTOList = cartService.getCartList(updatedCart.getMember());
 
             response.setItemlist(cartItemDTOList);

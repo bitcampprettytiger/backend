@@ -30,7 +30,7 @@ public class MenuDTO {
 
     private String menuType;
 
-
+    private String primaryimage;
 
     //메뉴 조회수
     private int views;

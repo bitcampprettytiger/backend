@@ -12,6 +12,7 @@ import com.example.bitcamptiger.menu.entity.Menu;
 import com.example.bitcamptiger.menu.entity.MenuImage;
 import com.example.bitcamptiger.menu.repository.MenuImageRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -93,15 +94,19 @@ public class CartServiceImpl implements CartService {
 
 
 
-
-    //장바구니 수량 수정
-
-
-
     //장바구니 menu 삭제
     @Override
-    public void deleteCartItem(Long cartId, Long menuId) {
-       CartItem cartItem = cartItemRepository.findByCartItem(cartId, menuId);
+    public void deleteCartItem(Member member, Long menuId) {
+       CartItem cartItem = cartItemRepository.findByCartItem(member, menuId);
+
+       if(cartItem == null){
+           throw new IllegalArgumentException("장바구니에 해당 메뉴가 없습니다.");
+       }
+
+       //검증: 로그인한 유저의 cart가 아니면 예외 발생
+        if(!cartItem.getCart().getMember().getId().equals(member.getId())){
+            throw new AccessDeniedException("삭제 권한이 없습니다.");
+        }
 
        cartItemRepository.delete(cartItem);
     }
@@ -109,8 +114,20 @@ public class CartServiceImpl implements CartService {
 
     //장바구니 menu 전체 삭제
     @Override
-    public void deleteCart(Member loggedInMember, CartItemDTO cartItemDTO) {
-        List<CartItem> cartItemList = cartItemRepository.findByCartMember(loggedInMember);
+    public void deleteCart(Member member) {
+        List<CartItem> cartItemList = cartItemRepository.findByCartMember(member);
+
+        if(cartItemList == null  || cartItemList.isEmpty()){
+            throw new IllegalArgumentException("장바구니에 담긴 메뉴가 없습니다.");
+        }
+
+        //검증: 로그인한 유저의 cart가 아니면 예외 발생
+//        CartItem cartItem = new CartItem();
+        for(CartItem cartItem : cartItemList) {
+            if (!cartItem.getCart().getMember().getId().equals(member.getId())) {
+                throw new AccessDeniedException("삭제 권한이 없습니다.");
+            }
+        }
 
         cartItemRepository.deleteAll(cartItemList);
         cartItemRepository.flush();

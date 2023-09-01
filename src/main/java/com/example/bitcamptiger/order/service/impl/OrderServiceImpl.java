@@ -89,7 +89,7 @@ public class OrderServiceImpl implements OrderService {
 
         //주문 완료된 menu 장바구니에서 삭제
         for(CartItemDTO cartItemDTO : cartItemList){
-            cartService.deleteCartItem(cartItemDTO.getCart().getId(), cartItemDTO.getMenu().getId());
+            cartService.deleteCartItem(member, cartItemDTO.getMenu().getId());
         }
 
         return order;

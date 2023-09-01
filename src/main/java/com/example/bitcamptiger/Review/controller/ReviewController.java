@@ -108,7 +108,7 @@ public class ReviewController {
 
     //리뷰 삭제
     @DeleteMapping("/review")
-    public ResponseEntity<?> deleteReview (ReviewDto reviewDto,
+    public ResponseEntity<?> deleteReview (@RequestParam Long reviewId,
                                            @AuthenticationPrincipal CustomUserDetails userDetails){
         ResponseDTO<ReviewDto> responseDTO = new ResponseDTO<>();
 
@@ -118,7 +118,7 @@ public class ReviewController {
                 throw new RuntimeException("로그인한 사용자 정보를 찾을 수 없습니다.");
             }
 
-            reviewService.deleteReview(reviewDto, loggedInMember.get());
+            reviewService.deleteReview(reviewId, loggedInMember.get());
 
             responseDTO.setStatusCode(HttpStatus.OK.value());
             responseDTO.setMessage("정상적으로 삭제되었습니다.");

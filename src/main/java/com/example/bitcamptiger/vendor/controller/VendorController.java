@@ -330,7 +330,18 @@ public class VendorController {
         try{
             Optional<Member> byUsername = memberRepository.findByUsername(vendorDTO.getUsername());
 //            Member member = customUserDetails.getUser();
-            vendorService.insertVendor(byUsername.get(), vendorDTO, uploadFiles);
+
+            Optional<MultipartFile[]> optionalUploadFiles = Optional.ofNullable(uploadFiles);
+            if (optionalUploadFiles.isPresent()) {
+                System.out.println("if");
+                MultipartFile[] actualUploadFiles = optionalUploadFiles.get();
+                vendorService.insertVendor(byUsername.get(), vendorDTO, actualUploadFiles);
+            } else {
+                System.out.println("else");
+                MultipartFile[] actualUploadFiles = null;
+                vendorService.insertVendor(byUsername.get(), vendorDTO, actualUploadFiles);
+            }
+
             List<VendorDTO> vendorDTOList = vendorService.getVendorList();
             response.setItemlist(vendorDTOList);
             response.setStatusCode(HttpStatus.OK.value());

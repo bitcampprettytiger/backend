@@ -409,14 +409,15 @@ public class VendorServiceImpl implements VendorService {
                     }
 
                 }
-
-                //vendorImage가 등록되지 않았을 경우 기본이미지 설정
-                if(uploadFileList.isEmpty()){
-                    VendorImage defaultVendorImage = fileUtils.getDefaultVendorImage();
-                    defaultVendorImage.setVendor(savedVendor);
-                    uploadFileList.add(defaultVendorImage);
+                else {
+                    //vendorImage가 등록되지 않았을 경우 기본이미지 설정
+                    if (uploadFiles.equals(null)&&uploadFiles==null) {
+                        System.out.println("defaultimage");
+                        VendorImage defaultVendorImage = fileUtils.getDefaultVendorImage();
+                        defaultVendorImage.setVendor(savedVendor);
+                        uploadFileList.add(defaultVendorImage);
+                    }
                 }
-
 
                 for (VendorImage vendorImage : uploadFileList) {
                     vendorImageRepository.save(vendorImage);

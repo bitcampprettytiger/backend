@@ -20,6 +20,10 @@ import java.util.List;
 @Builder
 public class OrderDTO {
 
+    private Long orderId;
+
+    private Long VendorId;
+
     private Member member;
 
     private String orderDate;   //주문한 날짜

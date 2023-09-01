@@ -124,6 +124,7 @@ public class OrderServiceImpl implements OrderService {
 
         Orders order = orderRepository.findById(orderId).orElseThrow();
         OrderDTO orderDTO = OrderDTO.of(order);
+
         List<OrderMenu> orderMenuList = orderMenuRepository.findByOrder(order);
 
         List<OrderMenuDTO> orderMenuDTOList = new ArrayList<>();

@@ -15,6 +15,7 @@ import com.example.bitcamptiger.order.dto.OrderMenuDTO;
 import com.example.bitcamptiger.order.entity.OrderMenu;
 import com.example.bitcamptiger.order.entity.Orders;
 import com.example.bitcamptiger.order.repository.OrderRepository;
+import com.example.bitcamptiger.vendor.repository.VendorRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -34,6 +35,7 @@ public class MyPageServiceImpl implements MyPageService {
     private final ReviewRepository reviewRepository;
     private final FavoriteService favoriteService;
     private final FavoriteVendorRepository favoriteVendorRepository;
+    private final VendorRepository vendorRepository;
 
 
     //내 정보 조회
@@ -102,10 +104,12 @@ public class MyPageServiceImpl implements MyPageService {
             for (Orders orders : ordersList) {
                 // 주문 내역을 OrderDTO 형태로 변환
                 OrderDTO orderDTO = OrderDTO.of(orders);
+                orderDTO.setOrderId(orders.getId());
 
                 // 주문 내역에 포함된 주문한 메뉴들을 변환하여 리스트에 추가
                 List<OrderMenuDTO> orderMenuDTOList = new ArrayList<>();
                 for (OrderMenu orderMenu : orders.getOrderMenuList()) {
+//                    vendorRepository.findByMenuList(orderMenu.getMenu())
                     // 주문한 메뉴를 OrderMenuDTO 형태로 변환
                     OrderMenuDTO orderMenuDTO = OrderMenuDTO.of(orderMenu);
                     orderMenuDTOList.add(orderMenuDTO);

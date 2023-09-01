@@ -1,6 +1,7 @@
 package com.example.bitcamptiger.vendor.repository;
 
 import com.example.bitcamptiger.member.entity.Member;
+import com.example.bitcamptiger.menu.entity.Menu;
 import com.example.bitcamptiger.vendor.entity.Vendor;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -14,6 +15,8 @@ public interface VendorRepository extends JpaRepository<Vendor, Long>,
         QuerydslPredicateExecutor<Vendor>, VendorRepositoryCustom {
 
     List<Vendor> findByVendorName(String vendorName);
+
+    Vendor findByMenuList(List<Menu> menuList);
 
     List<Vendor> findByVendorOpenStatus(String vendorOpenStatus);
 

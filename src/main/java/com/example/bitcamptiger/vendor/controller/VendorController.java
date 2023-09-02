@@ -5,6 +5,7 @@ import com.example.bitcamptiger.dto.ResponseDTO;
 import com.example.bitcamptiger.member.dto.MemberDTO;
 import com.example.bitcamptiger.member.entity.CustomUserDetails;
 import com.example.bitcamptiger.member.entity.Member;
+import com.example.bitcamptiger.member.reposiitory.MemberRepository;
 import com.example.bitcamptiger.response.BaseResponse;
 import com.example.bitcamptiger.response.BaseResponseStatus;
 import com.example.bitcamptiger.vendor.dto.LocationDto;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Optional;
 
 import static com.example.bitcamptiger.response.BaseResponseStatus.*;
 
@@ -35,6 +37,8 @@ public class VendorController {
     public final VendorService vendorService;
 
     public final VendorRepository vendorRepository;
+
+    public final MemberRepository memberRepository;
 
 
 
@@ -324,9 +328,20 @@ public class VendorController {
 
         ResponseDTO<VendorDTO> response = new ResponseDTO<>();
         try{
+            Optional<Member> byUsername = memberRepository.findByUsername(vendorDTO.getUsername());
+//            Member member = customUserDetails.getUser();
 
-            Member member = customUserDetails.getUser();
-            vendorService.insertVendor(member, vendorDTO, uploadFiles);
+            Optional<MultipartFile[]> optionalUploadFiles = Optional.ofNullable(uploadFiles);
+            if (optionalUploadFiles.isPresent()) {
+                System.out.println("if");
+                MultipartFile[] actualUploadFiles = optionalUploadFiles.get();
+                vendorService.insertVendor(byUsername.get(), vendorDTO, actualUploadFiles);
+            } else {
+                System.out.println("else");
+                MultipartFile[] actualUploadFiles = null;
+                vendorService.insertVendor(byUsername.get(), vendorDTO, actualUploadFiles);
+            }
+
             List<VendorDTO> vendorDTOList = vendorService.getVendorList();
             response.setItemlist(vendorDTOList);
             response.setStatusCode(HttpStatus.OK.value());

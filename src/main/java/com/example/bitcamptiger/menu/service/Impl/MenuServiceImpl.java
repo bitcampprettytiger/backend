@@ -56,21 +56,23 @@ public class MenuServiceImpl implements MenuService {
 
             //2. 해당 메뉴에 대한 모든 메뉴 이미지를 검색
             List<MenuImage> menuImageList = menuImageRepository.findByMenu(menu);
-
+            String geturl = new String();
             List<MenuImageDTO> menuImageDTOList = new ArrayList<>();
-            if(!menuImageDTOList.isEmpty()) {
+            if(!menuImageList.isEmpty()) {
                 for (MenuImage menuImage : menuImageList) {
-                    String geturl = s3UploadService.geturl(menuImage.getUrl() + menuImage.getFileName());
+                    geturl = s3UploadService.geturl(menuImage.getUrl() + menuImage.getFileName());
 //                menuImage.setUrl(geturl);
                     //MenuImage 객체를 MenuImageDTO 객체로 변환
                     MenuImageDTO menuImageDTO = MenuImageDTO.of(menuImage);
                     menuImageDTO.setUrl(geturl);
                     menuImageDTOList.add(menuImageDTO);
                 }
+             menuDTO.setPrimaryimage(geturl);
             }
 
             // MenuDTO 객체에 메뉴 이미지 리스트를 설정
             menuDTO.setMenuImageList(menuImageDTOList);
+            System.out.println(menuDTO);
             menuDTOList.add(menuDTO);
 
         }

@@ -60,7 +60,7 @@ public class ReviewController {
             if (userDetails == null) {
                 throw new RuntimeException("로그인한 사용자 정보를 찾을 수 없습니다.");
             }
-
+            System.out.println(reviewDto);
             Member loggedInMember = userDetails.getUser(); // 로그인한 사용자 정보 가져오기
 
             Map<String, Object> result = reviewService.processReview(reviewDto, mphsRequest, loggedInMember);

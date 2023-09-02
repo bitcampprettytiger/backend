@@ -1,4 +1,4 @@
-package com.example.bitcamptiger.lineUp.controller;
+package com.example.bitcamptiger.webSoket.controller;
 
 import org.springframework.web.bind.annotation.GetMapping;
 

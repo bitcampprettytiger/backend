@@ -1,5 +1,6 @@
-package com.example.bitcamptiger.lineUp.dto;
+package com.example.bitcamptiger.webSoket.dto;
 
+import com.example.bitcamptiger.webSoket.repository.AlarmRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -7,7 +8,11 @@ import org.springframework.stereotype.Repository;
 public class AlarmDAO {
 
     @Autowired
-    private AlarmRe
+    private AlarmRepository alarmRepository;
+
+    public int selectAlarmUncheckCount(String memberId){
+        return alarmRepository.countByMemberIDAndUncheckIsFalse(memberId);
+    }
 
 
 }

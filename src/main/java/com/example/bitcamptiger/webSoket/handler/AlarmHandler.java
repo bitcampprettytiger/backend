@@ -1,6 +1,6 @@
-package com.example.bitcamptiger.lineUp.handler;
+package com.example.bitcamptiger.webSoket.handler;
 
-import com.example.bitcamptiger.lineUp.dto.AlarmDAO;
+import com.example.bitcamptiger.webSoket.dto.AlarmDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
@@ -13,7 +13,7 @@ import java.util.List;
 public class AlarmHandler extends TextWebSocketHandler {
 
     @Autowired
-    private AlarmDAO alarmDTO;
+    private AlarmDAO alarmDAO;
 
     private static List<WebSocketSession> sessions = new ArrayList<>();
 
@@ -26,7 +26,7 @@ public class AlarmHandler extends TextWebSocketHandler {
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
         for (WebSocketSession webSocketSession : sessions) {
             String memberId = message.getPayload();
-            int count = alarmDTO.selectAlarmUchkCount(memId);  // DB 연동 필요
+            int count = alarmDAO.selectAlarmUncheckCount(memberId);  // DB 연동 필요
 
             if (webSocketSession.getId().equals(session.getId()) && count != 0) {
                 TextMessage msg = new TextMessage(memberId + "님 새 알림이 있습니다.");

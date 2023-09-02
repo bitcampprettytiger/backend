@@ -18,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
+import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -78,6 +79,11 @@ public class PaymentServiceImpl implements PaymentService {
             orders.setPayments(payment);
             orders.setOrderStatus(OrderStatus.CONFIRMED);
             orderRepository.save(orders);
+
+            //결제와 주문이 완료된 후, Node.js 서버에 알림 보내기
+            RestTemplate restTemplate = new RestTemplate();
+            restTemplate.postForObject("http://localhost:3000/new-order", orders, Orders.class);
+
         } else{
             orders.setOrderStatus(OrderStatus.CANCELED);
             orderRepository.save(orders);

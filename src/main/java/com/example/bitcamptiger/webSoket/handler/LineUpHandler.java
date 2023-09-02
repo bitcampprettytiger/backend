@@ -1,8 +1,8 @@
-package com.example.bitcamptiger.lineUp.handler;
+package com.example.bitcamptiger.webSoket.handler;
 
-import com.example.bitcamptiger.lineUp.dto.RestaurantDTO;
-import com.example.bitcamptiger.lineUp.dto.WaitingUserDTO;
-import com.example.bitcamptiger.lineUp.service.RestaurantService;
+import com.example.bitcamptiger.webSoket.dto.RestaurantDTO;
+import com.example.bitcamptiger.webSoket.dto.WaitingUserDTO;
+import com.example.bitcamptiger.webSoket.service.RestaurantService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;

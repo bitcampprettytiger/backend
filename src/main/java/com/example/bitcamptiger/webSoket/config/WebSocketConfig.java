@@ -1,11 +1,11 @@
-package com.example.bitcamptiger.lineUp.config;
+package com.example.bitcamptiger.webSoket.config;
 
 
-import com.example.bitcamptiger.lineUp.dto.RestaurantDTO;
-import com.example.bitcamptiger.lineUp.handler.AlarmHandler;
-import com.example.bitcamptiger.lineUp.handler.LineUpHandler;
+import com.example.bitcamptiger.webSoket.dto.RestaurantDTO;
+import com.example.bitcamptiger.webSoket.handler.AlarmHandler;
+import com.example.bitcamptiger.webSoket.handler.LineUpHandler;
 
-import com.example.bitcamptiger.lineUp.service.RestaurantService;
+import com.example.bitcamptiger.webSoket.service.RestaurantService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;

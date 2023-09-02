@@ -54,32 +54,16 @@ public class ReviewController {
     @PostMapping(value = "/review", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ResponseDTO<Map<String, Object>>> createReview(
             @ModelAttribute ReviewDto reviewDto,
-            MultipartHttpServletRequest mphsRequest,
-            @AuthenticationPrincipal CustomUserDetails userDetails) {
-        try {
-            if (userDetails == null) {
-                throw new RuntimeException("로그인한 사용자 정보를 찾을 수 없습니다.");
-            }
-            System.out.println(reviewDto);
-            Member loggedInMember = userDetails.getUser(); // 로그인한 사용자 정보 가져오기
-
-            Map<String, Object> result = reviewService.processReview(reviewDto, mphsRequest, loggedInMember);
+            MultipartHttpServletRequest mphsRequest) {
+        try{
+            Map<String, Object> result = reviewService.processReview(reviewDto, mphsRequest);
             ResponseDTO<Map<String, Object>> responseDTO = new ResponseDTO<>();
             responseDTO.setItem(result);
             return ResponseEntity.ok(responseDTO);
         } catch (Exception e) {
             ResponseDTO<Map<String, Object>> errorResponseDTO = new ResponseDTO<>();
             errorResponseDTO.setStatusCode(HttpStatus.BAD_REQUEST.value());
-
-            // 예외 상황에 따른 한국어 에러 메시지 설정
-            if (e.getMessage().equals("로그인한 사용자 정보를 찾을 수 없습니다.")) {
-                System.out.println(e.getMessage());
-                errorResponseDTO.setErrorMessage("로그인한 사용자 정보를 찾을 수 없습니다.");
-            } else {
-                System.out.println(e.getMessage());
-                errorResponseDTO.setErrorMessage("알 수 없는 오류가 발생했습니다.");
-            }
-
+            errorResponseDTO.setErrorMessage(e.getMessage());
             return ResponseEntity.badRequest().body(errorResponseDTO);
         }
     }

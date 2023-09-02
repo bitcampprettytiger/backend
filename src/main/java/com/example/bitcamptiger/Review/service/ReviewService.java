@@ -14,7 +14,7 @@ import java.util.Map;
 
 public interface ReviewService {
 
-    Map<String, Object> processReview(ReviewDto reviewDto, MultipartHttpServletRequest mphsRequest, Member loggedInMember) throws IOException;
+    Map<String, Object> processReview(ReviewDto reviewDto, MultipartHttpServletRequest mphsRequest) throws IOException;
 
     Review getReview(Long id);
 

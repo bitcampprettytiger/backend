@@ -58,21 +58,25 @@ public class ReviewServiceImpl implements ReviewService {
         return reviewRepository.findById(id).get();
     }
 
+    //리뷰 등록
     @Override
-    public Map<String, Object> processReview(ReviewDto reviewDto, MultipartHttpServletRequest mphsRequest, Member loggedInMember) throws IOException {
+    @Transactional
+    public Map<String, Object> processReview(ReviewDto reviewDto, MultipartHttpServletRequest mphsRequest) throws IOException {
+
         Review review = reviewDto.createReview();
 
         Vendor vendor = getVendorFromRepository(reviewDto.getVendor().getId());
-        Member member = getMemberFromRepository(loggedInMember.getId());
+        Member member = getMemberFromRepository(reviewDto.getMember().getId());
+        Orders completeOrders = getCompletedOrders(member.getId(), review.getOrders().getId());
 
         review.setVendor(vendor);
         review.setMember(member);
-
-        Review savedReview = reviewRepository.save(review);
+        review.setOrders(completeOrders);
 
         updateVendorReviewInfo(vendor, review);
 
-        List<ReviewFile> uploadFileList = saveReviewFiles(savedReview, mphsRequest);
+        List<ReviewFile> uploadFileList = saveReviewFiles(review, mphsRequest);
+
         if (reviewDto.isLiked()) {
             likeReview(review);
         }
@@ -80,12 +84,15 @@ public class ReviewServiceImpl implements ReviewService {
             disLikeReview(review);
         }
 
+        saveReviewAndFiles(review, uploadFileList);
+
         Map<String, Object> returnMap = new HashMap<>();
         returnMap.put("msg", "정상적으로 저장되었습니다.");
         returnMap.put("review", uploadFileList);
 
         return returnMap;
     }
+
 
     private Vendor getVendorFromRepository(Long vendorId) {
         return vendorRepository.findById(vendorId)

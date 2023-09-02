@@ -5,6 +5,7 @@ import com.example.bitcamptiger.cart.entity.Cart;
 import com.example.bitcamptiger.cart.entity.CartItem;
 import com.example.bitcamptiger.menu.dto.MenuImageDTO;
 import com.example.bitcamptiger.menu.entity.Menu;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

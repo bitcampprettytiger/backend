@@ -2,6 +2,9 @@ package com.example.bitcamptiger.vendor.service.Impl;
 
 import com.example.bitcamptiger.common.FileUtils;
 import com.example.bitcamptiger.common.service.S3UploadService;
+import com.example.bitcamptiger.member.dto.MemberDTO;
+import com.example.bitcamptiger.member.entity.Member;
+import com.example.bitcamptiger.member.reposiitory.MemberRepository;
 import com.example.bitcamptiger.menu.dto.MenuDTO;
 import com.example.bitcamptiger.menu.dto.MenuImageDTO;
 import com.example.bitcamptiger.menu.entity.Menu;
@@ -24,6 +27,7 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -33,6 +37,7 @@ import java.io.IOException;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -50,15 +55,15 @@ public class VendorServiceImpl implements VendorService {
     private final VendorImageRepository vendorImageRepository;
     private final NowLocationRepository nowLocationRepository;
     public  final S3UploadService s3UploadService;
-
+    public  final MemberRepository memberRepository;
+//    private final S3UploadService s3UploadService;
 //    public final GeoService geoService;
     @Override
     public List<LocationDto> getNowLocationList(NowLocationDto nowLocationDto) {
 
 //        List<NowLocationDto> nowLocationDtoList = new ArrayList<>();
 //        List<Randmark> Randmark = nowLocationRepository.findAll();
-        if(nowLocationDto.getHardness()==null&&nowLocationDto.getLatitude()==null){
-
+        if(nowLocationDto.getHardness().equals(null)&&nowLocationDto.getLatitude().equals(null)){
             JSONObject geocoding = geoService.geocoding(nowLocationDto.getAddress());
             System.out.println(geocoding.toString());
             nowLocationDto.setHardness(geocoding.get("x").toString());
@@ -85,6 +90,25 @@ public class VendorServiceImpl implements VendorService {
     }
 
     @Override
+    public List<VendorDTO> giveLandmarkvendor(NowLocationDto nowLocationDto) {
+
+        Optional<Randmark> byMapLocation = nowLocationRepository.findByMapLocation(nowLocationDto.getAddress());
+
+        if(nowLocationDto.getLatitude().equals(null)&&nowLocationDto.getHardness().equals(null)){
+            nowLocationDto.setLatitude(byMapLocation.orElseThrow(EntityNotFoundException::new).getLatitude());
+            nowLocationDto.setHardness(byMapLocation.orElseThrow(EntityNotFoundException::new).getHardness());
+        }
+        List<Vendor> byrandmart = vendorRepository.findByrandmart(nowLocationDto);
+        List<VendorDTO> vendorDTOList = new ArrayList<>();
+        for(Vendor vendor:byrandmart){
+            VendorDTO of = VendorDTO.of(vendor);
+            vendorDTOList.add(of);
+        }
+
+        return vendorDTOList;
+    }
+
+    @Override
     public NowLocationDto saverandmark(NowLocationDto nowLocationDto) {
 
 //        List<NowLocationDto> nowLocationDtoList = new ArrayList<>();
@@ -95,9 +119,9 @@ public class VendorServiceImpl implements VendorService {
         nowLocationDto.setHardness(geocoding.get("x").toString());
         nowLocationDto.setLatitude(geocoding.get("y").toString());
         Randmark createrandmark = nowLocationDto.createrandmark();
-        if(nowLocationDto.getName()!=null) {
+        if(!nowLocationDto.getName().equals(null)&&!nowLocationDto.getAddress().equals(null)) {
             createrandmark.setLocation(nowLocationDto.getName());
-            createrandmark.setMapLocation(nowLocationDto.getName());
+            createrandmark.setMapLocation(nowLocationDto.getAddress());
         }
         System.out.println(createrandmark);
         System.out.println(nowLocationDto);
@@ -122,11 +146,20 @@ public class VendorServiceImpl implements VendorService {
 
             List<VendorImage> vendorImageList = vendorImageRepository.findByVendor(vendor);
 
+            String geturl = new String();
             List<VendorImageDTO> vendorImageDTOList = new ArrayList<>();
             for(VendorImage vendorImage : vendorImageList){
                 VendorImageDTO vendorImageDTO = VendorImageDTO.of(vendorImage);
+                if(vendorImage.getFileCate().equals("defaultImage")) {
+                    geturl = s3UploadService.geturl(vendorImage.getUrl() + vendorImage.getOriginName());
+                }else {
+                    geturl = s3UploadService.geturl(vendorImage.getUrl() + vendorImage.getFileName());
+                }
+
                 vendorImageDTOList.add(vendorImageDTO);
+
             }
+             vendorDTO.setPrimaryimgurl(geturl);
 
             vendorDTO.setVendorImageDTOList(vendorImageDTOList);
 //            vendorDTOList.add(vendorDTO);
@@ -185,23 +218,13 @@ public class VendorServiceImpl implements VendorService {
     }
 
 
-    @Override
-    public void insertVendor(VendorDTO vendorDTO) throws JsonProcessingException {
-
-    }
-
-    @Override
-    public void updateVendor(VendorDTO vendorDTO) {
-
-    }
-
 
     // 해당 검색어를 포함한 모든 가게 조회.
     // 주소, 메뉴명, 가게명
     @Override
     @Transactional(readOnly = true)
-    public List<VendorDTO> getVendorByCategory(String address, String menuName, String vendorName){
-        List<Vendor> vendorList = vendorRepository.findVendorByCategory(address, menuName, vendorName);
+    public List<VendorDTO> getVendorByCategory(String address, String menuName, String vendorName, String orderBy){
+        List<Vendor> vendorList = vendorRepository.findVendorByCategory(address, menuName, vendorName, orderBy);
 
         List<VendorDTO> vendorDTOList = new ArrayList<>();
 
@@ -291,11 +314,11 @@ public class VendorServiceImpl implements VendorService {
     String attachPath;
 
 
-    //리뷰 가장 많은 순 / 별점 높은 순 정렬
+    //리뷰 100개 이상인 vendor 중 별점 높은 순 정렬
     @Override
-    public List<VendorDTO> getVendorByReview(Double weightedAverageScore) {
+    public List<VendorDTO> getVendorByReview() {
 
-        List<Vendor> vendorList = vendorRepository.findByReview(weightedAverageScore);
+        List<Vendor> vendorList = vendorRepository.findByReviewScore(10L);
 
         List<VendorDTO> vendorDTOList = new ArrayList<>();
 
@@ -312,7 +335,7 @@ public class VendorServiceImpl implements VendorService {
 
     // 가게 등록
     @Override
-    public void insertVendor(VendorDTO vendorDTO, MultipartFile[] uploadFiles) throws IOException {
+    public void insertVendor(Member member, VendorDTO vendorDTO, MultipartFile[] uploadFiles) throws IOException {
 
         //API를 사용해서 주소를 경도와 위도로 변환
         JSONObject point = geoService.geocoding(vendorDTO.getAddress());
@@ -333,10 +356,19 @@ public class VendorServiceImpl implements VendorService {
 //                vendorDTO.setPerNo(roadOcuuCertiData.getPerNo());
 //                vendorDTO.setRlAppiNm(roadOcuuCertiData.getRlAppiNm());
 
-
-                Vendor vendor = vendorDTO.createVendor();
-                vendor.setClose(vendorDTO.getClose());
+//        Optional<Member> byUsername = memberRepository.findByUsername(vendorDTO.getUsername());
+        Vendor vendor = vendorDTO.createVendor();
+                vendor.setVendorType(vendorDTO.getVendorType());
+                vendor.setVendorName(vendorDTO.getVendorName());
+                vendor.setSIGMenu(vendorDTO.getSIGMenu());
+                vendor.setVendorInfo(vendorDTO.getVendorInfo());
+                vendor.setVendorOpenStatus(vendorDTO.getVendorOpenStatus());
+                vendor.setTel(vendorDTO.getTel());
+                vendor.setBusinessDay(vendorDTO.getBusinessDay());
                 vendor.setOpen(vendorDTO.getOpen());
+                vendor.setClose(vendorDTO.getClose());
+                vendor.setHelpCheck(vendorDTO.getHelpCheck());
+                vendor.setMember(member);
                 Vendor savedVendor = vendorRepository.save(vendor);
 
                 List<Randmark> randmarkBydistinct = nowLocationRepository.findRandmarkBydistinct(vendor);
@@ -377,14 +409,15 @@ public class VendorServiceImpl implements VendorService {
                     }
 
                 }
-
-                //vendorImage가 등록되지 않았을 경우 기본이미지 설정
-                if(uploadFileList.isEmpty()){
-                    VendorImage defaultVendorImage = fileUtils.getDefaultVendorImage();
-                    defaultVendorImage.setVendor(savedVendor);
-                    uploadFileList.add(defaultVendorImage);
+                else {
+                    //vendorImage가 등록되지 않았을 경우 기본이미지 설정
+                    if (uploadFiles.equals(null)&&uploadFiles==null) {
+                        System.out.println("defaultimage");
+                        VendorImage defaultVendorImage = fileUtils.getDefaultVendorImage();
+                        defaultVendorImage.setVendor(savedVendor);
+                        uploadFileList.add(defaultVendorImage);
+                    }
                 }
-
 
                 for (VendorImage vendorImage : uploadFileList) {
                     vendorImageRepository.save(vendorImage);
@@ -404,16 +437,26 @@ public class VendorServiceImpl implements VendorService {
 
 
     @Override
-    public void updateVendor(VendorDTO vendorDTO, MultipartFile[] uploadFiles) throws IOException {
+    public void updateVendor(Member member, VendorDTO vendorDTO, MultipartFile[] uploadFiles) throws IOException {
 
-        Vendor vendor  =  vendorRepository.findById(vendorDTO.getId()).orElseThrow(EntityNotFoundException::new);
+        Vendor vendor  =  vendorRepository.findByMember(member);
+
+        //검증 : 로그인한 유저와 vendor의 등록자가 다르면 예외 발생
+        if(!vendor.getMember().getId().equals(member.getId())){
+            throw new AccessDeniedException("수정 권한이 없습니다.");
+        }
+
+
         //수정 가능한 필드만 업데이트
+        vendor.setSIGMenu(vendorDTO.getSIGMenu());
+        vendor.setVendorInfo(vendorDTO.getVendorInfo());
         vendor.setVendorOpenStatus(vendorDTO.getVendorOpenStatus());
         vendor.setAddress(vendorDTO.getAddress());
         vendor.setTel(vendorDTO.getTel());
         vendor.setBusinessDay(vendorDTO.getBusinessDay());
         vendor.setOpen(vendorDTO.getOpen());
         vendor.setClose(vendorDTO.getClose());
+        vendor.setHelpCheck(vendorDTO.getHelpCheck());
 
         //주소가 변경된 경우에만 경도와 위도를 업데이트
         if(!vendor.getAddress().equals(vendorDTO.getAddress())){
@@ -465,9 +508,14 @@ public class VendorServiceImpl implements VendorService {
     }
 
     @Override
-    public void deleteVendor(VendorDTO vendorDTO) {
+    public void deleteVendor(Member member, VendorDTO vendorDTO) {
 
-        Vendor vendor  =  vendorRepository.findById(vendorDTO.getId()).orElseThrow(EntityNotFoundException::new);
+        Vendor vendor  =  vendorRepository.findByMember(member);
+
+        //검증 : 로그인한 유저와 vendor의 등록자가 다르면 예외 발생
+        if(!vendor.getMember().getId().equals(member.getId())){
+            throw new AccessDeniedException("삭제 권한이 없습니다.");
+        }
 
 
         //연결될 이미지도 함께 삭제
@@ -519,6 +567,7 @@ public class VendorServiceImpl implements VendorService {
             List<MenuImageDTO> menuImageDTOList = new ArrayList<>();
             for (MenuImage menuImage : menuImageList) {
                 MenuImageDTO menuImageDTO = MenuImageDTO.of(menuImage);
+
                 menuImageDTOList.add(menuImageDTO);
             }
             menuDTO.setMenuImageList(menuImageDTOList);

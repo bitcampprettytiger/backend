@@ -36,7 +36,7 @@ public class QReview extends EntityPathBase<Review> {
 
     public final DateTimePath<java.time.LocalDateTime> reviewRegDate = createDateTime("reviewRegDate", java.time.LocalDateTime.class);
 
-    public final NumberPath<Integer> reviewScore = createNumber("reviewScore", Integer.class);
+    public final NumberPath<Long> reviewScore = createNumber("reviewScore", Long.class);
 
     public final com.example.bitcamptiger.vendor.entity.QVendor vendor;
 
@@ -60,7 +60,7 @@ public class QReview extends EntityPathBase<Review> {
         super(type, metadata, inits);
         this.member = inits.isInitialized("member") ? new com.example.bitcamptiger.member.entity.QMember(forProperty("member")) : null;
         this.orders = inits.isInitialized("orders") ? new com.example.bitcamptiger.order.entity.QOrders(forProperty("orders"), inits.get("orders")) : null;
-        this.vendor = inits.isInitialized("vendor") ? new com.example.bitcamptiger.vendor.entity.QVendor(forProperty("vendor")) : null;
+        this.vendor = inits.isInitialized("vendor") ? new com.example.bitcamptiger.vendor.entity.QVendor(forProperty("vendor"), inits.get("vendor")) : null;
     }
 
 }

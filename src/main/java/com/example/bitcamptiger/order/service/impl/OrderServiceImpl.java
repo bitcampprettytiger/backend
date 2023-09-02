@@ -14,6 +14,7 @@ import com.example.bitcamptiger.order.entity.Orders;
 import com.example.bitcamptiger.order.repository.OrderMenuRepository;
 import com.example.bitcamptiger.order.repository.OrderRepository;
 import com.example.bitcamptiger.order.service.OrderService;
+import com.example.bitcamptiger.vendor.entity.Vendor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,6 +44,8 @@ public class OrderServiceImpl implements OrderService {
         // 주문한 회원 ID를 이용하여 Member 엔티티 조회
         Member member = memberRepository.findById(orderDTO.getMember().getId())
                 .orElseThrow(() -> new RuntimeException("Member 확인 오류"));
+        // 주문한 가게(Vendor) 정보 가져오기(영은추가)
+        Vendor vendor = orderDTO.getVendor();
 
 
         // 멤버의 ID를 기반으로 장바구니 아이템들을 조회
@@ -79,11 +82,14 @@ public class OrderServiceImpl implements OrderService {
 
         Orders order = Orders.createOrder(member, orderMenuList);
 
+        // 주문한 가게(Vendor) 정보 설정(영은)
+        order.setVendor(vendor);
+
         orderRepository.save(order);
 
         //주문 완료된 menu 장바구니에서 삭제
         for(CartItemDTO cartItemDTO : cartItemList){
-            cartService.deleteCartItem(cartItemDTO.getCart().getId(), cartItemDTO.getMenu().getId());
+            cartService.deleteCartItem(member, cartItemDTO.getMenu().getId());
         }
 
         return order;
@@ -124,6 +130,7 @@ public class OrderServiceImpl implements OrderService {
 
         Orders order = orderRepository.findById(orderId).orElseThrow();
         OrderDTO orderDTO = OrderDTO.of(order);
+
         List<OrderMenu> orderMenuList = orderMenuRepository.findByOrder(order);
 
         List<OrderMenuDTO> orderMenuDTOList = new ArrayList<>();

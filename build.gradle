@@ -2,24 +2,24 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.1.2'
     id 'io.spring.dependency-management' version '1.1.2'
+    id "com.github.node-gradle.node" version '4.0.0'
 //    id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
 }
 
 group = 'com.example'
 version = '0.0.1-SNAPSHOT'
-
-java {
-    sourceCompatibility = '17'
-}
+sourceCompatibility = '17'
 
 configurations {
     compileOnly {
         extendsFrom annotationProcessor
     }
 }
-
-repositories {
-    mavenCentral()
+allprojects {
+    repositories {
+        mavenCentral()
+        maven { url 'https://jitpack.io' }
+    }
 }
 
 dependencies {
@@ -94,6 +94,8 @@ dependencies {
     //webSocket
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
 
+    //결제 아임포트
+    implementation 'com.github.iamport:iamport-rest-client-java:0.2.21'
 
 }
 

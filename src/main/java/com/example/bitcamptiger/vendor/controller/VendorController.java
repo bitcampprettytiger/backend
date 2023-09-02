@@ -3,8 +3,11 @@ package com.example.bitcamptiger.vendor.controller;
 
 import com.example.bitcamptiger.dto.ResponseDTO;
 import com.example.bitcamptiger.member.dto.MemberDTO;
+import com.example.bitcamptiger.member.entity.CustomUserDetails;
 import com.example.bitcamptiger.member.entity.Member;
+import com.example.bitcamptiger.member.reposiitory.MemberRepository;
 import com.example.bitcamptiger.response.BaseResponse;
+import com.example.bitcamptiger.response.BaseResponseStatus;
 import com.example.bitcamptiger.vendor.dto.LocationDto;
 import com.example.bitcamptiger.vendor.dto.NowLocationDto;
 import com.example.bitcamptiger.vendor.dto.VendorDTO;
@@ -17,10 +20,12 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Optional;
 
 import static com.example.bitcamptiger.response.BaseResponseStatus.*;
 
@@ -33,13 +38,18 @@ public class VendorController {
 
     public final VendorRepository vendorRepository;
 
+    public final MemberRepository memberRepository;
+
 
 
     @PostMapping("/search")
-    public BaseResponse<?> getVendorOpenInfoList(@RequestBody NowLocationDto nowLocationDto) {
+    public BaseResponse<?> getVendorOpenInfoList(@RequestBody NowLocationDto nowLocationDto, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         System.out.println(nowLocationDto);
         ResponseDTO<LocationDto> response = new ResponseDTO<>();
         try{
+            // 로그인한 사용자의 정보에 접근 (필요한 경우)
+            Member loggedInMember = customUserDetails.getUser();
+
             List<LocationDto> nowLocationList = vendorService.getNowLocationList(nowLocationDto);
             if(nowLocationList.isEmpty()){
                return new BaseResponse<>(RESPONSE_ERROR);
@@ -54,17 +64,43 @@ public class VendorController {
         } catch(Exception e) {
             System.out.println(e.getMessage());
             response.setErrorMessage(e.getMessage());
-            response.setStatusCode(HttpStatus.BAD_REQUEST.value());
+//            BaseResponseStatus status = new BaseResponseStatus(INVALID_JWT);
+//            BaseResponse<>
+//            response.setStatusCode(FAIL_LOGIN_REFRESH.getCode());
+
+            return new BaseResponse<>(POST_ISNULL);
+        }
+
+    }
+
+    @PostMapping("/search10vendor")
+    public BaseResponse<?> getVendorrandmark(@RequestBody NowLocationDto nowLocationDto) {
+        System.out.println(nowLocationDto);
+        ResponseDTO<VendorDTO> response = new ResponseDTO<>();
+        try{
+            List<VendorDTO> vendorDTOList = vendorService.giveLandmarkvendor(nowLocationDto);
+
+            response.setItemlist(vendorDTOList);
+            response.setStatusCode(HttpStatus.OK.value());
+
             return new BaseResponse<>(response);
+        } catch(Exception e) {
+            System.out.println(e.getMessage());
+            response.setErrorMessage(e.getMessage());
+
+            return new BaseResponse<>(POST_ISNULL);
         }
 
     }
     @PostMapping("/locationsave")
-    public BaseResponse<?> saveVendorOpenInfoList(@RequestBody NowLocationDto nowLocationDto) {
+    public BaseResponse<?> saveVendorOpenInfoList(@AuthenticationPrincipal CustomUserDetails customUserDetails,@RequestBody NowLocationDto nowLocationDto) {
 
         ResponseDTO<NowLocationDto> response = new ResponseDTO<>();
 
         try{
+            // 로그인한 사용자의 정보에 접근 (필요한 경우)
+            Member loggedInMember = customUserDetails.getUser();
+
             NowLocationDto saverandmark = vendorService.saverandmark(nowLocationDto);
             if(saverandmark.equals(null)){
                 return new BaseResponse<>(POST_ISNULL);
@@ -78,7 +114,7 @@ public class VendorController {
         } catch(Exception e) {
             response.setErrorMessage(e.getMessage());
             response.setStatusCode(HttpStatus.BAD_REQUEST.value());
-            return new BaseResponse<>(response);
+            return new BaseResponse<>(FAIL_LOGIN_REFRESH);
         }
 
     }
@@ -91,10 +127,12 @@ public class VendorController {
             @ApiResponse(responseCode = "400", description = "실패")
     })
     @GetMapping("/openInfo")
-    public ResponseEntity<?> getVendorOpenInfoList(VendorDTO vendorDTO) {
+    public ResponseEntity<?> getVendorOpenInfoList(@AuthenticationPrincipal CustomUserDetails customUserDetails,VendorDTO vendorDTO) {
 
         ResponseDTO<VendorDTO> response = new ResponseDTO<>();
         try{
+            // 로그인한 사용자의 정보에 접근 (필요한 경우)
+            Member loggedInMember = customUserDetails.getUser();
 
             List<VendorDTO> VendorDTOList = vendorService.getOpenList(vendorDTO.getVendorOpenStatus());
 
@@ -104,7 +142,7 @@ public class VendorController {
             return ResponseEntity.ok().body(response);
         }catch(Exception e) {
             response.setErrorMessage(e.getMessage());
-            response.setStatusCode(HttpStatus.BAD_REQUEST.value());
+            response.setStatusCode(HttpStatus.FORBIDDEN.value());
             return ResponseEntity.badRequest().body(response);
         }
 
@@ -113,9 +151,10 @@ public class VendorController {
 
     //모든 가게 정보 리스트
     @GetMapping("/info")
-    public ResponseEntity<?> getVendorInfoList(){
+    public ResponseEntity<?> getVendorInfoList(@AuthenticationPrincipal CustomUserDetails customUserDetails){
         ResponseDTO<VendorDTO> response = new ResponseDTO<>();
         try{
+            Member loggedInMember = customUserDetails.getUser();
 
             List<VendorDTO> vendorDTOList = vendorService.getVendorList();
 
@@ -136,15 +175,22 @@ public class VendorController {
     //가게명으로 검색
     @GetMapping("/category")
     public ResponseEntity<?> getVendorByCategory(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @RequestParam(required = false) String address,
             @RequestParam(required = false) String menuName,
-            @RequestParam(required = false) String vendorName){
+            @RequestParam(required = false) String vendorName,
+            @RequestParam(required = false, defaultValue = "vendorName") String orderBy){
+
         System.out.println(address);
         System.out.println(menuName);
         System.out.println(vendorName);
         ResponseDTO<VendorDTO> response = new ResponseDTO<>();
         try{
-            List<VendorDTO> vendorDTOList = vendorService.getVendorByCategory(address, menuName, vendorName);
+
+            Member loggedInMember = customUserDetails.getUser();
+            System.out.println(loggedInMember);
+            List<VendorDTO> vendorDTOList = vendorService.getVendorByCategory(address, menuName, vendorName, orderBy);
+
 
             response.setItemlist(vendorDTOList);
             response.setStatusCode(HttpStatus.OK.value());
@@ -163,11 +209,14 @@ public class VendorController {
     //해당 타입에 포함되는 가게 조회하기
     @GetMapping("/vendorType/{vendorType}")
     public ResponseEntity<?> getVendorByVendorType(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @PathVariable String vendorType){
-
         ResponseDTO<VendorDTO> response = new ResponseDTO<>();
 
         try{
+            Member loggedInMember = customUserDetails.getUser();
+            System.out.println(loggedInMember);
+
             List<VendorDTO> vendorDTOList = vendorService.getVendorByVendorType(vendorType);
 
             response.setItemlist(vendorDTOList);
@@ -185,11 +234,13 @@ public class VendorController {
 
     //메뉴 타입별 가게 정보 조회
     @GetMapping("/menuType/{menuType}")
-    public ResponseEntity<?> getVendorByMenuType(@PathVariable String menuType){
+    public ResponseEntity<?> getVendorByMenuType(@AuthenticationPrincipal CustomUserDetails customUserDetails,@PathVariable String menuType){
 
         ResponseDTO<VendorDTO> response = new ResponseDTO<>();
 
         try{
+            Member loggedInMember = customUserDetails.getUser();
+            System.out.println(loggedInMember);
             List<VendorDTO> vendorDTOList = vendorService.getVendorByMenuType(menuType);
 
             response.setItemlist(vendorDTOList);
@@ -203,13 +254,16 @@ public class VendorController {
         }
     }
 
-    //리뷰 가장 많은 순 / 별점 높은 순 정렬
-    @GetMapping("/review/weightedAverageScore")
-    public ResponseEntity<?> getVendorByReview(Double weightedAverageScore){
+    //리뷰 100개 이상인 vendor 중 별점 높은 순 정렬
+    @GetMapping("/review/averageReviewScore")
+    public ResponseEntity<?> getVendorByReview(@AuthenticationPrincipal CustomUserDetails customUserDetails){
         ResponseDTO<VendorDTO> response = new ResponseDTO<>();
 
         try{
-            List<VendorDTO> vendorDTOList = vendorService.getVendorByReview(weightedAverageScore);
+            Member loggedInMember = customUserDetails.getUser();
+            System.out.println(loggedInMember);
+
+            List<VendorDTO> vendorDTOList = vendorService.getVendorByReview();
 
             response.setItemlist(vendorDTOList);
             response.setStatusCode(HttpStatus.OK.value());
@@ -227,10 +281,32 @@ public class VendorController {
     //개별 상점 상세 정보 확인
 
     @GetMapping("/infoDetail/{id}")
-    public VendorDTO getVendorInfoDetail(@PathVariable Long id){
+    public VendorDTO getVendorInfoDetail(@PathVariable Long id,
+                                         @AuthenticationPrincipal CustomUserDetails customUserDetails){
+        System.out.println("infoDetail");
+        System.out.println(id);
+        System.out.println(vendorService.getVendorDetail(id));
         return vendorService.getVendorDetail(id);
     }
 
+
+    //토큰 안의 사용자 id에 해당되는 vendor 정보 가져오기
+    @GetMapping("/getVendorInfo")
+    public ResponseEntity<?> getVendorInfo(@AuthenticationPrincipal CustomUserDetails customUserDetails){
+        ResponseDTO<VendorDTO> response = new ResponseDTO();
+        try{
+            Member member = customUserDetails.getUser();
+            Vendor vendor = vendorRepository.findByMember(member);
+            response.setItem(VendorDTO.of(vendor));
+            response.setStatusCode(HttpStatus.OK.value());
+
+            return ResponseEntity.ok().body(response);
+        }catch(Exception e) {
+            response.setErrorMessage(e.getMessage());
+            response.setStatusCode(HttpStatus.BAD_REQUEST.value());
+            return ResponseEntity.badRequest().body(response);
+        }
+    }
 
     //신규 가게 등록
 
@@ -240,16 +316,32 @@ public class VendorController {
             @ApiResponse(responseCode = "400", description = "실패")
     })
     @PostMapping("/info")
-    public ResponseEntity<?> insertVendorInfo(VendorDTO vendorDTO, @RequestParam(required = false, value = "file")MultipartFile[] uploadFiles){
+    public ResponseEntity<?> insertVendorInfo(VendorDTO vendorDTO,
+                                              @RequestParam(required = false, value = "file")MultipartFile[] uploadFiles,
+                                              @AuthenticationPrincipal CustomUserDetails customUserDetails){
         System.out.println(vendorDTO);
         System.out.println(uploadFiles.length);
 //        vendorDTO null 일때 vaildation
         if(vendorDTO.equals(null)){
             new BaseResponse<>(VENDORDTO_NUTNULL);
         }
+
         ResponseDTO<VendorDTO> response = new ResponseDTO<>();
         try{
-            vendorService.insertVendor(vendorDTO, uploadFiles);
+            Optional<Member> byUsername = memberRepository.findByUsername(vendorDTO.getUsername());
+//            Member member = customUserDetails.getUser();
+
+            Optional<MultipartFile[]> optionalUploadFiles = Optional.ofNullable(uploadFiles);
+            if (optionalUploadFiles.isPresent()) {
+                System.out.println("if");
+                MultipartFile[] actualUploadFiles = optionalUploadFiles.get();
+                vendorService.insertVendor(byUsername.get(), vendorDTO, actualUploadFiles);
+            } else {
+                System.out.println("else");
+                MultipartFile[] actualUploadFiles = null;
+                vendorService.insertVendor(byUsername.get(), vendorDTO, actualUploadFiles);
+            }
+
             List<VendorDTO> vendorDTOList = vendorService.getVendorList();
             response.setItemlist(vendorDTOList);
             response.setStatusCode(HttpStatus.OK.value());
@@ -265,11 +357,14 @@ public class VendorController {
 
     //가게 정보 수정
     @PutMapping("/info")
-    public ResponseEntity<?> updateVendorInfo(VendorDTO vendorDTO, @RequestParam(required = false, value = "file")MultipartFile[] uploadFiles){
+    public ResponseEntity<?> updateVendorInfo(VendorDTO vendorDTO, @RequestParam(required = false, value = "file")MultipartFile[] uploadFiles,
+                                              @AuthenticationPrincipal CustomUserDetails customUserDetails){
         ResponseDTO<VendorDTO> response = new ResponseDTO<>();
 
         try{
-            vendorService.updateVendor(vendorDTO, uploadFiles);
+            Member member = customUserDetails.getUser();
+
+            vendorService.updateVendor(member, vendorDTO, uploadFiles);
 
             List<VendorDTO> vendorDTOList = vendorService.getVendorList();
 
@@ -289,11 +384,13 @@ public class VendorController {
 
     //가게 정보 삭제
     @DeleteMapping("/info")
-    public ResponseEntity<?> deleteVendorInfo(@RequestBody VendorDTO vendorDTO){
+    public ResponseEntity<?> deleteVendorInfo(VendorDTO vendorDTO,
+                                              @AuthenticationPrincipal CustomUserDetails customUserDetails){
         ResponseDTO<VendorDTO> response = new ResponseDTO<>();
 
         try{
-            vendorService.deleteVendor(vendorDTO);
+            Member member = customUserDetails.getUser();
+            vendorService.deleteVendor(member, vendorDTO);
 
             List<VendorDTO> vendorDTOList = vendorService.getVendorList();
 

@@ -30,6 +30,12 @@ public class QOrders extends EntityPathBase<Orders> {
 
     public final ListPath<OrderMenu, QOrderMenu> orderMenuList = this.<OrderMenu, QOrderMenu>createList("orderMenuList", OrderMenu.class, QOrderMenu.class, PathInits.DIRECT2);
 
+    public final EnumPath<OrderStatus> orderStatus = createEnum("orderStatus", OrderStatus.class);
+
+    public final com.example.bitcamptiger.payments.entity.QPayments payments;
+
+    public final com.example.bitcamptiger.vendor.entity.QVendor vendor;
+
     public QOrders(String variable) {
         this(Orders.class, forVariable(variable), INITS);
     }
@@ -49,6 +55,8 @@ public class QOrders extends EntityPathBase<Orders> {
     public QOrders(Class<? extends Orders> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.member = inits.isInitialized("member") ? new com.example.bitcamptiger.member.entity.QMember(forProperty("member")) : null;
+        this.payments = inits.isInitialized("payments") ? new com.example.bitcamptiger.payments.entity.QPayments(forProperty("payments"), inits.get("payments")) : null;
+        this.vendor = inits.isInitialized("vendor") ? new com.example.bitcamptiger.vendor.entity.QVendor(forProperty("vendor"), inits.get("vendor")) : null;
     }
 
 }

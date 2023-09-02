@@ -3,6 +3,9 @@ package com.example.bitcamptiger.seoulApi.controller;
 import com.example.bitcamptiger.gyeongGiApi.service.gyeonggiValidationService.GyeonggiValiService;
 import com.example.bitcamptiger.seoulApi.dto.APILocationDTO;
 import com.example.bitcamptiger.seoulApi.service.userValidaionService.UserValiService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,6 +22,11 @@ public class APIController {
     @Autowired
     private GyeonggiValiService gyeonggiValiService;
 
+    @Operation(summary = "validateByRegion", description = "지역별 노점 유효성 검사")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "통과"),
+            @ApiResponse(responseCode = "400", description = "실패")
+    })
     @PostMapping("/validateByRegion")
     public ResponseEntity<String> validateByRegion(@RequestBody APILocationDTO locationDTO) {
         String region = locationDTO.getRegion();

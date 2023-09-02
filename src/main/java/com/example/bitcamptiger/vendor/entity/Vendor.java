@@ -2,7 +2,10 @@ package com.example.bitcamptiger.vendor.entity;
 
 import com.example.bitcamptiger.Review.entity.Review;
 import com.example.bitcamptiger.favoritePick.entity.FavoriteVendor;
+import com.example.bitcamptiger.member.entity.Member;
 import com.example.bitcamptiger.menu.entity.Menu;
+import com.example.bitcamptiger.payments.entity.Payments;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
@@ -32,6 +35,9 @@ public class Vendor {
 
     @Column
     private String vendorName;
+
+    @Column
+    private String SIGMenu;
 
     @Column
     private String vendorInfo;  //가게 설명
@@ -75,22 +81,8 @@ public class Vendor {
     private String location;
 
     @Column
-    private String bank;    //은행명
+    private String helpCheck;  //화장실 정보, 냉방기기 정보
 
-    @Column
-    private String accountOwner;    //계좌주명
-
-    @Column
-    private String accountNumber;   //사장님 계좌번호
-
-    @Column
-    private String toiletInfo;  //화장실 정보
-    
-    @Column
-    private String toiletDistance;  //화장실까지 거리
-
-    @Column
-    private String coolerInfo;  //냉방기기 정보
 
     @OneToMany(mappedBy = "vendor")
     @JsonManagedReference
@@ -101,35 +93,31 @@ public class Vendor {
     @JsonManagedReference   //순환참조 문제를 해결하기 위해 주관리자 명시
     private List<Menu> menuList = new ArrayList<>();
 
+    @OneToMany(mappedBy = "vendor",cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference   //순환참조 문제를 해결하기 위해 주관리자 명시
+    private List<Review> reviewList = new ArrayList<>();
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JsonBackReference
+    @JoinColumn(name = "id",referencedColumnName = "id")
+    private Member member;
 
     //리뷰 별점 합계
     @Column
-    private Double totalReviewScore;
+    private Double totalReviewScore = 0.0;
 
     //리뷰 개수
     @Column
-    private Long reviewCount;
+    private Integer reviewCount = 0;
 
-    //리뷰 가중평균점수(리뷰별점 + 리뷰갯수)
+    //리뷰 평균점수
     @Column
-    private Double weightedAverageScore;
+    private Double averageReviewScore = 0.0;
 
+    @OneToMany(mappedBy = "vendor")
+    @JsonManagedReference
+    private List<Payments> paymentsList = new ArrayList<>();
 
-
-    //리뷰가 생성되거나 수정될 때 vendor 엔티티 업데이트
-    //(총 리뷰 점수, 총 리뷰 개수, 평균 리뷰 점수)
-    public void updateVendorReviewScore(Review review) {
-
-        if(this.reviewCount == null){
-            this.reviewCount = 0L;
-            this.totalReviewScore = 0.0;
-        }
-        this.reviewCount++;
-        this.totalReviewScore += review.getReviewScore();
-        this.weightedAverageScore = (this.totalReviewScore) / (this.reviewCount);
-
-
-    }
 
 
 }

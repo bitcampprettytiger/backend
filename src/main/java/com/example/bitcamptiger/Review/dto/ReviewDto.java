@@ -6,11 +6,11 @@ import com.example.bitcamptiger.member.entity.Member;
 import com.example.bitcamptiger.order.entity.Orders;
 import com.example.bitcamptiger.vendor.dto.VendorDTO;
 import com.example.bitcamptiger.vendor.entity.Vendor;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import net.minidev.json.annotate.JsonIgnore;
 import org.modelmapper.ModelMapper;
 
 import java.time.LocalDateTime;
@@ -22,20 +22,22 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class ReviewDto {
-    private Long id;
 
+    private Long reviewId;
+    private Long id;
     private Orders orders;
     @JsonIgnore
     private Vendor vendor;
-
     private Member member;
     private String reviewContent;
-    private String reviewRegDateTime;
-    private int reviewScore;
+    private String reviewRegDate;
+    private long reviewScore;
     private int likeCount;
     private int disLikeCount;
     private List<ReviewFile> reviewFileList;
     private ReviewFileDto reviewFile;
+
+    private int numberOfReviews;
 
 
     private static ModelMapper modelMapper = new ModelMapper();
@@ -58,7 +60,7 @@ public class ReviewDto {
 
     // 포스트맨 출력시 변환된 형식으로 반환하는 메서드 추가
     public String getReviewRegDateTimeFormatted() {
-        LocalDateTime dateTime = LocalDateTime.parse(reviewRegDateTime, DateTimeFormatter.ISO_DATE_TIME);
+        LocalDateTime dateTime = LocalDateTime.parse(reviewRegDate, DateTimeFormatter.ISO_DATE_TIME);
         return dateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
     }
 

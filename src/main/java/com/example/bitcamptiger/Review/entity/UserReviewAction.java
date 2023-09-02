@@ -15,15 +15,11 @@ public class UserReviewAction {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id") //멤버 id 조인
-    private Member member;
-
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "review_id") //리뷰 id 조인
     private Review review;
 
-    private boolean liked;
-    private boolean disliked;
+    private boolean liked = false;
+    private boolean disliked = false;
 
 
 }

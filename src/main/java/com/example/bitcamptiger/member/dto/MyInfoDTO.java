@@ -20,5 +20,7 @@ public class MyInfoDTO {
 
     private String role;
 
+    private String nickName;
+
 
 }

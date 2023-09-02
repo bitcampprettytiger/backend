@@ -2,7 +2,6 @@ package com.example.bitcamptiger.cart.service;
 
 import com.example.bitcamptiger.cart.dto.CartItemDTO;
 import com.example.bitcamptiger.cart.entity.Cart;
-import com.example.bitcamptiger.cart.entity.CartItem;
 import com.example.bitcamptiger.member.entity.Member;
 import com.example.bitcamptiger.menu.entity.Menu;
 
@@ -18,10 +17,10 @@ public interface CartService {
     List<CartItemDTO> getCartList(Member member);
 
     //장바구니 menu 삭제
-    void deleteCartItem(Long cartId, Long menuId);
+    void deleteCartItem(Member member, Long menuId);
 
     //장바구니 menu 전체 삭제
-    void deleteCart(CartItemDTO cartItemDTO);
+    void deleteCart(Member member);
 
 
 }

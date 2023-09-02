@@ -15,7 +15,6 @@ import org.modelmapper.ModelMapper;
 public class OrderMenuDTO {
 
 //    private Long menuId; // 주문한 메뉴의 ID
-
     private Menu menu;
     private int quantity; // 주문 수량
 //    private int price; // 메뉴 가격
@@ -30,5 +29,7 @@ public class OrderMenuDTO {
     public static OrderMenuDTO of(OrderMenu orderMenu){
         return modelMapper.map(orderMenu, OrderMenuDTO.class);
     }
+
+
 
 }

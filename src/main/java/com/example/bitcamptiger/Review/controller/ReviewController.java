@@ -55,8 +55,7 @@ public class ReviewController {
     public ResponseEntity<ResponseDTO<Map<String, Object>>> createReview(
             @ModelAttribute ReviewDto reviewDto,
             MultipartHttpServletRequest mphsRequest) {
-        try {
-
+        try{
             Map<String, Object> result = reviewService.processReview(reviewDto, mphsRequest);
             ResponseDTO<Map<String, Object>> responseDTO = new ResponseDTO<>();
             responseDTO.setItem(result);

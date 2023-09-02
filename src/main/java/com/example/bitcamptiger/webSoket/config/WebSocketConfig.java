@@ -2,6 +2,7 @@ package com.example.bitcamptiger.lineUp.config;
 
 
 import com.example.bitcamptiger.lineUp.dto.RestaurantDTO;
+import com.example.bitcamptiger.lineUp.handler.AlarmHandler;
 import com.example.bitcamptiger.lineUp.handler.LineUpHandler;
 
 import com.example.bitcamptiger.lineUp.service.RestaurantService;
@@ -30,6 +31,7 @@ public class WebSocketConfig implements WebSocketConfigurer {
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
         // 위에서 생성한 빈을 주입하여 LineUpHandler를 생성
         registry.addHandler(new LineUpHandler(restaurantService, restaurantDTO()), "/lineup")
+                .addHandler(new AlarmHandler(), "/alarm")
                 .setAllowedOrigins("*");
 //                .setAllowedOriginPatterns("*");
     }

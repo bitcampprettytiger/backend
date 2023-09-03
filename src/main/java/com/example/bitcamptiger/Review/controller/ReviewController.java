@@ -57,9 +57,8 @@ public class ReviewController {
             MultipartHttpServletRequest mphsRequest,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
         try {
-
-            Map<String, Object> result = reviewService.processReview(reviewDto, mphsRequest,userDetails);
             ResponseDTO<Map<String, Object>> responseDTO = new ResponseDTO<>();
+            Map<String, Object> result = reviewService.processReview(reviewDto, mphsRequest,userDetails);
             responseDTO.setItem(result);
             return ResponseEntity.ok(responseDTO);
         } catch (Exception e) {

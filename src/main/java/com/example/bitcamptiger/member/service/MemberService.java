@@ -1,5 +1,7 @@
 package com.example.bitcamptiger.member.service;
 
+import com.example.bitcamptiger.jwt.RedisUtil;
+import com.example.bitcamptiger.jwt.repository.RefreshTokenRepository;
 import com.example.bitcamptiger.member.dto.MemberDTO;
 import com.example.bitcamptiger.member.dto.VendorMemberDTO;
 import com.example.bitcamptiger.member.entity.Member;
@@ -25,6 +27,9 @@ public class MemberService {
 
     private final PasswordEncoder passwordEncoder;
 
+    private final RefreshTokenRepository refreshTokenRepository;
+
+    private final RedisUtil redisUtil;
     public MemberDTO join(MemberDTO member ) {
 
         if(member == null || member.getUsername() ==null){
@@ -112,4 +117,14 @@ public class MemberService {
         return Integer.toString(l, LENGTH_10_INT_RADIX);
     }
 
+    public String logout(String accessToken, Member users) {
+
+        // refreshToken 테이블의 refreshToken 삭제
+        refreshTokenRepository.deleteByName(users.getUsername());
+
+        // 레디스에 accessToken 사용못하도록 등록
+        redisUtil.setBlackList(accessToken, "accessToken", 5);
+
+        return "로그아웃 완료";
+    }
 }

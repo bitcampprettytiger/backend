@@ -32,8 +32,8 @@ public class ReviewDto {
     private String reviewContent;
     private String reviewRegDate;
     private long reviewScore;
-    private int likeCount;
-    private int disLikeCount;
+    private boolean like;
+    private boolean disLike;
     private List<ReviewFile> reviewFileList;
     private ReviewFileDto reviewFile;
 
@@ -50,13 +50,6 @@ public class ReviewDto {
         return modelMapper.map(review, ReviewDto.class);
     }
 
-    public boolean isLiked() {
-        return likeCount > 0;
-    }
-
-    public boolean isDisliked() {
-        return disLikeCount > 0;
-    }
 
     // 포스트맨 출력시 변환된 형식으로 반환하는 메서드 추가
     public String getReviewRegDateTimeFormatted() {

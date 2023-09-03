@@ -11,6 +11,7 @@ import com.example.bitcamptiger.Review.repository.UserReviewActionRepository;
 import com.example.bitcamptiger.Review.service.ReviewService;
 import com.example.bitcamptiger.common.reviewFileUtils;
 import com.example.bitcamptiger.dto.ResponseDTO;
+import com.example.bitcamptiger.member.entity.CustomUserDetails;
 import com.example.bitcamptiger.member.entity.Member;
 import com.example.bitcamptiger.member.reposiitory.MemberRepository;
 import com.example.bitcamptiger.order.entity.Orders;
@@ -23,12 +24,14 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import java.io.IOException;
+import java.nio.file.AccessDeniedException;
 import java.util.*;
 
 @Service
@@ -61,12 +64,18 @@ public class ReviewServiceImpl implements ReviewService {
     //리뷰 등록
     @Override
     @Transactional
-    public Map<String, Object> processReview(ReviewDto reviewDto, MultipartHttpServletRequest mphsRequest) throws IOException {
+    public Map<String, Object> processReview(ReviewDto reviewDto,
+                                             MultipartHttpServletRequest mphsRequest,
+                                             @AuthenticationPrincipal CustomUserDetails userDetails) throws IOException {
+
+        if(userDetails == null) {
+            throw new AccessDeniedException("로그인한 사용자만 리뷰를 작성할 수 있습니다.");
+        }
 
         Review review = reviewDto.createReview();
 
         Vendor vendor = getVendorFromRepository(reviewDto.getVendor().getId());
-        Member member = getMemberFromRepository(reviewDto.getMember().getId());
+        Member member = getMemberFromRepository(userDetails.getUser().getId());
         Orders completeOrders = getCompletedOrders(member.getId(), review.getOrders().getId());
 
         review.setVendor(vendor);
@@ -163,14 +172,12 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    @Transactional
     public void likeReview(Review review) {
         updateUserReviewAction(review, true, false);
         review.setLikeCount(review.getLikeCount() + 1);
     }
 
     @Override
-    @Transactional
     public void disLikeReview(Review review) {
         updateUserReviewAction(review, false, true);
         review.setDisLikeCount(review.getDisLikeCount() + 1);

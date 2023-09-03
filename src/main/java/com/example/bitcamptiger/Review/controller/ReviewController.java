@@ -54,10 +54,11 @@ public class ReviewController {
     @PostMapping(value = "/review", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ResponseDTO<Map<String, Object>>> createReview(
             @ModelAttribute ReviewDto reviewDto,
-            MultipartHttpServletRequest mphsRequest) {
+            MultipartHttpServletRequest mphsRequest,
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
         try {
 
-            Map<String, Object> result = reviewService.processReview(reviewDto, mphsRequest);
+            Map<String, Object> result = reviewService.processReview(reviewDto, mphsRequest,userDetails);
             ResponseDTO<Map<String, Object>> responseDTO = new ResponseDTO<>();
             responseDTO.setItem(result);
             return ResponseEntity.ok(responseDTO);

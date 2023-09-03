@@ -14,7 +14,12 @@ import java.util.Optional;
 public interface ReviewRepository extends JpaRepository<Review, Long> {
     @Query("SELECT r, rf FROM Review r LEFT JOIN ReviewFile rf ON r.id = rf.review.id WHERE r.vendor.id = :vendorId")
     List<Object[]> findByVendorId(@Param("vendorId") Long vendorId);
-//    Optional<Review> findByReviewNum(Long reviewNum);
+
+    @Query("SELECT SUM(r.likeCount) FROM Review r")
+    Long getTotalLikes();
+
+    @Query("SELECT SUM(r.disLikeCount) FROM Review r")
+    Long getTotalDisLikes();
 
     List<Review> findByVendor(Vendor vendor);
     Optional<Review> findById(Long id);

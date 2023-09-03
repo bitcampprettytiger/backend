@@ -45,16 +45,16 @@ public class Review {
     @Column
     private Long reviewScore; //별점
     @Column
-    private int likeCount = 0; //좋아요 수
+    private Long likeCount = 0L; //좋아요 수
     @Column
-    private int dislikeCount = 0; // 싫어요 수
+    private Long disLikeCount = 0L; // 싫어요 수
 
     public void increaseLikeCount() {
         this.likeCount++;
     }
 
-    public void increaseDislikeCount() {
-        this.dislikeCount++;
+    public void increaseDisLikeCount() {
+        this.disLikeCount++;
     }
 
 

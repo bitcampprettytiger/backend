@@ -12,6 +12,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.Provider;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -32,8 +33,9 @@ public class ReviewDto {
     private String reviewContent;
     private String reviewRegDate;
     private long reviewScore;
-    private boolean like;
-    private boolean disLike;
+    private long likeCount;
+    private long disLikeCount;
+    private Boolean isLike;
     private List<ReviewFile> reviewFileList;
     private ReviewFileDto reviewFile;
 

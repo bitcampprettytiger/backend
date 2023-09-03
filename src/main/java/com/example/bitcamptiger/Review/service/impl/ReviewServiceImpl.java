@@ -87,22 +87,21 @@ public class ReviewServiceImpl implements ReviewService {
 
         List<ReviewFile> uploadFileList = saveReviewFiles(review, mphsRequest);
 
-        if (reviewDto.isLike() && reviewDto.isDisLike()) {
-            throw new IllegalArgumentException("좋아요와 싫어요를 동시에 선택할 수 없습니다.");
-        }
-
-        if (reviewDto.isLike()) {
+        if (reviewDto.getIsLike()) {  // 좋아요인 경우
             review.increaseLikeCount();
-        }
-        if (reviewDto.isDisLike()) {
-            review.increaseDislikeCount();
+        } else {  // 싫어요인 경우
+            review.increaseDisLikeCount();
         }
 
         saveReviewAndFiles(review, uploadFileList);
 
+        Map<String, Double> reviewRatios = calculateReviewRatios();
+
         Map<String, Object> returnMap = new HashMap<>();
         returnMap.put("msg", "정상적으로 저장되었습니다.");
         returnMap.put("review", uploadFileList);
+        // 좋아요와 싫어요 비율 추가
+        returnMap.putAll(reviewRatios);
 
         return returnMap;
     }
@@ -156,19 +155,6 @@ public class ReviewServiceImpl implements ReviewService {
         }
     }
 
-    // 모든 리뷰에서 좋아요와 싫어요의 총합을 계산
-    public int getTotalLikes() {
-        return StreamSupport.stream(reviewRepository.findAll().spliterator(), false)
-                .mapToInt(Review::getLikeCount)
-                .sum();
-    }
-
-    public int getTotalDislikes() {
-        return StreamSupport.stream(reviewRepository.findAll().spliterator(), false)
-                .mapToInt(Review::getDislikeCount)
-                .sum();
-    }
-
     private List<ReviewFile> saveReviewFiles(Review review, MultipartHttpServletRequest mphsRequest) throws IOException {
         List<ReviewFile> uploadFileList = new ArrayList<>();
         Iterator<String> iterator = mphsRequest.getFileNames();
@@ -188,6 +174,33 @@ public class ReviewServiceImpl implements ReviewService {
 
         return uploadFileList;
     }
+
+    // 모든 리뷰에서 좋아요와 싫어요의 총합을 계산
+    public long getTotalLikes() {
+        Long totalLikes = reviewRepository.getTotalLikes();
+        return totalLikes != null ? totalLikes : 0;
+    }
+
+    public long getTotalDisLikes() {
+        Long totalDisLikes = reviewRepository.getTotalDisLikes();
+        return totalDisLikes != null ? totalDisLikes : 0;
+    }
+
+    public Map<String, Double> calculateReviewRatios() {
+        long totalLikes = getTotalLikes();
+        long totalDislikes = getTotalDisLikes();
+        double totalVotes = totalLikes + totalDislikes;
+
+        double likePercentage = (totalVotes > 0) ? (totalLikes / totalVotes) * 100 : 0;
+        double dislikePercentage = (totalVotes > 0) ? (totalDislikes / totalVotes) * 100 : 0;
+
+        Map<String, Double> reviewRatios = new HashMap<>();
+        reviewRatios.put("likePercentage", likePercentage);
+        reviewRatios.put("dislikePercentage", dislikePercentage);
+
+        return reviewRatios;
+    }
+
 
 //    @Override
 //    public void likeReview(Review review) {

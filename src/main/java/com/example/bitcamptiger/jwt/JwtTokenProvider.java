@@ -31,6 +31,7 @@ public class JwtTokenProvider {
 
     private final RefreshTokenRepository refreshTokenRepository;
 
+    private final RedisUtil redisUtil;
 //    Jwt Token의 signature의 유효성 검사에 사용될 키 값
 //    BASE64 인코딩된 값
 //    navercloud5todobootappgogibitcamp702
@@ -108,6 +109,10 @@ public class JwtTokenProvider {
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
+
+        if(redisUtil.hasKeyBlackList(token)){
+            throw new RuntimeException("로그아웃된 토큰입니다.");
+        }
 
         System.out.println(claims.getSubject());
 

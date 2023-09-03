@@ -11,6 +11,7 @@ import com.example.bitcamptiger.Review.repository.UserReviewActionRepository;
 import com.example.bitcamptiger.Review.service.ReviewService;
 import com.example.bitcamptiger.common.reviewFileUtils;
 import com.example.bitcamptiger.dto.ResponseDTO;
+import com.example.bitcamptiger.member.entity.CustomUserDetails;
 import com.example.bitcamptiger.member.entity.Member;
 import com.example.bitcamptiger.member.reposiitory.MemberRepository;
 import com.example.bitcamptiger.order.entity.Orders;
@@ -23,13 +24,16 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import java.io.IOException;
+import java.nio.file.AccessDeniedException;
 import java.util.*;
+import java.util.stream.StreamSupport;
 
 @Service
 @RequiredArgsConstructor
@@ -61,12 +65,18 @@ public class ReviewServiceImpl implements ReviewService {
     //리뷰 등록
     @Override
     @Transactional
-    public Map<String, Object> processReview(ReviewDto reviewDto, MultipartHttpServletRequest mphsRequest) throws IOException {
+    public Map<String, Object> processReview(ReviewDto reviewDto,
+                                             MultipartHttpServletRequest mphsRequest,
+                                             @AuthenticationPrincipal CustomUserDetails userDetails) throws IOException {
+
+        if(userDetails == null) {
+            throw new AccessDeniedException("로그인한 사용자만 리뷰를 작성할 수 있습니다.");
+        }
 
         Review review = reviewDto.createReview();
 
         Vendor vendor = getVendorFromRepository(reviewDto.getVendor().getId());
-        Member member = getMemberFromRepository(reviewDto.getMember().getId());
+        Member member = getMemberFromRepository(userDetails.getUser().getId());
         Orders completeOrders = getCompletedOrders(member.getId(), review.getOrders().getId());
 
         review.setVendor(vendor);
@@ -77,18 +87,21 @@ public class ReviewServiceImpl implements ReviewService {
 
         List<ReviewFile> uploadFileList = saveReviewFiles(review, mphsRequest);
 
-        if (reviewDto.isLiked()) {
-            likeReview(review);
-        }
-        if (reviewDto.isDisliked()) {
-            disLikeReview(review);
+        if (reviewDto.getIsLike()) {  // 좋아요인 경우
+            review.increaseLikeCount();
+        } else {  // 싫어요인 경우
+            review.increaseDisLikeCount();
         }
 
         saveReviewAndFiles(review, uploadFileList);
 
+        Map<String, Double> reviewRatios = calculateReviewRatios();
+
         Map<String, Object> returnMap = new HashMap<>();
         returnMap.put("msg", "정상적으로 저장되었습니다.");
         returnMap.put("review", uploadFileList);
+        // 좋아요와 싫어요 비율 추가
+        returnMap.putAll(reviewRatios);
 
         return returnMap;
     }
@@ -162,36 +175,61 @@ public class ReviewServiceImpl implements ReviewService {
         return uploadFileList;
     }
 
-    @Override
-    @Transactional
-    public void likeReview(Review review) {
-        updateUserReviewAction(review, true, false);
-        review.setLikeCount(review.getLikeCount() + 1);
+    // 모든 리뷰에서 좋아요와 싫어요의 총합을 계산
+    public long getTotalLikes() {
+        Long totalLikes = reviewRepository.getTotalLikes();
+        return totalLikes != null ? totalLikes : 0;
     }
 
-    @Override
-    @Transactional
-    public void disLikeReview(Review review) {
-        updateUserReviewAction(review, false, true);
-        review.setDisLikeCount(review.getDisLikeCount() + 1);
+    public long getTotalDisLikes() {
+        Long totalDisLikes = reviewRepository.getTotalDisLikes();
+        return totalDisLikes != null ? totalDisLikes : 0;
     }
 
-    private void updateUserReviewAction(Review review, boolean liked, boolean disliked) {
-        Optional<UserReviewAction> userReviewAction = userReviewActionRepository.findByReview(review);
+    public Map<String, Double> calculateReviewRatios() {
+        long totalLikes = getTotalLikes();
+        long totalDislikes = getTotalDisLikes();
+        double totalVotes = totalLikes + totalDislikes;
 
-        if (userReviewAction.isPresent()) {
-            UserReviewAction action = userReviewAction.get();
-            action.setLiked(liked);
-            action.setDisliked(disliked);
-            userReviewActionRepository.save(action);
-        } else {
-            UserReviewAction newAction = new UserReviewAction();
-            newAction.setReview(review);
-            newAction.setLiked(liked);
-            newAction.setDisliked(disliked);
-            userReviewActionRepository.save(newAction);
-        }
+        double likePercentage = (totalVotes > 0) ? (totalLikes / totalVotes) * 100 : 0;
+        double dislikePercentage = (totalVotes > 0) ? (totalDislikes / totalVotes) * 100 : 0;
+
+        Map<String, Double> reviewRatios = new HashMap<>();
+        reviewRatios.put("likePercentage", likePercentage);
+        reviewRatios.put("dislikePercentage", dislikePercentage);
+
+        return reviewRatios;
     }
+
+
+//    @Override
+//    public void likeReview(Review review) {
+//        updateUserReviewAction(review, true, false);
+//        review.setLikeCount(review.getLikeCount() + 1);
+//    }
+//
+//    @Override
+//    public void disLikeReview(Review review) {
+//        updateUserReviewAction(review, false, true);
+//        review.setDisLikeCount(review.getDisLikeCount() + 1);
+//    }
+//
+//    private void updateUserReviewAction(Review review, boolean liked, boolean disliked) {
+//        Optional<UserReviewAction> userReviewAction = userReviewActionRepository.findByReview(review);
+//
+//        if (userReviewAction.isPresent()) {
+//            UserReviewAction action = userReviewAction.get();
+//            action.setLiked(liked);
+//            action.setDisliked(disliked);
+//            userReviewActionRepository.save(action);
+//        } else {
+//            UserReviewAction newAction = new UserReviewAction();
+//            newAction.setReview(review);
+//            newAction.setLiked(liked);
+//            newAction.setDisliked(disliked);
+//            userReviewActionRepository.save(newAction);
+//        }
+//    }
 
 
     //리뷰 수정
@@ -210,7 +248,7 @@ public class ReviewServiceImpl implements ReviewService {
 
         List<ReviewFile> uFileList = processReviewFiles(reviewDto, originFiles, uploadFiles, changeFileList);
 
-        updateReviewActions(reviewDto, review);
+//        updateReviewActions(reviewDto, review);
 
         reviewRepository.save(review);
 
@@ -299,14 +337,14 @@ public class ReviewServiceImpl implements ReviewService {
         return uFileList;
     }
 
-    private void updateReviewActions(ReviewDto reviewDto, Review review) {
-        if (reviewDto.isLiked()) {
-            likeReview(review);
-        }
-        if (reviewDto.isDisliked()) {
-            disLikeReview(review);
-        }
-    }
+//    private void updateReviewActions(ReviewDto reviewDto, Review review) {
+//        if (reviewDto.isLiked()) {
+//            likeReview(review);
+//        }
+//        if (reviewDto.isDisliked()) {
+//            disLikeReview(review);
+//        }
+//    }
 
     private Map<String, Object> createReturnMap(Review updatedReview, List<ReviewFile> updatedReviewFileList) {
         Map<String, Object> returnMap = new HashMap<>();

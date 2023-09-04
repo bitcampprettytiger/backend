@@ -8,6 +8,9 @@ import com.example.bitcamptiger.member.entity.Member;
 import com.example.bitcamptiger.vendor.dto.VendorDTO;
 import com.example.bitcamptiger.vendor.entity.Vendor;
 import com.example.bitcamptiger.vendor.service.VendorService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
@@ -31,6 +34,11 @@ public class FavoritePickController {
     }
 
     //해당 유저와 가게 정보를 받아와서 찜하기를 추가
+    @Operation(summary = "addFavorite", description = "찜하기 추가")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "통과"),
+            @ApiResponse(responseCode = "400", description = "실패")
+    })
     @PostMapping("/add/{vendorId}")
     public ResponseEntity<?> addFavorite(@AuthenticationPrincipal CustomUserDetails customUserDetails,@PathVariable Long vendorId) {
         ResponseDTO<FavoriteVendorDTO> response = new ResponseDTO<>();
@@ -51,6 +59,11 @@ public class FavoritePickController {
     }
 
     //유저와 가게 정보를 받아와서 찜하기를 삭제
+    @Operation(summary = "removeFavorite", description = "찜하기 삭제")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "통과"),
+            @ApiResponse(responseCode = "400", description = "실패")
+    })
     @DeleteMapping("/remove/{vendorId}")
     public ResponseEntity<?> removeFavorite(@AuthenticationPrincipal CustomUserDetails customUserDetails, @PathVariable Long vendorId) {
         ResponseDTO<FavoriteVendorDTO> response = new ResponseDTO<>();
@@ -71,6 +84,11 @@ public class FavoritePickController {
     }
 
     //찜하기 많은 수 를 가진 가게를 탑 8 으로 표출할 수 있는 컨트롤러
+    @Operation(summary = "getTop8FavoriteVendors", description = "찜하기 많은 Top8 표출")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "통과"),
+            @ApiResponse(responseCode = "400", description = "실패")
+    })
     @GetMapping("/top8Favorites")
     public List<VendorDTO> getTop8FavoriteVendors(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
         List<Vendor> top8Vendors = favoriteService.getTop8FavoriteVendors();

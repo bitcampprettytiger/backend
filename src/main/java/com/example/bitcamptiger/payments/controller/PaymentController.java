@@ -12,6 +12,9 @@ import com.siot.IamportRestClient.IamportClient;
 import com.siot.IamportRestClient.exception.IamportResponseException;
 import com.siot.IamportRestClient.response.IamportResponse;
 import com.siot.IamportRestClient.response.Payment;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -63,6 +66,11 @@ public class PaymentController {
     // 여기서 사용된 Payment 객체는 Entity가아닌 IamPort에서 지원하는 Payment 객체
     //imp_uid로 결제내역 조회
     //아임포트서버에서 imp_uid(거래 고유번호)를 검사하여, 데이터를 보내준다.
+    @Operation(summary = "paymentByImpUid", description = "imp_uid로 결제내역 조회")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "통과"),
+            @ApiResponse(responseCode = "400", description = "실패")
+    })
     @PostMapping("/verifyIamport/{imp_uid}")
     public IamportResponse<Payment> paymentByImpUid(@PathVariable String imp_uid) throws IamportResponseException, IOException {
         log.info("paymentByImUid 진입");
@@ -71,6 +79,11 @@ public class PaymentController {
 
 
     //결제하기
+    @Operation(summary = "addPayment", description = "결제하기")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "통과"),
+            @ApiResponse(responseCode = "400", description = "실패")
+    })
     @PostMapping("/addPayment")
     public ResponseEntity<?> addPayment(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody PaymentDTO paymentDTO){
 
@@ -95,6 +108,11 @@ public class PaymentController {
     }
 
     //결제 내역 조회
+    @Operation(summary = "paymentList", description = "결제내역 조회")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "통과"),
+            @ApiResponse(responseCode = "400", description = "실패")
+    })
     @GetMapping("/paymentList")
     public ResponseEntity<?> paymentList(@AuthenticationPrincipal CustomUserDetails customUserDetails){
         ResponseDTO<PaymentDTO> response = new ResponseDTO<>();
@@ -115,6 +133,11 @@ public class PaymentController {
     }
 
     //결제 취소하기
+    @Operation(summary = "cancelPayment", description = "결제 취소하기")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "통과"),
+            @ApiResponse(responseCode = "400", description = "실패")
+    })
     @PostMapping("/cancelPayment/{id}")
     public ResponseEntity<?> cancelPayment(@PathVariable String id){
         ResponseDTO<Map<String, Object>> response = new ResponseDTO<>();

@@ -1,4 +1,4 @@
-package com.example.bitcamptiger.lineUp.repository;
+package com.example.bitcamptiger.webSoket.repository;
 
 import org.springframework.stereotype.Repository;
 

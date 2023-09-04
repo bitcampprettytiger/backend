@@ -23,7 +23,7 @@ public class OrderDTO {
 
     private Long orderId;
 
-    private Long VendorId;
+    private Long vendorId;
 
     @JsonIgnore
     private Member member;

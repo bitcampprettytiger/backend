@@ -1,14 +1,13 @@
-package com.example.bitcamptiger.lineUp.service;
+package com.example.bitcamptiger.webSoket.service;
 
-import com.example.bitcamptiger.lineUp.dto.RestaurantDTO;
-import com.example.bitcamptiger.lineUp.dto.WaitingUserDTO;
+import com.example.bitcamptiger.webSoket.dto.RestaurantDTO;
+import com.example.bitcamptiger.webSoket.dto.WaitingUserDTO;
 import jakarta.websocket.OnClose;
 import jakarta.websocket.OnMessage;
 import jakarta.websocket.OnOpen;
 import jakarta.websocket.Session;
 import jakarta.websocket.server.ServerEndpoint;
 import lombok.RequiredArgsConstructor;
-import org.apache.juli.logging.Log;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;

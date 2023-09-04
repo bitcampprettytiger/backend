@@ -89,6 +89,7 @@ public class PaymentController {
 
         ResponseDTO<PaymentDTO> response = new ResponseDTO<>();
         try{
+
             //CustomUserDetails로부터 회원 정보를 가져옴
             Member member = customUserDetails.getUser();
 

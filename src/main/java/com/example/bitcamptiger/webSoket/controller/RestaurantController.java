@@ -1,9 +1,9 @@
-package com.example.bitcamptiger.lineUp.controller;
+package com.example.bitcamptiger.webSoket.controller;
 
-import com.example.bitcamptiger.lineUp.dto.RestaurantDTO;
-import com.example.bitcamptiger.lineUp.dto.WaitingUserDTO;
-import com.example.bitcamptiger.lineUp.handler.LineUpHandler;
-import com.example.bitcamptiger.lineUp.service.RestaurantService;
+import com.example.bitcamptiger.webSoket.dto.RestaurantDTO;
+import com.example.bitcamptiger.webSoket.dto.WaitingUserDTO;
+import com.example.bitcamptiger.webSoket.handler.LineUpHandler;
+import com.example.bitcamptiger.webSoket.service.RestaurantService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

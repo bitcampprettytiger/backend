@@ -14,6 +14,8 @@ import com.example.bitcamptiger.order.dto.OrderMenuDTO;
 import com.example.bitcamptiger.order.entity.OrderMenu;
 import com.example.bitcamptiger.order.repository.OrderRepository;
 import com.example.bitcamptiger.order.service.OrderService;
+import com.example.bitcamptiger.vendor.entity.Vendor;
+import com.example.bitcamptiger.vendor.repository.VendorRepository;
 import com.querydsl.core.types.Order;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,6 +23,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.EntityExistsException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,6 +34,7 @@ public class OrderController {
 
     private final OrderService orderService;
     private final MemberRepository memberRepository;
+    private final VendorRepository vendorRepository;
 
 
     // 장바구니에 담긴 메뉴들로 주문 생성
@@ -76,6 +80,37 @@ public class OrderController {
     }
 
 
+    //vendor ID로 주문리스트 조회
+    @GetMapping("/orderInfo/vendorOrderList")
+    public ResponseEntity<?> vendorOrderList(@AuthenticationPrincipal CustomUserDetails customUserDetails,
+                                             @RequestParam Long vendorId){
+        ResponseDTO<OrderDTO> response = new ResponseDTO<>();
+
+        try{
+            Long memberId = customUserDetails.getUser().getId();
+            Vendor vendor = vendorRepository.findById(vendorId).orElseThrow(EntityExistsException::new);
+
+            if(!vendor.getMember().getId().equals(memberId)){
+                //로그인한 사용자가 해당 vendor의 소유자가 아닌 경우
+                response.setErrorMessage("주문내역 접근 권한이 없습니다.");
+                response.setStatusCode(HttpStatus.UNAUTHORIZED.value());
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+            }
+
+            List<OrderDTO> orderDTOList = orderService.vendorOrderList(vendorId);
+
+            response.setItemlist(orderDTOList);
+            response.setStatusCode(HttpStatus.OK.value());
+
+            return ResponseEntity.ok(response);
+
+        }catch (Exception e) {
+            response.setErrorMessage(e.getMessage());
+            response.setStatusCode(HttpStatus.BAD_REQUEST.value());
+            return ResponseEntity.badRequest().body(response);
+        }
+    }
+
 
     //주문 상세 내역 확인
 
@@ -86,7 +121,7 @@ public class OrderController {
         try{
             OrderDTO orderDTO = orderService.getOrderDetail(orderId);
 
-            // 주문 상세 내역의 소유자와 현재 로그인한 사용자가 같은지 확인
+            // 주문 상세 내역의 소유자와 333 로그인한 사용자가 같은지 확인
             if (!orderDTO.getMember().getId().equals(customUserDetails.getUser().getId())) {
                 response.setErrorMessage("주문 상세 내역에 접근할 권한이 없습니다.");
                 response.setStatusCode(HttpStatus.FORBIDDEN.value());

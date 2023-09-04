@@ -2,9 +2,7 @@ package com.example.bitcamptiger.webSoket.config;
 
 
 import com.example.bitcamptiger.webSoket.dto.RestaurantDTO;
-import com.example.bitcamptiger.webSoket.handler.AlarmHandler;
 import com.example.bitcamptiger.webSoket.handler.LineUpHandler;
-
 import com.example.bitcamptiger.webSoket.service.RestaurantService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,7 +29,7 @@ public class WebSocketConfig implements WebSocketConfigurer {
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
         // 위에서 생성한 빈을 주입하여 LineUpHandler를 생성
         registry.addHandler(new LineUpHandler(restaurantService, restaurantDTO()), "/lineup")
-                .addHandler(new AlarmHandler(), "/alarm")
+//                .addHandler(new AlarmHandler(), "/alarm")
                 .setAllowedOrigins("*");
 //                .setAllowedOriginPatterns("*");
     }

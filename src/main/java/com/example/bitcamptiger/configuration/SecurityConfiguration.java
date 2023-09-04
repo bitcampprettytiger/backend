@@ -4,6 +4,7 @@ import com.example.bitcamptiger.jwt.JwtAuthenticationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -39,8 +40,9 @@ public class SecurityConfiguration {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
 
-        return http
+        return http.addFilterAfter(jwtAuthenticationFilter, CorsFilter.class)
 //              csrf 공격에 대한 옵션 꺼두기
+                .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .httpBasic(httpSecurityHttpBasicConfigurer -> {
                     httpSecurityHttpBasicConfigurer.disable();
@@ -48,11 +50,42 @@ public class SecurityConfiguration {
                 .sessionManagement(httpSecuritySessionManagementConfigurer -> {
                     httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
                 }).
+
 //                토큰방식을 사용하기 때문에 세션방식 사용하지 않도록 설정
         authorizeHttpRequests((authorizaRequests) -> {
 //                    /요청은 모든 사용자가 이용가능
-    authorizaRequests.requestMatchers("/**","/member/**","/board/**","/api/**", "/vendor/**", "/menu/**").permitAll();
+//
+//  authorizaRequests.requestMatchers("/board/**", "/menu/**", "/cart/**", "/reviews/**", "/orders/**","/upload/**").hasAuthority("ROLE_BASIC");
+//  authorizaRequests.requestMatchers("/vendor/**","/reviews/**").hasAuthority("ROLE_BASIC");
+//  authorizaRequests.requestMatchers("/**").hasAuthority("ROLE_VENDOR");
+//  authorizaRequests.requestMatchers("/api/**").hasAuthority("ROLE_BASIC");
+    authorizaRequests.requestMatchers("/api/**","/member/**","/vendor/join","/API/validateByRegion","/vendor/info","/reviews/**","/logout").permitAll();
+    authorizaRequests.requestMatchers("/board/**", "/menu/**", "/cart/**", "/reviews/**", "/orders/**","/upload/**","/api/**","/refresh","/myPage/**","/refresh/**","/favorite-Test/**","/businessApi/**","/API/**","/payment/**").hasAnyAuthority("ROLE_VENDOR","ROLE_BASIC");
+    authorizaRequests.requestMatchers("/vendor/**").hasAnyAuthority("ROLE_VENDOR","ROLE_BASIC");
+
     authorizaRequests.anyRequest().authenticated();
+
+
+
+//
+//    authorizaRequests.requestMatchers("/member/**").permitAll();
+//    authorizaRequests.requestMatchers("/board/**", "/menu/**", "/cart/**", "/reviews/**", "/orders/**","/upload/**").permitAll();
+//    authorizaRequests.requestMatchers("/favorite-Test/**","/businessApi/**","/API/**").permitAll();
+//    authorizaRequests.requestMatchers("/vendor/**","/reviews/**").permitAll();
+////     authorizaRequests.requestMatchers("/**").hasAuthority("ROLE_VENDOR");
+////    authorizaRequests.requestMatchers("/api/**").hasAuthority("ROLE_BASIC");
+//    authorizaRequests.requestMatchers("/refresh/**").permitAll();
+//    authorizaRequests.requestMatchers("/refresh").permitAll();
+//    authorizaRequests.requestMatchers("/api/**").permitAll();
+//    authorizaRequests.anyRequest().authenticated();
+////
+//     authorizaRequests.requestMatchers("/board/**", "/menu/**", "/cart/**", "/reviews/**", "/orders/**","/upload/**").hasAuthority("ROLE_BASIC");
+//     authorizaRequests.requestMatchers("/favorite-Test/**","/businessApi/**","/API/**").hasAuthority("ROLE_BASIC");
+//
+//     authorizaRequests.requestMatchers("/vendor/**","/reviews/**").hasAuthority("ROLE_BASIC");
+////     authorizaRequests.requestMatchers("/**").hasAuthority("ROLE_VENDOR");
+//     authorizaRequests.requestMatchers("/api/**").hasAuthority("ROLE_BASIC");
+
 })
 //                로그인 로그아웃 설정
 //                AuthenticationProvider에게 전달할
@@ -60,9 +93,7 @@ public class SecurityConfiguration {
 //                상태까지 설정
 //              filter 등록
 //                매요청마다 corsfilter 실행 후 jwtAuthenticationFilter 실행
-                .addFilterAfter(jwtAuthenticationFilter, CorsFilter.class)
                 .build();
-
 
     }
 

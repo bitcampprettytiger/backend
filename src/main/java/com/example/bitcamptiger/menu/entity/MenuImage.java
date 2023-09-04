@@ -1,9 +1,11 @@
 package com.example.bitcamptiger.menu.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -16,12 +18,12 @@ public class MenuImage {
     @Id
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "menu_id", referencedColumnName = "menu_id")
+    @JsonBackReference
     private Menu menu;
+
 
     @Id
     @Column(name = "menu_img_id")
-//    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "menu_image_seq_generator")
-//    @SequenceGenerator(name = "menu_image_seq_generator", sequenceName = "MENU_IMAGE_SEQ", allocationSize = 1)
     private Long id;
 
     @Column
@@ -35,6 +37,8 @@ public class MenuImage {
 
     @Column
     private String fileCate;
+
+
 
 
 }

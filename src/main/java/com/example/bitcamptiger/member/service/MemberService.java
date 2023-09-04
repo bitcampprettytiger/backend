@@ -1,26 +1,48 @@
 package com.example.bitcamptiger.member.service;
 
+import com.example.bitcamptiger.jwt.RedisUtil;
+import com.example.bitcamptiger.jwt.repository.RefreshTokenRepository;
 import com.example.bitcamptiger.member.dto.MemberDTO;
+import com.example.bitcamptiger.member.dto.VendorMemberDTO;
 import com.example.bitcamptiger.member.entity.Member;
 import com.example.bitcamptiger.member.reposiitory.MemberRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.nio.ByteBuffer;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class MemberService {
+    private final static int LENGTH_10_INT_RADIX = 6;
 
     private final MemberRepository memberRepository;
 
     private final PasswordEncoder passwordEncoder;
 
+    private final RefreshTokenRepository refreshTokenRepository;
+
+    private final RedisUtil redisUtil;
     public MemberDTO join(MemberDTO member ) {
+
         if(member == null || member.getUsername() ==null){
             throw new RuntimeException("Invalid Argument");
         }
+
+        if(member.getNickname()==null){
+            String uuid = parseToShortUUID(UUID.randomUUID().toString().replace("-",""));
+
+            member.setNickname(uuid);
+        }
+
+
        Member joinmember = member.toMemberEntity();
 
         //username 중복체크
@@ -31,8 +53,29 @@ public class MemberService {
         return memberRepository.save(joinmember).toMemberDTO();
     }
 
+
+    public VendorMemberDTO vendorjoin(VendorMemberDTO member ) {
+        if(member == null || member.getUsername() ==null){
+            throw new RuntimeException("Invalid Argument");
+        }
+        if(member.getNickname()==null){
+            String uuid = parseToShortUUID(UUID.randomUUID().toString().replace("-",""));
+
+            member.setNickname(uuid);
+        }
+
+
+        Member joinmember = member.toMemberEntity();
+
+        //username 중복체크
+        if(memberRepository.existsByUsername(member.getUsername())){
+
+            throw new RuntimeException("already exist username");
+        }
+        return memberRepository.save(joinmember).toVendorMemberDTO();
+    }
     public Optional<Member> login(Member member) {
-        System.out.println(member.getUsername());
+
         Optional<Member> loginMember = memberRepository.findByUsername(member.getUsername());
         System.out.println(loginMember.get());
         if(loginMember.isEmpty()){
@@ -50,4 +93,38 @@ public class MemberService {
     }
 
 
+    public MemberDTO updatemember(MemberDTO member) {
+
+        Member findmember = memberRepository.findByUsername(member.getUsername()).orElseThrow(EntityNotFoundException::new);
+
+        findmember.setNickname(member.getNickname());
+
+        MemberDTO memberDTO = findmember.toMemberDTO();
+
+        return memberDTO;
+
+    }
+
+    public void deletemember(MemberDTO member) {
+
+        Member findmember = memberRepository.findByUsername(member.getUsername()).orElseThrow(EntityNotFoundException::new);
+
+        memberRepository.delete(findmember);
+    }
+
+    public static String parseToShortUUID(String uuid) {
+        int l = ByteBuffer.wrap(uuid.getBytes()).getInt();
+        return Integer.toString(l, LENGTH_10_INT_RADIX);
+    }
+
+    public String logout(String accessToken, Member users) {
+
+        // refreshToken 테이블의 refreshToken 삭제
+        refreshTokenRepository.deleteByName(users.getUsername());
+
+        // 레디스에 accessToken 사용못하도록 등록
+        redisUtil.setBlackList(accessToken, "accessToken", 5);
+
+        return "로그아웃 완료";
+    }
 }

@@ -21,9 +21,21 @@ public class QMember extends EntityPathBase<Member> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
+    public final BooleanPath isOAuth = createBoolean("isOAuth");
+
+    public final StringPath local = createString("local");
+
+    public final StringPath nickname = createString("nickname");
+
     public final StringPath password = createString("password");
 
+    public final BooleanPath privacy = createBoolean("privacy");
+
     public final StringPath role = createString("role");
+
+    public final NumberPath<Integer> tel = createNumber("tel", Integer.class);
+
+    public final StringPath type = createString("type");
 
     public final StringPath username = createString("username");
 

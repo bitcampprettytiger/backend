@@ -1,0 +1,142 @@
+package com.example.bitcamptiger.cart.service.Impl;
+
+import com.example.bitcamptiger.cart.dto.CartItemDTO;
+import com.example.bitcamptiger.cart.entity.Cart;
+import com.example.bitcamptiger.cart.entity.CartItem;
+import com.example.bitcamptiger.cart.repository.CartItemRepository;
+import com.example.bitcamptiger.cart.repository.CartRepository;
+import com.example.bitcamptiger.cart.service.CartService;
+import com.example.bitcamptiger.member.entity.Member;
+import com.example.bitcamptiger.menu.dto.MenuImageDTO;
+import com.example.bitcamptiger.menu.entity.Menu;
+import com.example.bitcamptiger.menu.entity.MenuImage;
+import com.example.bitcamptiger.menu.repository.MenuImageRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@Service
+@RequiredArgsConstructor
+@Transactional
+public class CartServiceImpl implements CartService {
+
+    private final CartRepository cartRepository;
+    private final MenuImageRepository menuImageRepository;
+    private final CartItemRepository cartItemRepository;
+
+
+    //처음 장바구니에 상품을 담을 때는 해당 member의 장바구니를 생성해야 함.
+//    public void createCart(Member member){
+//        Cart cart = Cart.createCart(member);
+//        cartRepository.save(cart);
+//    }
+
+    //장바구니에 menu 추가
+    @Override
+    public Cart addCart(Member member, Menu menu, int cartQuantity) {
+
+        Cart cart = cartRepository.findByMemberId(member.getId());
+
+        //cart가 비어있으면 생성.
+        if(cart == null){
+            cart = Cart.createCart(member);
+            Cart save = cartRepository.save(cart);
+            cart.setId(save.getId());
+        }
+
+        //cartItem 생성
+        CartItem cartItem = cartItemRepository.findByCartIdAndMenuId(cart.getId(), menu.getId());
+
+        //cartItem이 비어있다면 새로 생성.
+        if(cartItem == null){
+            cartItem = CartItem.createCartItem(cart, menu, cartQuantity);
+            cartItemRepository.save(cartItem);
+        }else{
+            //cartItem이 비어있지 않다면 그만큼 개수를 추가
+            cartItem.addCount(cartQuantity);
+            cartItemRepository.save(cartItem);
+        }
+        return  cart;
+    }
+
+
+
+
+    //장바구니 조회
+    @Override
+    public List<CartItemDTO> getCartList(Member member) {
+        List<CartItem> cartItems = cartItemRepository.findByCartMember(member);
+        List<CartItemDTO> cartItemDTOList = new ArrayList<>();
+
+        for(CartItem cartItem : cartItems){
+            CartItemDTO cartItemDTO = CartItemDTO.of(cartItem);
+            Menu menu = cartItem.getMenu();
+            cartItemDTO.setMenu(menu);
+            cartItemDTO.setCart(cartItem.getCart());
+
+            //해당 메뉴 이미지 조회
+            List<MenuImage> menuImageList = menuImageRepository.findByMenu(menu);
+            List<MenuImageDTO> menuImageDTOList = new ArrayList<>();
+            for(MenuImage menuImage : menuImageList){
+                MenuImageDTO menuImageDTO = MenuImageDTO.of(menuImage);
+                menuImageDTOList.add(menuImageDTO);
+            }
+            cartItemDTO.setMenuImageDTOList(menuImageDTOList);
+            cartItemDTOList.add(cartItemDTO);
+
+        }
+        return cartItemDTOList;
+    }
+
+
+
+    //장바구니 menu 삭제
+    @Override
+    public void deleteCartItem(Member member, Long menuId) {
+       CartItem cartItem = cartItemRepository.findByCartItem(member, menuId);
+
+       if(cartItem == null){
+           throw new IllegalArgumentException("장바구니에 해당 메뉴가 없습니다.");
+       }
+
+       //검증: 로그인한 유저의 cart가 아니면 예외 발생
+        if(!cartItem.getCart().getMember().getId().equals(member.getId())){
+            throw new AccessDeniedException("삭제 권한이 없습니다.");
+        }
+
+       cartItemRepository.delete(cartItem);
+    }
+
+
+    //장바구니 menu 전체 삭제
+    @Override
+    public void deleteCart(Member member) {
+        List<CartItem> cartItemList = cartItemRepository.findByCartMember(member);
+
+        if(cartItemList == null  || cartItemList.isEmpty()){
+            throw new IllegalArgumentException("장바구니에 담긴 메뉴가 없습니다.");
+        }
+
+        //검증: 로그인한 유저의 cart가 아니면 예외 발생
+//        CartItem cartItem = new CartItem();
+        for(CartItem cartItem : cartItemList) {
+            if (!cartItem.getCart().getMember().getId().equals(member.getId())) {
+                throw new AccessDeniedException("삭제 권한이 없습니다.");
+            }
+        }
+
+        cartItemRepository.deleteAll(cartItemList);
+        cartItemRepository.flush();
+
+    }
+
+
+
+
+
+
+}

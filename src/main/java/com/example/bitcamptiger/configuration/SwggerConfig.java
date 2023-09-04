@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 
 
 //@Configuration
@@ -45,11 +46,22 @@ public class SwggerConfig {
 
     @Bean
     public GroupedOpenApi chatOpenApi() {
-        String[] paths = {"/member/**"};
+        String[] paths = {"/member/**","/vendor/**"};
 
         return GroupedOpenApi.builder()
                 .group("채팅서비스 API v1")
                 .pathsToMatch(paths)
                 .build();
     }
+
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return web -> web.ignoring().requestMatchers("/h2-console/**",
+                "/favicon.ico",
+                "/error",
+                "/swagger-ui/**",
+                "/swagger-resources/**",
+                "/v3/api-docs/**");
+    }
+
 }

@@ -101,27 +101,29 @@ public class MenuController {
 
 
 
-    @PostMapping("/UpdateVendor")
-    public ResponseEntity<?> vendorupdateMenu(VendorMenuDto vendorMenuDto,
-                                              @AuthenticationPrincipal CustomUserDetails customUserDetails){
+//    @PostMapping("/UpdateVendor")
+//    public ResponseEntity<?> vendorupdateMenu(VendorMenuDto vendorMenuDto,
+//                                              @AuthenticationPrincipal CustomUserDetails customUserDetails){
+//
+//        ResponseDTO<String> response = new ResponseDTO<>();
+//        System.out.println(vendorMenuDto);
+//
+//        try{
+//            // 로그인한 사용자의 정보에 접근
+//            Member loggedInMember = customUserDetails.getUser();
+//
+//            response.setItem("수정완료");
+//            response.setStatusCode(HttpStatus.OK.value());
+//
+//            return ResponseEntity.ok().body(response);
+//        }catch(Exception e) {
+//            response.setErrorMessage(e.getMessage());
+//            response.setStatusCode(HttpStatus.BAD_REQUEST.value());
+//            return ResponseEntity.badRequest().body(response);
+//        }
+//    }
 
-        ResponseDTO<String> response = new ResponseDTO<>();
-        System.out.println(vendorMenuDto);
 
-        try{
-            // 로그인한 사용자의 정보에 접근
-            Member loggedInMember = customUserDetails.getUser();
-
-            response.setItem("수정완료");
-            response.setStatusCode(HttpStatus.OK.value());
-
-            return ResponseEntity.ok().body(response);
-        }catch(Exception e) {
-            response.setErrorMessage(e.getMessage());
-            response.setStatusCode(HttpStatus.BAD_REQUEST.value());
-            return ResponseEntity.badRequest().body(response);
-        }
-    }
     // 메뉴 수정
     @Operation(summary = "updateMenu", description = "메뉴 수정")
     @ApiResponses({

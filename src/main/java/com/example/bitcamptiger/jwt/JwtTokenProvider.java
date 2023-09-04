@@ -117,7 +117,7 @@ public class JwtTokenProvider {
         System.out.println(claims.getSubject());
 
         String scope = claims.get("scope", String.class);
-
+s
         if ("refresh".equals(scope)) {
             String username = claims.getSubject();
 //            UserDetails userDetails =

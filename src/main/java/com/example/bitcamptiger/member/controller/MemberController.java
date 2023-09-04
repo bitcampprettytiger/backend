@@ -257,6 +257,19 @@ public class MemberController {
         return ResponseEntity.ok(memberService.logout(tokenDTO.getAccessToken(), customDetails.getUser()));
     }
 
+
+    @GetMapping("/member/info")
+    public ResponseEntity<?> memberinfo(
+            @AuthenticationPrincipal CustomUserDetails customDetails
+    ) {
+        try {
+            return ResponseEntity.ok(customDetails.getUser());
+        }
+        catch (Exception e){
+            System.out.println(e.getMessage());
+            return null;
+        }
+    }
 }
 
 

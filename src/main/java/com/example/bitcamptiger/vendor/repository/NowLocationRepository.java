@@ -13,5 +13,6 @@ public interface NowLocationRepository extends JpaRepository<Randmark,Long>, Que
 
     Optional<Randmark> findByMapLocation(String mapLocation);
 
+    Randmark findByLocation(String location);
 
 }

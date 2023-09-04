@@ -4,10 +4,8 @@ import com.example.bitcamptiger.Review.dto.ReviewDto;
 import com.example.bitcamptiger.Review.dto.ReviewFileDto;
 import com.example.bitcamptiger.Review.entity.Review;
 import com.example.bitcamptiger.Review.entity.ReviewFile;
-import com.example.bitcamptiger.Review.entity.UserReviewAction;
 import com.example.bitcamptiger.Review.repository.ReviewFileRepository;
 import com.example.bitcamptiger.Review.repository.ReviewRepository;
-import com.example.bitcamptiger.Review.repository.UserReviewActionRepository;
 import com.example.bitcamptiger.Review.service.ReviewService;
 import com.example.bitcamptiger.common.reviewFileUtils;
 import com.example.bitcamptiger.dto.ResponseDTO;
@@ -20,7 +18,6 @@ import com.example.bitcamptiger.vendor.entity.Vendor;
 import com.example.bitcamptiger.vendor.repository.VendorRepository;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,7 +30,6 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import java.io.IOException;
 import java.nio.file.AccessDeniedException;
 import java.util.*;
-import java.util.stream.StreamSupport;
 
 @Service
 @RequiredArgsConstructor
@@ -45,10 +41,7 @@ public class ReviewServiceImpl implements ReviewService {
     private final MemberRepository memberRepository;
     private final ReviewFileRepository reviewFileRepository;
     private final reviewFileUtils reviewFileUtils;
-    private final UserReviewActionRepository userReviewActionRepository;
     private final OrderRepository orderRepository;
-
-    private final EntityManager entityManager;
 
     @Value("${reviewFile.path}")
     String attachPath;
@@ -201,38 +194,7 @@ public class ReviewServiceImpl implements ReviewService {
         return reviewRatios;
     }
 
-
-//    @Override
-//    public void likeReview(Review review) {
-//        updateUserReviewAction(review, true, false);
-//        review.setLikeCount(review.getLikeCount() + 1);
-//    }
-//
-//    @Override
-//    public void disLikeReview(Review review) {
-//        updateUserReviewAction(review, false, true);
-//        review.setDisLikeCount(review.getDisLikeCount() + 1);
-//    }
-//
-//    private void updateUserReviewAction(Review review, boolean liked, boolean disliked) {
-//        Optional<UserReviewAction> userReviewAction = userReviewActionRepository.findByReview(review);
-//
-//        if (userReviewAction.isPresent()) {
-//            UserReviewAction action = userReviewAction.get();
-//            action.setLiked(liked);
-//            action.setDisliked(disliked);
-//            userReviewActionRepository.save(action);
-//        } else {
-//            UserReviewAction newAction = new UserReviewAction();
-//            newAction.setReview(review);
-//            newAction.setLiked(liked);
-//            newAction.setDisliked(disliked);
-//            userReviewActionRepository.save(newAction);
-//        }
-//    }
-
-
-    //리뷰 수정
+    //리뷰 수정(실질적으로 사용 안함)
     @Override
     public ResponseDTO<Map<String, Object>> processReviewUpdates(
             ReviewDto reviewDto, MultipartFile[] uploadFiles,
@@ -337,14 +299,6 @@ public class ReviewServiceImpl implements ReviewService {
         return uFileList;
     }
 
-//    private void updateReviewActions(ReviewDto reviewDto, Review review) {
-//        if (reviewDto.isLiked()) {
-//            likeReview(review);
-//        }
-//        if (reviewDto.isDisliked()) {
-//            disLikeReview(review);
-//        }
-//    }
 
     private Map<String, Object> createReturnMap(Review updatedReview, List<ReviewFile> updatedReviewFileList) {
         Map<String, Object> returnMap = new HashMap<>();
@@ -370,16 +324,11 @@ public class ReviewServiceImpl implements ReviewService {
         Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new EntityNotFoundException("리뷰를 찾을 수 없습니다."));
 
-
         if(!review.getMember().getId().equals(loggedInMember.getId())){
             throw new RuntimeException("리뷰를 삭제할 권한이 없습니다.");
         }
 
-
         String bucketName = "springboot";
-
-        userReviewActionRepository.deleteByReview(review);
-
 
         reviewFileRepository.findByReview(review).forEach(reviewFile -> {
             String key = reviewFile.getReviewFilePath() + reviewFile.getReviewFileName();
@@ -397,7 +346,6 @@ public class ReviewServiceImpl implements ReviewService {
     public List<ReviewFile> getReviewFileList(Long id) {
         return reviewFileRepository.findByReviewId(id);
     }
-
 
     //해당 vendor 리뷰 조회하기
     @Override

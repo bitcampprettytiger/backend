@@ -94,9 +94,14 @@ public class OrderController {
 
 
     //vendor ID로 주문리스트 조회
-    @GetMapping("/orderInfo/vendorOrderList")
+    @Operation(summary = "vendorOrderList", description = "주문 리스트 조회(판매자 측)")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "통과"),
+            @ApiResponse(responseCode = "400", description = "실패")
+    })
+    @GetMapping("/orderInfo/vendorOrderList/{vendorId}")
     public ResponseEntity<?> vendorOrderList(@AuthenticationPrincipal CustomUserDetails customUserDetails,
-                                             @RequestParam Long vendorId){
+                                             @PathVariable Long vendorId){
         ResponseDTO<OrderDTO> response = new ResponseDTO<>();
 
         try{
@@ -138,7 +143,7 @@ public class OrderController {
         try{
             OrderDTO orderDTO = orderService.getOrderDetail(orderId);
 
-            // 주문 상세 내역의 소유자와 333 로그인한 사용자가 같은지 확인
+            // 주문 상세 내역의 소유자와 로그인한 사용자가 같은지 확인
             if (!orderDTO.getMember().getId().equals(customUserDetails.getUser().getId())) {
                 response.setErrorMessage("주문 상세 내역에 접근할 권한이 없습니다.");
                 response.setStatusCode(HttpStatus.FORBIDDEN.value());

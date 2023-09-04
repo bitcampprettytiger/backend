@@ -163,7 +163,7 @@ public class VendorController {
 
 
     //모든 가게 정보 리스트
-    @Operation(summary = "getVendorInfoList", description = "")
+    @Operation(summary = "getVendorInfoList", description = "모든 가게 정보 가져오기")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "통과"),
             @ApiResponse(responseCode = "400", description = "실패")

@@ -1,6 +1,7 @@
 package com.example.bitcamptiger.member.controller;
 
 import com.example.bitcamptiger.dto.ResponseDTO;
+import com.example.bitcamptiger.dto.TokenDTO;
 import com.example.bitcamptiger.jwt.JwtService;
 import com.example.bitcamptiger.jwt.JwtTokenProvider;
 import com.example.bitcamptiger.jwt.jwtdto.JwtDto;
@@ -248,6 +249,14 @@ public class MemberController {
 //
 //    }
     }
+    @DeleteMapping("/logout")
+    public ResponseEntity<String> logout(
+            @AuthenticationPrincipal CustomUserDetails customDetails,
+            @RequestBody TokenDTO tokenDTO
+    ) {
+        return ResponseEntity.ok(memberService.logout(tokenDTO.getAccessToken(), customDetails.getUser()));
+    }
+
 }
 
 

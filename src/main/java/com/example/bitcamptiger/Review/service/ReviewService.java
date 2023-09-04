@@ -4,6 +4,7 @@ import com.example.bitcamptiger.Review.dto.ReviewDto;
 import com.example.bitcamptiger.Review.entity.Review;
 import com.example.bitcamptiger.Review.entity.ReviewFile;
 import com.example.bitcamptiger.dto.ResponseDTO;
+import com.example.bitcamptiger.member.entity.CustomUserDetails;
 import com.example.bitcamptiger.member.entity.Member;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -14,7 +15,9 @@ import java.util.Map;
 
 public interface ReviewService {
 
-    Map<String, Object> processReview(ReviewDto reviewDto, MultipartHttpServletRequest mphsRequest) throws IOException;
+    Map<String, Object> processReview(ReviewDto reviewDto,
+                                      MultipartHttpServletRequest mphsRequest,
+                                      CustomUserDetails userDetails) throws IOException;
 
     Review getReview(Long id);
 
@@ -31,9 +34,9 @@ public interface ReviewService {
 
     List<ReviewDto> getAllReviewsWithFiles(Long vendorId);
 
-    void likeReview(Review review);
-
-    void disLikeReview(Review review);
+//    void likeReview(Review review);
+//
+//    void disLikeReview(Review review);
 
 
 }

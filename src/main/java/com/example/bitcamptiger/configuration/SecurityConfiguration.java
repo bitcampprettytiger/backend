@@ -59,9 +59,10 @@ public class SecurityConfiguration {
 //  authorizaRequests.requestMatchers("/vendor/**","/reviews/**").hasAuthority("ROLE_BASIC");
 //  authorizaRequests.requestMatchers("/**").hasAuthority("ROLE_VENDOR");
 //  authorizaRequests.requestMatchers("/api/**").hasAuthority("ROLE_BASIC");
-    authorizaRequests.requestMatchers("/api/**","/member/**","/vendor/join","/API/validateByRegion","/vendor/info").permitAll();
+    authorizaRequests.requestMatchers("/api/**","/member/**","/vendor/join","/API/validateByRegion","/vendor/info","/reviews/**","/logout").permitAll();
     authorizaRequests.requestMatchers("/board/**", "/menu/**", "/cart/**", "/reviews/**", "/orders/**","/upload/**","/api/**","/refresh","/myPage/**","/refresh/**","/favorite-Test/**","/businessApi/**","/API/**","/payment/**").hasAnyAuthority("ROLE_VENDOR","ROLE_BASIC");
     authorizaRequests.requestMatchers("/vendor/**").hasAnyAuthority("ROLE_VENDOR","ROLE_BASIC");
+
     authorizaRequests.anyRequest().authenticated();
 
 

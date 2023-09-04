@@ -17,6 +17,9 @@ import com.example.bitcamptiger.order.service.OrderService;
 import com.example.bitcamptiger.vendor.entity.Vendor;
 import com.example.bitcamptiger.vendor.repository.VendorRepository;
 import com.querydsl.core.types.Order;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,6 +41,11 @@ public class OrderController {
 
 
     // 장바구니에 담긴 메뉴들로 주문 생성
+    @Operation(summary = "createOrderByCartItems", description = "주문 생성")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "통과"),
+            @ApiResponse(responseCode = "400", description = "실패")
+    })
     @PostMapping("/orderInfo")
     public ResponseEntity<?> createOrderByCartItems(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody OrderDTO orderDTO) {
         ResponseDTO<OrderDTO> response = new ResponseDTO<>();
@@ -60,6 +68,11 @@ public class OrderController {
     }
 
     // 멤버 ID로 주문리스트 조회
+    @Operation(summary = "getOrderList", description = "주문 리스트 조회")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "통과"),
+            @ApiResponse(responseCode = "400", description = "실패")
+    })
     @GetMapping("/orderInfo/orderList")
     public ResponseEntity<?> getOrderList(@AuthenticationPrincipal CustomUserDetails customUserDetails){
         ResponseDTO<OrderDTO> response = new ResponseDTO<>();
@@ -113,7 +126,11 @@ public class OrderController {
 
 
     //주문 상세 내역 확인
-
+    @Operation(summary = "getOrderDetail", description = "주문 상세내역 조회")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "통과"),
+            @ApiResponse(responseCode = "400", description = "실패")
+    })
     @GetMapping("/orderDetail/{orderId}")
     public ResponseEntity<?> getOrderDetail(@AuthenticationPrincipal CustomUserDetails customUserDetails,@PathVariable Long orderId){
         ResponseDTO<OrderDTO> response = new ResponseDTO<>();

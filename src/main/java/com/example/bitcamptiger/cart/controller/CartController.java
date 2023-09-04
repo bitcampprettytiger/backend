@@ -15,6 +15,9 @@ import com.example.bitcamptiger.member.reposiitory.MemberRepository;
 import com.example.bitcamptiger.menu.dto.MenuDTO;
 import com.example.bitcamptiger.menu.entity.Menu;
 import com.example.bitcamptiger.menu.repository.MenuRepository;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,6 +38,11 @@ public class CartController {
     public final MenuRepository menuRepository;
 
     //내 장바구니 조회
+    @Operation(summary = "getMyCart", description = "내 장바구니 조회")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "통과"),
+            @ApiResponse(responseCode = "400", description = "실패")
+    })
     @GetMapping("/info")
     public ResponseEntity<?> getMyCart(@AuthenticationPrincipal CustomUserDetails customUserDetails){
         ResponseDTO<CartItemDTO> response = new ResponseDTO<>();
@@ -58,6 +66,11 @@ public class CartController {
 
 
     // 장바구니에 메뉴 추가
+    @Operation(summary = "addCartItem", description = "장바구니에 메뉴 추가")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "통과"),
+            @ApiResponse(responseCode = "400", description = "실패")
+    })
     @PostMapping("/info")
     public ResponseEntity<ResponseDTO<CartItemDTO>> addMenuToCart(@AuthenticationPrincipal CustomUserDetails customUserDetails,@RequestBody CartItemDTO2 cartItemDTO2) {
         System.out.println(cartItemDTO2);
@@ -96,6 +109,11 @@ public class CartController {
 
 
     //장바구니 menu 삭제
+    @Operation(summary = "deleteCartItem", description = "장바구니 메뉴 선택 삭제")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "통과"),
+            @ApiResponse(responseCode = "400", description = "실패")
+    })
     @DeleteMapping("/deletecartitem")
     public ResponseEntity<?> deleteCartItem(@AuthenticationPrincipal CustomUserDetails customUserDetails,
                                             @RequestParam Long menuId){
@@ -120,6 +138,11 @@ public class CartController {
 
 
     //장바구니 menu 전체 삭제
+    @Operation(summary = "deleteCart", description = "장바구니 메뉴 전체 삭제")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "통과"),
+            @ApiResponse(responseCode = "400", description = "실패")
+    })
     @DeleteMapping("/info")
     public ResponseEntity<?> deleteCart(@AuthenticationPrincipal CustomUserDetails customUserDetails){
         ResponseDTO<CartItemDTO> response = new ResponseDTO<>();

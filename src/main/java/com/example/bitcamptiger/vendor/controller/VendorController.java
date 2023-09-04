@@ -40,8 +40,11 @@ public class VendorController {
 
     public final MemberRepository memberRepository;
 
-
-
+    @Operation(summary = "getVendorOpenInfoList", description = "")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "통과"),
+            @ApiResponse(responseCode = "400", description = "실패")
+    })
     @PostMapping("/search")
     public BaseResponse<?> getVendorOpenInfoList(@RequestBody NowLocationDto nowLocationDto, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         System.out.println(nowLocationDto);
@@ -73,6 +76,11 @@ public class VendorController {
 
     }
 
+    @Operation(summary = "getVendorOpenInfoList", description = "")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "통과"),
+            @ApiResponse(responseCode = "400", description = "실패")
+    })
     @PostMapping("/search10vendor")
     public BaseResponse<?> getVendorrandmark(@RequestBody NowLocationDto nowLocationDto) {
         System.out.println(nowLocationDto);
@@ -92,6 +100,12 @@ public class VendorController {
         }
 
     }
+
+    @Operation(summary = "getVendorOpenInfoList", description = "")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "통과"),
+            @ApiResponse(responseCode = "400", description = "실패")
+    })
     @PostMapping("/locationsave")
     public BaseResponse<?> saveVendorOpenInfoList(@AuthenticationPrincipal CustomUserDetails customUserDetails,@RequestBody NowLocationDto nowLocationDto) {
 
@@ -120,8 +134,7 @@ public class VendorController {
     }
 
     //현재 "OPEN" 가게 정보 리스트
-
-    @Operation(summary = "openinfo", description = "가게오픈정보 가져오기")
+    @Operation(summary = "openinfo", description = "가게 오픈 정보 가져오기")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "통과"),
             @ApiResponse(responseCode = "400", description = "실패")
@@ -150,6 +163,11 @@ public class VendorController {
 
 
     //모든 가게 정보 리스트
+    @Operation(summary = "getVendorInfoList", description = "")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "통과"),
+            @ApiResponse(responseCode = "400", description = "실패")
+    })
     @GetMapping("/info")
     public ResponseEntity<?> getVendorInfoList(@AuthenticationPrincipal CustomUserDetails customUserDetails){
         ResponseDTO<VendorDTO> response = new ResponseDTO<>();
@@ -173,6 +191,11 @@ public class VendorController {
     //지역명으로 검색
     //메뉴명으로 검색
     //가게명으로 검색
+    @Operation(summary = "getVendorByCategory", description = "카테고리로 검색하기")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "통과"),
+            @ApiResponse(responseCode = "400", description = "실패")
+    })
     @GetMapping("/category")
     public ResponseEntity<?> getVendorByCategory(
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
@@ -207,6 +230,11 @@ public class VendorController {
 
     //길거리 음식, 포장마차 타입 분류
     //해당 타입에 포함되는 가게 조회하기
+    @Operation(summary = "getVendorByVendorType", description = "해당 타입에 포함되는 가게 조회")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "통과"),
+            @ApiResponse(responseCode = "400", description = "실패")
+    })
     @GetMapping("/vendorType/{vendorType}")
     public ResponseEntity<?> getVendorByVendorType(
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
@@ -233,6 +261,11 @@ public class VendorController {
 
 
     //메뉴 타입별 가게 정보 조회
+    @Operation(summary = "getVendorByMenuType", description = "메뉴 타입별 가게 정보 조회")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "통과"),
+            @ApiResponse(responseCode = "400", description = "실패")
+    })
     @GetMapping("/menuType/{menuType}")
     public ResponseEntity<?> getVendorByMenuType(@AuthenticationPrincipal CustomUserDetails customUserDetails,@PathVariable String menuType){
 
@@ -255,6 +288,11 @@ public class VendorController {
     }
 
     //리뷰 100개 이상인 vendor 중 별점 높은 순 정렬
+    @Operation(summary = "getVendorByReview", description = "리뷰 100개 이상인 vendor 중 별점 높은 순 정렬")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "통과"),
+            @ApiResponse(responseCode = "400", description = "실패")
+    })
     @GetMapping("/review/averageReviewScore")
     public ResponseEntity<?> getVendorByReview(@AuthenticationPrincipal CustomUserDetails customUserDetails){
         ResponseDTO<VendorDTO> response = new ResponseDTO<>();
@@ -279,7 +317,11 @@ public class VendorController {
 
     
     //개별 상점 상세 정보 확인
-
+    @Operation(summary = "getVendorInfoDetail", description = "개별 상점 상세 정보 확인")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "통과"),
+            @ApiResponse(responseCode = "400", description = "실패")
+    })
     @GetMapping("/infoDetail/{id}")
     public VendorDTO getVendorInfoDetail(@PathVariable Long id,
                                          @AuthenticationPrincipal CustomUserDetails customUserDetails){
@@ -291,6 +333,11 @@ public class VendorController {
 
 
     //토큰 안의 사용자 id에 해당되는 vendor 정보 가져오기
+    @Operation(summary = "getVendorInfo", description = "사용자 id에 해당되는 vendor 정보 가져오기")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "통과"),
+            @ApiResponse(responseCode = "400", description = "실패")
+    })
     @GetMapping("/getVendorInfo")
     public ResponseEntity<?> getVendorInfo(@AuthenticationPrincipal CustomUserDetails customUserDetails){
         ResponseDTO<VendorDTO> response = new ResponseDTO();
@@ -310,7 +357,7 @@ public class VendorController {
 
     //신규 가게 등록
 
-    @Operation(summary = "postinfo", description = "가게 등록하기")
+    @Operation(summary = "insertVendorInfo", description = "신규 가게 등록")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "통과"),
             @ApiResponse(responseCode = "400", description = "실패")
@@ -356,6 +403,11 @@ public class VendorController {
 
 
     //가게 정보 수정
+    @Operation(summary = "updateVendorInfo", description = "가게 정보 수정")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "통과"),
+            @ApiResponse(responseCode = "400", description = "실패")
+    })
     @PutMapping("/info")
     public ResponseEntity<?> updateVendorInfo(VendorDTO vendorDTO, @RequestParam(required = false, value = "file")MultipartFile[] uploadFiles,
                                               @AuthenticationPrincipal CustomUserDetails customUserDetails){
@@ -383,6 +435,11 @@ public class VendorController {
 
 
     //가게 정보 삭제
+    @Operation(summary = "deleteVendorInfo", description = "가게 정보 삭제")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "통과"),
+            @ApiResponse(responseCode = "400", description = "실패")
+    })
     @DeleteMapping("/info")
     public ResponseEntity<?> deleteVendorInfo(VendorDTO vendorDTO,
                                               @AuthenticationPrincipal CustomUserDetails customUserDetails){

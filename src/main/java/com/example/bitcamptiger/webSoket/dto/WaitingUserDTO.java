@@ -1,4 +1,4 @@
-package com.example.bitcamptiger.lineUp.dto;
+package com.example.bitcamptiger.webSoket.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;

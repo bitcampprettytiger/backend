@@ -15,12 +15,15 @@ import com.example.bitcamptiger.order.repository.OrderMenuRepository;
 import com.example.bitcamptiger.order.repository.OrderRepository;
 import com.example.bitcamptiger.order.service.OrderService;
 import com.example.bitcamptiger.vendor.entity.Vendor;
+import com.example.bitcamptiger.vendor.repository.VendorRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -33,6 +36,7 @@ public class OrderServiceImpl implements OrderService {
     private final CartService cartService;
     private final CartRepository cartRepository;
     private final OrderMenuRepository orderMenuRepository;
+    private final VendorRepository vendorRepository;
 
     
 
@@ -44,9 +48,12 @@ public class OrderServiceImpl implements OrderService {
         // 주문한 회원 ID를 이용하여 Member 엔티티 조회
         Member member = memberRepository.findById(orderDTO.getMember().getId())
                 .orElseThrow(() -> new RuntimeException("Member 확인 오류"));
+
+        Optional<Vendor> byId = vendorRepository.findById(orderDTO.getVendorId());
+        orderDTO.setVendor(byId.orElseThrow(EntityNotFoundException::new));
+
         // 주문한 가게(Vendor) 정보 가져오기(영은추가)
         Vendor vendor = orderDTO.getVendor();
-
 
         // 멤버의 ID를 기반으로 장바구니 아이템들을 조회
         List<CartItemDTO> cartItemList = cartService.getCartList(orderDTO.getMember());
@@ -122,6 +129,30 @@ public class OrderServiceImpl implements OrderService {
         return orderDTOList;
     }
 
+
+    //판매자 측, 주문내역확인
+    @Transactional(readOnly = true)
+    @Override
+    public List<OrderDTO> vendorOrderList(Long vendorId){
+        List<Orders> ordersList = orderRepository.findByVendorId(vendorId);
+
+        List<OrderDTO> orderDTOList = new ArrayList<>();
+
+        for(Orders orders : ordersList){
+            OrderDTO orderDTO = OrderDTO.of(orders);
+
+            List<OrderMenuDTO> orderMenuDTOList = new ArrayList<>();
+            for(OrderMenu orderMenu : orders.getOrderMenuList()){
+                orderMenuDTOList.add(OrderMenuDTO.of(orderMenu));
+            }
+            orderDTO.setOrderedMenuDTOList(orderMenuDTOList);
+            orderDTOList.add(orderDTO);
+        }
+
+        return orderDTOList;
+
+
+    }
 
 
     // 주문 상세 내역 확인

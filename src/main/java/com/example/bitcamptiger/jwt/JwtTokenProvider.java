@@ -110,9 +110,9 @@ public class JwtTokenProvider {
                 .parseClaimsJws(token)
                 .getBody();
 
-        if(redisUtil.hasKeyBlackList(token)){
-            throw new RuntimeException("로그아웃된 토큰입니다.");
-        }
+//        if(redisUtil.hasKeyBlackList(token)){
+//            throw new RuntimeException("로그아웃된 토큰입니다.");
+//        }
 
         System.out.println(claims.getSubject());
 

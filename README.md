@@ -13,12 +13,14 @@
 
 - 👦팀원 심봉교
   
-      cloud db mysql 구축, cloud object storage 연결, jwt(access token refresh token) 로그인 기능, cloud test server구축,
-      위치기반 vendor 검색 구축 ,socket(node.js 이용 (줄서기,포장,알림)), 협업툴 구축(노션,git repo, jira)
+      cloud db mysql 구축, cloud object storage 연결, jwt(access token refresh token) 로그인 기능,
+      cloud test server구축, 위치기반 vendor 검색 구축 ,socket(node.js 이용 (줄서기,포장,알림)),
+      협업툴 구축(노션,git repo, jira)
  
 - 👧팀원 정유진
   
-      현재위치API, 홈화면 UI구현(카테고리별 인기 페이지), 검색페이지 UI구현, 마이페이지 UI구현(리뷰,즐겨찾기,주문내역,설정)
+      현재위치API, 홈화면 UI구현(카테고리별 인기 페이지), 검색페이지 UI구현,
+      마이페이지 UI구현(리뷰,즐겨찾기,주문내역,설정)
   
 - 👩팀원 한은희
  

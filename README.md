@@ -1,9 +1,10 @@
 # SpringBoot-Project-먹자취
-스프링부트 + JPA 길거리음식 서비스
+스프링부트 + JPA 노점(길거리 음식) 서비스
 ## 📺프로젝트 소개
-합법적으로 운영하시는 소상공인들을 위한 길거리 음식 서비스 입니다!!
+편의성과 높은 품질의 노점(길거리 음식)을 결합한 웹앱 서비스.</br>
+이 서비스를 통해 사용자는 다양한 지역의 합법적인 음식 노점을 쉽고 빠르게 찾을 수 있으며,</br> 포장 주문과 줄 서기 없는 편리한 이용을 경험할 수 있다.
 ## ⌚개발 기간
-- 2023-07-23 ~ 2023-09-11
+- 2023-07-24 ~ 2023-09-11
 
 ### 👫멤버 구성
 - 👨‍🦱팀장 신민규
@@ -38,13 +39,27 @@
       주문 및 결제 로직 구현(I'mport), 검색창 기능 구현(타입별 검색, 가게명/메뉴명/지역명 검색, 검색 결과 정렬)
 
 ### ⚙개발 환경
-- Language : <img src="https://img.shields.io/badge/java-007396?style=for-the-badge&logo=java&logoColor=white">
-<img src="https://img.shields.io/badge/mysql-4479A1?style=for-the-badge&logo=mysql&logoColor=white">
-<img src="https://img.shields.io/badge/react-61DAFB?style=for-the-badge&logo=react&logoColor=black">
-<img src="https://img.shields.io/badge/node.js-339933?style=for-the-badge&logo=Node.js&logoColor=white">
-<img src="https://img.shields.io/badge/spring-6DB33F?style=for-the-badge&logo=spring&logoColor=white">
-<img src="https://img.shields.io/badge/springboot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white">
-<img src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white">
+- Language : `HTML5` `CSS` `JavaScript(ES6)` `Java SE17` `React` `MUI` `Node.js(Socket)`
+- IDE : `IntelliJ IDEA` `VS Code`
+- FrameWork : `Spring-Boot (3.X)`
+- ORM : `JPA` `QueryDSL`
+- Server : `Putty` `NCP`
+- DataBase : `NCloud DB` `MY SQL` `Object` `Storage`
+- CI/CD : `Jenkins` `Docker`
+- 협업툴 : `GitHub` `Jira`
 
 ## 📌주요기능
 * 로그인/회원가입
+  * DB값 검
+  * ID 찾기
+  * 로그인 시 토큰 생성(JWT)
+* 메인페이지
+* 지도
+* 마이페이지
+* 사업자페이지
+* 가게
+* 리뷰
+* 포장 주문
+* 결제
+* 장바구니
+* 줄 서기

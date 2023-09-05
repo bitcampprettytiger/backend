@@ -92,10 +92,13 @@ public class PaymentController {
 
             //CustomUserDetails로부터 회원 정보를 가져옴
             Member member = customUserDetails.getUser();
-
             Payments payments = paymentService.addPayment(paymentDTO, member);
 
-            response.setItem(PaymentDTO.of(payments));
+            PaymentDTO of = PaymentDTO.of(payments);
+            System.out.println(paymentDTO+"=============paymentDTO=========================");
+            of.setOrderId(paymentDTO.getOrderId());
+
+            response.setItem(of);
             response.setStatusCode(HttpStatus.OK.value());
 
             return ResponseEntity.ok().body(response);

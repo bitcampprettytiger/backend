@@ -8,6 +8,7 @@ import com.example.bitcamptiger.Review.repository.ReviewFileRepository;
 import com.example.bitcamptiger.Review.repository.ReviewRepository;
 import com.example.bitcamptiger.Review.service.ReviewService;
 import com.example.bitcamptiger.common.reviewFileUtils;
+import com.example.bitcamptiger.common.service.S3UploadService;
 import com.example.bitcamptiger.dto.ResponseDTO;
 import com.example.bitcamptiger.member.entity.CustomUserDetails;
 import com.example.bitcamptiger.member.entity.Member;
@@ -42,6 +43,7 @@ public class ReviewServiceImpl implements ReviewService {
     private final ReviewFileRepository reviewFileRepository;
     private final reviewFileUtils reviewFileUtils;
     private final OrderRepository orderRepository;
+    public  final S3UploadService s3UploadService;
 
     @Value("${reviewFile.path}")
     String attachPath;
@@ -357,8 +359,13 @@ public class ReviewServiceImpl implements ReviewService {
         List<Object[]> results = reviewRepository.findByVendorId(vendorId);
         for (Object[] result : results) {
             Review review = (Review) result[0];
+            List<ReviewFile> byReview = reviewFileRepository.findByReview(review);
+            for(ReviewFile reviewFile : byReview){
+                ReviewFileDto reviewFileDto = ReviewFileDto.of(reviewFile);
+                reviewFileDto.setReviewFilePath(s3UploadService.geturl(reviewFile.getReviewFilePath()+reviewFile.getReviewFileName()));
+            }
             ReviewDto reviewDto = ReviewDto.of(review);
-
+//            reviewDto.setReviewFileList(byReview);
             // 리뷰 파일 관련 정보 추가
             ReviewFileDto reviewFileDto = null;
             if (result[1] != null) {

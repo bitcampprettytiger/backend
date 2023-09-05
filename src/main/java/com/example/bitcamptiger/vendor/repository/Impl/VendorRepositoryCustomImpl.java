@@ -145,8 +145,8 @@ public class VendorRepositoryCustomImpl implements VendorRepositoryCustom {
     public List<Vendor> findByrandmart(NowLocationDto nowLocationDto) {
 
 
-        double vendorLatitude = Double.parseDouble(nowLocationDto.getLatitude()); // 현재 위치의 위도를 가져옴
-        double vendorLongitude = Double.parseDouble(nowLocationDto.getHardness()); // 현재 위치의 경도를 가져옴
+        double vendorLatitude = Double.parseDouble(nowLocationDto.getHardness()); // 현재 위치의 위도를 가져옴
+        double vendorLongitude = Double.parseDouble(nowLocationDto.getLatitude()); // 현재 위치의 경도를 가져옴
 
         double maxDistance = 3000.0; // 3 키로미터
 

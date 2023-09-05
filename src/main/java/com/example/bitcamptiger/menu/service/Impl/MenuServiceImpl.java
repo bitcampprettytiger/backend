@@ -171,8 +171,6 @@ public class MenuServiceImpl implements MenuService {
 
         //Menu와 Vendor 연결
         menuDTO.setVendor(vendor);
-
-
         // MenuDTO에서 id로 기존의 Menu 엔티티를 찾음
         Menu menu = menuRepository.findById(menuDTO.getId()).orElseThrow(EntityNotFoundException::new);
 
@@ -180,16 +178,14 @@ public class MenuServiceImpl implements MenuService {
             throw new AccessDeniedException("메뉴 수정 권한이 없습니다.");
         }
 
-
         //Menu와 Vendor 연결
         menu.setVendor(menuDTO.getVendor());
         //수정 가능한 필드만 업데이트
         menu.setMenuName(menuDTO.getMenuName());
         menu.setPrice(menuDTO.getPrice());
         menu.setMenuContent(menuDTO.getMenuContent());
-        menu.setMenuSellStatus(MenuSellStatus.valueOf(menuDTO.getMenuSellStatus()));
+//        menu.setMenuSellStatus(MenuSellStatus.valueOf(menuDTO.getMenuSellStatus()));
         menu.setMenuType(menuDTO.getMenuType());
-
         //기존 이미지 삭제
         List<MenuImage> existingImages = menuImageRepository.findByMenu(menu);
 
@@ -210,7 +206,6 @@ public class MenuServiceImpl implements MenuService {
 
         }
 
-
         //새로운 이미지 리스트 업데이트
         List<MenuImage> uploadFileList = new ArrayList<>();
         if(uploadFiles != null && !uploadFiles.equals(null) ) {
@@ -227,6 +222,7 @@ public class MenuServiceImpl implements MenuService {
                 }
             }
         }
+
             //menuImage가 등록되지 않았을 경우 기본이미지 설정
             if (uploadFileList.isEmpty()) {
                 MenuImage defaultMenuImage = fileUtils.getDefaultMenuImage();

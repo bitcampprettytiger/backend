@@ -283,6 +283,7 @@ public class MemberController {
 
     @GetMapping("/auth/{socialLoginType}/login")
     public void socialLoginRedirect(@PathVariable(name="socialLoginType") String SocialLoginPath) throws IOException {
+        System.out.println(SocialLoginPath);
         SocialLoginType socialLoginType= SocialLoginType.valueOf(SocialLoginPath.toUpperCase());
         oAuthService.accessRequest(socialLoginType);
     }

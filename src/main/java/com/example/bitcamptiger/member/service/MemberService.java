@@ -31,9 +31,9 @@ public class MemberService {
 
     private final RedisUtil redisUtil;
 
-    public Optional<Member> findByKakaoId(Long kakaoId) {
-        return memberRepository.findByKakaoId(kakaoId);
-    }
+//    public Optional<Member> findByKakaoId(Long kakaoId) {
+//        return memberRepository.findByKakaoId(kakaoId);
+//    }
     public Member save(Member member) {
         return memberRepository.save(member);
     }
@@ -135,5 +135,9 @@ public class MemberService {
         redisUtil.setBlackList(accessToken, "accessToken", 5);
 
         return "로그아웃 완료";
+    }
+
+    public Optional<Member> findByUsername(String email) {
+        return memberRepository.findByUsername(email);
     }
 }

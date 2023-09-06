@@ -24,14 +24,6 @@ public class CustomUserDetails implements UserDetails, OAuth2User {
     Map<String, Object> attributes;
 
 
-    // 카카오 사용자 정보 필드 추가
-    private Long kakaoId;
-
-    private String kakaoNickname;
-
-    private String kakaoEmail;
-
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> auths = new ArrayList<>();

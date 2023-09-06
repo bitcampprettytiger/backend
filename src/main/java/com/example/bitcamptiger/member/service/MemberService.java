@@ -38,7 +38,6 @@ public class MemberService {
 
     private final RedisUtil redisUtil;
 
-
     private final JwtService jwtService;
 
 //    public Optional<Member> findByKakaoId(Long kakaoId) {
@@ -152,13 +151,13 @@ public class MemberService {
 
     @Transactional(readOnly = true)
     public boolean checkUserByEmail(String email) {
-        Optional<Member> result = memberRepository.findByUsernameAndState(email, ACTIVE);
+        Optional<Member> result = memberRepository.findByUsername(email);
         if (result.isPresent()) return true;
         return false;
     }
 
     public Member getUserByEmail(String email) {
-        Member user = memberRepository.findByUsernameAndState(email, ACTIVE).orElseThrow(() -> new BaseException(BaseResponseStatus.NOT_FIND_USER));
+        Member user = memberRepository.findByUsername(email).orElseThrow(() -> new BaseException(BaseResponseStatus.NOT_FIND_USER));
         return new Member(user);
     }
 

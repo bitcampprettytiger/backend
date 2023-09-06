@@ -55,7 +55,6 @@ public class Member {
     private String type;
 
 
-
     public MemberDTO toMemberDTO() {
         return MemberDTO.builder()
                 .username(this.username)

@@ -30,6 +30,15 @@ public class MemberService {
     private final RefreshTokenRepository refreshTokenRepository;
 
     private final RedisUtil redisUtil;
+
+    public Optional<Member> findByKakaoId(Long kakaoId) {
+        return memberRepository.findByKakaoId(kakaoId);
+    }
+    public Member save(Member member) {
+        return memberRepository.save(member);
+    }
+
+
     public MemberDTO join(MemberDTO member ) {
 
         if(member == null || member.getUsername() ==null){

@@ -26,6 +26,7 @@ public class ReviewFileDto {
     @JsonIgnore
     private String newFileName;
 
+    private String FileUrl;
 
     public static ModelMapper modelMapper = new ModelMapper();
 

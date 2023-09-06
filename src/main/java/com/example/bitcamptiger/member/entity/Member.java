@@ -1,5 +1,6 @@
 package com.example.bitcamptiger.member.entity;
 
+import com.example.bitcamptiger.common.entity.BaseEntity;
 import com.example.bitcamptiger.member.dto.MemberDTO;
 import com.example.bitcamptiger.member.dto.VendorMemberDTO;
 import jakarta.persistence.*;
@@ -19,7 +20,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Member {
+public class Member extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -88,4 +89,13 @@ public class Member {
                 .NonLocked(true)
                 .build();
     }
+
+
+    public Member(Member user) {
+        this.id = user.getId();
+        this.username = user.getUsername();
+        this.nickname = user.getNickname();
+    }
+
+
 }

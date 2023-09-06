@@ -1,7 +1,7 @@
 package com.example.bitcamptiger.common.oauth;
 
-import com.example.demo.src.user.model.GoogleOAuthToken;
-import com.example.demo.src.user.model.GoogleUser;
+import com.example.bitcamptiger.member.model.GoogleOAuthToken;
+import com.example.bitcamptiger.member.model.GoogleUser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;

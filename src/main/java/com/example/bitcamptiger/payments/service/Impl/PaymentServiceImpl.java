@@ -6,6 +6,8 @@ import com.example.bitcamptiger.member.entity.CustomUserDetails;
 import com.example.bitcamptiger.member.entity.Member;
 import com.example.bitcamptiger.member.reposiitory.MemberRepository;
 import com.example.bitcamptiger.order.dto.OrderDTO;
+import com.example.bitcamptiger.order.dto.OrderMenuDTO;
+import com.example.bitcamptiger.order.entity.OrderMenu;
 import com.example.bitcamptiger.order.entity.OrderStatus;
 import com.example.bitcamptiger.order.entity.Orders;
 import com.example.bitcamptiger.order.repository.OrderRepository;
@@ -61,8 +63,12 @@ public class PaymentServiceImpl implements PaymentService {
         orderDTO.setVendorId(paymentDTO.getVendorId());
         Orders orders = orderService.createOrder(orderDTO);
         orders.setOrderStatus(OrderStatus.RESERVATION);
-        orderRepository.save(orders);
+        Orders save = orderRepository.save(orders);
 
+        paymentDTO.setOrderId(save.getId());
+//        paymentDTO.setOrderMenu(save.getOrderMenuList());
+
+        System.out.println(save.getId() +"orderId====================================================");
         //결제 생성
         Payments payment = new Payments();
         payment.setPayMethod(paymentDTO.getPayMethod());
@@ -75,7 +81,6 @@ public class PaymentServiceImpl implements PaymentService {
         ///////////////////////// jwt //////////////////////////////////
         payment.setMember(member);
         payment.setVendor(vendorRepository.findById(paymentDTO.getVendorId()).orElseThrow(EntityNotFoundException::new));
-
 
         paymentRepository.save(payment);
 

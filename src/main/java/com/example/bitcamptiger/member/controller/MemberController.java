@@ -288,8 +288,9 @@ public class MemberController {
         oAuthService.accessRequest(socialLoginType);
     }
 
+
     @ResponseBody
-    @GetMapping(value = "/auth/{socialLoginType}/login/callback")
+    @GetMapping(value = "/app/users/auth2/{socialLoginType}/login/callback")
     public ResponseEntity<?> socialLoginCallback(
             @PathVariable(name = "socialLoginType") String socialLoginPath,
             @RequestParam(name = "code") String code) throws IOException, BaseException {

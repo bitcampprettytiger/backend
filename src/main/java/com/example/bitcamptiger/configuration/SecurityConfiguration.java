@@ -60,7 +60,7 @@ public class SecurityConfiguration {
 //  authorizaRequests.requestMatchers("/**").hasAuthority("ROLE_VENDOR");
 //  authorizaRequests.requestMatchers("/api/**").hasAuthority("ROLE_BASIC");
     authorizaRequests.requestMatchers("/api/**","/member/**","/vendor/join","/API/validateByRegion","/vendor/info","/reviews/**","/logout","/test-api-local.com/api/swagger-ui/index.html","/auth/**","/API/**","/API/dongJak/DongJakData","/API/gangseogu/GangseoguData","/API/dongdaemun/DongdaemunData",
-    "/API/gyeonggi/GyeonggiData","/API/gangNam/GangNamData","/API/dobonggu/DobongguData","/API/dongJak/validateDongJak","/API/dobonggu/**","/API/gangNam/validateGangNam","/API/gyeonggi/validateGyeonggi","/API/dongdaemun/**","/API/gangseogu/validateGangseo","/API/dongJak/NoRyangJin").permitAll();
+    "/API/gyeonggi/GyeonggiData","/API/gangNam/GangNamData","/API/dobonggu/DobongguData","/API/dongJak/validateDongJak","/API/dobonggu/**","/API/gangNam/validateGangNam","/API/gyeonggi/validateGyeonggi","/API/dongdaemun/**","/API/gangseogu/validateGangseo","/API/dongJak/NoRyangJin","/app/users/auth2/**","/app/users/auth2/google/login/callback").permitAll();
     authorizaRequests.requestMatchers("/board/**", "/menu/**", "/cart/**", "/reviews/**", "/orders/**","/upload/**","/api/**","/refresh","/myPage/**","/refresh/**","/favorite-Test/**","/businessApi/**","/payment/**").hasAnyAuthority("ROLE_VENDOR","ROLE_BASIC");
     authorizaRequests.requestMatchers("/vendor/**").hasAnyAuthority("ROLE_VENDOR","ROLE_BASIC");
 

@@ -55,16 +55,6 @@ public class Member extends BaseEntity {
 //  가입 타입
     private String type;
 
-    // 카카오 사용자 정보 필드 추가
-    @Column
-    private Long kakaoId;
-
-    @Column
-    private String kakaoNickname;
-
-    @Column
-    private String kakaoEmail;
-
 
     public MemberDTO toMemberDTO() {
         return MemberDTO.builder()

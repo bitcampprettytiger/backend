@@ -41,9 +41,9 @@ public class MemberService {
 
     private final JwtService jwtService;
 
-    public Optional<Member> findByKakaoId(Long kakaoId) {
-        return memberRepository.findByKakaoId(kakaoId);
-    }
+//    public Optional<Member> findByKakaoId(Long kakaoId) {
+//        return memberRepository.findByKakaoId(kakaoId);
+//    }
 
     public Member save(Member member) {
         return memberRepository.save(member);
@@ -172,4 +172,7 @@ public class MemberService {
         return new PostUserRes(saveUser.getId(), jwtToken);
     }
 
+    public Optional<Member> findByUsername(String email) {
+        return memberRepository.findByUsername(email);
+    }
 }

@@ -12,6 +12,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -35,6 +36,8 @@ public class KakaoService {
 
 
     private final MemberService memberService;
+
+    private final PasswordEncoder passwordEncoder;
 
     private final static String KAKAO_AUTH_URI = "https://kauth.kakao.com";
     private final static String KAKAO_API_URI = "https://kapi.kakao.com";
@@ -93,20 +96,24 @@ public class KakaoService {
         KakaoDTO kakaoInfo = getUserInfoWithToken(accessToken);
 
         // 기존 회원인지 확인
-        Optional<Member> existingMember = memberService.findByKakaoId(kakaoInfo.getId());
+        Optional<Member> existingMember = memberService.findByUsername(kakaoInfo.getEmail());
 
         if (existingMember.isPresent()) {
             // 기존 회원이면 업데이트
             Member member = existingMember.get();
-            member.setKakaoNickname(kakaoInfo.getNickname());
-            member.setKakaoEmail(kakaoInfo.getEmail());
+            member.setNickname(kakaoInfo.getNickname());
+            member.setUsername(kakaoInfo.getEmail());
             memberService.save(member);
         } else {
             // 기존 회원이 아니면 신규 회원으로 저장
             Member newMember = Member.builder()
-                    .kakaoId(kakaoInfo.getId())
-                    .kakaoNickname(kakaoInfo.getNickname())
-                    .kakaoEmail(kakaoInfo.getEmail())
+                    .username(kakaoInfo.getEmail())
+                    .nickname(kakaoInfo.getNickname())
+                    .password(passwordEncoder.encode(kakaoInfo.getNickname()))
+                    .tel(01000001234)
+                    .privacy(true)
+                    .role("ROLE_VENDOR")
+                    .type("local")
                     .build();
             memberService.save(newMember);
         }

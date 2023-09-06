@@ -212,8 +212,6 @@ public class ReviewServiceImpl implements ReviewService {
 
         List<ReviewFile> uFileList = processReviewFiles(reviewDto, originFiles, uploadFiles, changeFileList);
 
-//        updateReviewActions(reviewDto, review);
-
         reviewRepository.save(review);
 
         updateReview(review, uFileList);
@@ -344,6 +342,7 @@ public class ReviewServiceImpl implements ReviewService {
         reviewRepository.delete(review);
     }
 
+    //리뷰파일조회
     @Override
     public List<ReviewFile> getReviewFileList(Long id) {
         return reviewFileRepository.findByReviewId(id);

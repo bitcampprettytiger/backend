@@ -36,7 +36,7 @@ public class ReviewDto {
     private long likeCount;
     private long disLikeCount;
     private Boolean isLike;
-    private List<ReviewFile> reviewFileList;
+    private List<ReviewFileDto> reviewFileList;
     private ReviewFileDto reviewFile;
 
     private int numberOfReviews;

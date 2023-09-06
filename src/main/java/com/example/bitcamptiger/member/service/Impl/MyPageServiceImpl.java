@@ -1,8 +1,12 @@
 package com.example.bitcamptiger.member.service.Impl;
 
 import com.example.bitcamptiger.Review.dto.ReviewDto;
+import com.example.bitcamptiger.Review.dto.ReviewFileDto;
 import com.example.bitcamptiger.Review.entity.Review;
+import com.example.bitcamptiger.Review.entity.ReviewFile;
+import com.example.bitcamptiger.Review.repository.ReviewFileRepository;
 import com.example.bitcamptiger.Review.repository.ReviewRepository;
+import com.example.bitcamptiger.common.service.S3UploadService;
 import com.example.bitcamptiger.favoritePick.DTO.FavoriteVendorDTO;
 import com.example.bitcamptiger.favoritePick.entity.FavoriteVendor;
 import com.example.bitcamptiger.favoritePick.repository.FavoriteVendorRepository;
@@ -38,10 +42,12 @@ public class MyPageServiceImpl implements MyPageService {
     public final MemberRepository memberRepository;
     public final OrderRepository orderRepository;
     private final ReviewRepository reviewRepository;
+    private final ReviewFileRepository reviewFileRepository;
     private final FavoriteService favoriteService;
     private final FavoriteVendorRepository favoriteVendorRepository;
     private final VendorRepository vendorRepository;
     private final PaymentRepository paymentRepository;
+    private final S3UploadService s3UploadService;
 
     //내 정보 조회
     @Override
@@ -179,8 +185,10 @@ public class MyPageServiceImpl implements MyPageService {
 
     // 내 리뷰 내역
     @Override
+    @Transactional(readOnly = true)
     public List<ReviewDto> getMyReviewDTOs(String username) {
         Optional<Member> optionalMember = memberRepository.findByUsername(username);
+
 
         if (optionalMember.isPresent()) {
             Member member = optionalMember.get();
@@ -192,7 +200,19 @@ public class MyPageServiceImpl implements MyPageService {
             System.out.println("내 리뷰 내역 개수: " + reviews.size());
 
             for (Review review : reviews) {
+                List<ReviewFile> byReview = reviewFileRepository.findByReview(review);
+                List<ReviewFileDto> reviewFileDtos = new ArrayList<>();
                 ReviewDto reviewDto = convertToReviewDto(review, reviews.size());
+                for(ReviewFile reviewFile: byReview){
+                    String geturl = s3UploadService.geturl(reviewFile.getReviewFilePath() + reviewFile.getReviewFileName());
+                    ReviewFileDto of = ReviewFileDto.of(reviewFile);
+                    of.setFileUrl(geturl);
+                    reviewFileDtos.add(of);
+                }
+
+                reviewDto.setReviewFileList(reviewFileDtos);
+
+
                 reviewDtoList.add(reviewDto);
             }
 

@@ -7,7 +7,6 @@ import com.example.bitcamptiger.menu.dto.MenuDTO;
 import com.example.bitcamptiger.menu.dto.MenuImageDTO;
 import com.example.bitcamptiger.menu.entity.Menu;
 import com.example.bitcamptiger.menu.entity.MenuImage;
-import com.example.bitcamptiger.menu.entity.MenuSellStatus;
 import com.example.bitcamptiger.menu.repository.MenuImageRepository;
 import com.example.bitcamptiger.menu.repository.MenuRepository;
 import com.example.bitcamptiger.menu.service.MenuService;
@@ -187,7 +186,6 @@ public class MenuServiceImpl implements MenuService {
         menu.setMenuName(menuDTO.getMenuName());
         menu.setPrice(menuDTO.getPrice());
         menu.setMenuContent(menuDTO.getMenuContent());
-        menu.setMenuSellStatus(MenuSellStatus.valueOf(menuDTO.getMenuSellStatus()));
         menu.setMenuType(menuDTO.getMenuType());
 
         //기존 이미지 삭제

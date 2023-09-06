@@ -34,9 +34,6 @@ public interface ReviewService {
 
     List<ReviewDto> getAllReviewsWithFiles(Long vendorId);
 
-//    void likeReview(Review review);
-//
-//    void disLikeReview(Review review);
 
 
 }

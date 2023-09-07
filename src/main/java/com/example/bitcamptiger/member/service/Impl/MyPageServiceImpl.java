@@ -21,6 +21,9 @@ import com.example.bitcamptiger.order.entity.OrderMenu;
 import com.example.bitcamptiger.order.entity.Orders;
 import com.example.bitcamptiger.order.repository.OrderRepository;
 import com.example.bitcamptiger.vendor.dto.VendorDTO;
+import com.example.bitcamptiger.vendor.dto.VendorImageDTO;
+import com.example.bitcamptiger.vendor.entity.VendorImage;
+import com.example.bitcamptiger.vendor.repository.VendorImageRepository;
 import com.example.bitcamptiger.vendor.repository.VendorRepository;
 import com.example.bitcamptiger.payments.dto.PaymentDTO;
 import com.example.bitcamptiger.payments.entity.Payments;
@@ -34,6 +37,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -49,6 +53,7 @@ public class MyPageServiceImpl implements MyPageService {
     private final VendorRepository vendorRepository;
     private final PaymentRepository paymentRepository;
     private final S3UploadService s3UploadService;
+    private final VendorImageRepository vendorImageRepository;
 
     //내 정보 조회
     @Override
@@ -209,6 +214,14 @@ public class MyPageServiceImpl implements MyPageService {
 
                 // ReviewDto에 연관된 VendorDto를 설정합니다.
                 reviewDto.setVendorDto(vendorDto);
+
+                // VendorImage 정보를 가져와서 VendorImageDto로 변환합니다.
+                List<VendorImage> vendorImages = vendorImageRepository.findByVendor(vendor);
+                List<VendorImageDTO> vendorImageDtos = vendorImages.stream()
+                        .map(VendorImageDTO::of)
+                        .collect(Collectors.toList());
+
+                reviewDto.setVendorImageDTOs(vendorImageDtos);
 
                 for (ReviewFile reviewFile : byReview) {
                     String geturl = s3UploadService.geturl(reviewFile.getReviewFilePath() + reviewFile.getReviewFileName());

@@ -1,5 +1,6 @@
 package com.example.bitcamptiger.member.controller;
 
+import com.example.bitcamptiger.NcloudAPI.dto.UpdatePasswordDTO;
 import com.example.bitcamptiger.common.Constant;
 import com.example.bitcamptiger.common.Constant.SocialLoginType;
 import com.example.bitcamptiger.common.exception.BaseException;
@@ -304,6 +305,34 @@ public class MemberController {
         SocialLoginType socialLoginType = SocialLoginType.valueOf(socialLoginPath.toUpperCase());
         GetSocialMemberDto getSocialMemberDto = oAuthService.oAuthLoginOrJoin(socialLoginType, code);
         return ResponseEntity.ok(getSocialMemberDto);
+    }
+
+
+    //수정된 비밀번호 저장
+    @PostMapping("/member/updatePassword")
+    public ResponseEntity<?> updatePassword(@RequestBody UpdatePasswordDTO updatePasswordDTO){
+
+        ResponseDTO<UpdatePasswordDTO> response = new ResponseDTO<>();
+
+        try{
+            boolean updatePw = memberService.updatePassword(updatePasswordDTO);
+
+            if(updatePw) {
+                response.setMessage("비밀번호 변경이 완료되었습니다.");
+                response.setStatusCode(HttpStatus.OK.value());
+
+            } else {
+                response.setErrorMessage("비밀번호 변경에 실패했습니다.");
+
+            }
+
+            return ResponseEntity.ok(response);
+        }catch  (Exception e) {
+            System.out.println(e.getMessage());
+            response.setErrorMessage(e.getMessage());
+            response.setStatusCode(HttpStatus.BAD_REQUEST.value());
+            return ResponseEntity.badRequest().body(response);
+        }
     }
 
 

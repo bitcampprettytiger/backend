@@ -26,17 +26,17 @@ public class Member extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-
+    @Column(nullable = false)
+    private String name;    //본명
 
     @Column(nullable = false)
     private String username;
-
 
     @Column(nullable = false)
     private String password;
 
     @Column(nullable = false)
-    private int tel;
+    private Long tel;
 //  별명
     @Column(nullable = false)
     private String nickname;

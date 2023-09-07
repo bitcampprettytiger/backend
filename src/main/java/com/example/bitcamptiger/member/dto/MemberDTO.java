@@ -22,8 +22,11 @@ public class MemberDTO {
     @Size(min = 8,message = "8자 이상입력하세요.")
     private String password;
 
+    //본명
+    private String name;
+
     //  휴대폰 번호
-    private int tel;
+    private Long tel;
 
     //  개인정보 동의
     private boolean privacy;
@@ -51,6 +54,7 @@ public class MemberDTO {
 
     public Member toMemberEntity(){
         return Member.builder()
+                .name(this.name)
                 .username(this.username)
                 .password(this.password)
                 .nickname(this.nickname)

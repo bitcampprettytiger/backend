@@ -3,6 +3,12 @@ package com.example.bitcamptiger.NcloudAPI.service;
 import com.example.bitcamptiger.NcloudAPI.dto.MessageDTO;
 import com.example.bitcamptiger.NcloudAPI.dto.SmsRequestDTO;
 import com.example.bitcamptiger.NcloudAPI.dto.SmsResponseDTO;
+import com.example.bitcamptiger.NcloudAPI.dto.SmsValidationDTO;
+import com.example.bitcamptiger.member.dto.MemberDTO;
+import com.example.bitcamptiger.member.entity.Member;
+import com.example.bitcamptiger.member.entity.SmsValidation;
+import com.example.bitcamptiger.member.reposiitory.MemberRepository;
+import com.example.bitcamptiger.member.reposiitory.SmsValidationRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -26,11 +32,18 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.Random;
 
 @Slf4j
 @RequiredArgsConstructor
 @Service
 public class SMSService {
+
+    private final MemberRepository memberRepository;
+
+    private final SmsValidationRepository smsValidationRepository;
+
     @Value("${naver-cloud-sms.accessKey}")
     private String accessKey;
 
@@ -84,6 +97,21 @@ public class SMSService {
         List<MessageDTO> messages = new ArrayList<>();
         messages.add(messageDto);
 
+        //6자리 랜덤값생성
+        int randomvalue = (int)Math.floor((Math.random() + 1) * 100000);
+
+        messageDto.setContent("인증번호는 [" + randomvalue + "]입니다.");
+
+        //엔티티 하나생성 pk는 전화번호
+        //컬럼은 전화번호, 인증코드
+        //인증코드 db에 인서트
+        SmsValidation smsValidation = SmsValidation.builder()
+                .tel(messageDto.getTo())
+                .code(randomvalue)
+                .build();
+
+        smsValidationRepository.save(smsValidation);
+
         SmsRequestDTO request = SmsRequestDTO.builder()
                 .type("SMS")
                 .contentType("COMM")
@@ -103,5 +131,36 @@ public class SMSService {
 
         return response;
     }
+
+    public boolean validateMember(String name, Long tel){
+        Optional<Member> member = memberRepository.findByName(name);
+
+        if(member.isEmpty()) {
+            return false;
+        }
+
+        if(member.get().getTel().equals(tel)) {
+            return true;
+        }
+
+        return false;
+    }
+
+
+    public boolean validateCode(String tel, int code){
+
+        Optional<SmsValidation> smsValidation = smsValidationRepository.findById(tel);
+        if(smsValidation.isEmpty()){
+            return false;
+        }
+
+        if(smsValidation.get().getCode() == code){
+            return true;
+        }
+
+        return false;
+    }
+
+
 
 }

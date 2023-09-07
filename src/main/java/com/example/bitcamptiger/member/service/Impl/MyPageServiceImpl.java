@@ -169,6 +169,10 @@ public class MyPageServiceImpl implements MyPageService {
                         .map(VendorImageDTO::of)
                         .collect(Collectors.toList());
 
+                for(VendorImageDTO vendorImageDTO : vendorImageDtos){
+                    String geturl = s3UploadService.geturl(vendorImageDTO.getUrl() + vendorImageDTO.getFileName());
+                    vendorImageDTO.setUrl(geturl);
+                }
                 // OrderDTO에 VendorImageDto 리스트를 설정합니다.
                 orderDTO.setVendorImageDtos(vendorImageDtos);
 

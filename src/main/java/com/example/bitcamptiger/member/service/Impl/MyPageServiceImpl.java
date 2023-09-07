@@ -33,6 +33,7 @@ import com.example.bitcamptiger.payments.entity.Payments;
 import com.example.bitcamptiger.payments.repository.PaymentRepository;
 import com.example.bitcamptiger.vendor.entity.Vendor;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -305,6 +306,47 @@ public class MyPageServiceImpl implements MyPageService {
         } else {
             // 사용자를 찾을 수 없는 경우에 대한 처리
             throw new RuntimeException("사용자를 찾을 수 없습니다.");
+        }
+    }
+
+    // 내 리뷰 삭제
+    //여러개 가능
+    @Override
+    public void deleteReviewsByIds(List<Long> reviewIds, String username) {
+        for (Long reviewId : reviewIds) {
+            // 각 리뷰 ID에 대해 삭제
+            deleteReviewById(reviewId, username);
+        }
+    }
+
+    // 개별 리뷰 삭제 메서드
+    @Override
+    public void deleteReviewById(Long reviewId, String username) {
+        Optional<Review> optionalReview = reviewRepository.findById(reviewId);
+
+        if (optionalReview.isPresent()) {
+            Review review = optionalReview.get();
+
+            // 리뷰의 작성자와 현재 로그인한 사용자를 비교하여 권한 확인
+            String loggedInUsername = SecurityContextHolder.getContext().getAuthentication().getName();
+            if (!loggedInUsername.equals(review.getMember().getUsername())) {
+                throw new SecurityException("리뷰를 삭제할 권한이 없습니다.");
+            }
+
+            // 리뷰와 연결된 리뷰 파일(첨부 이미지) 정보를 조회
+            List<ReviewFile> reviewFiles = reviewFileRepository.findByReview(review);
+
+            // 리뷰 파일 정보를 삭제 (파일 시스템 또는 데이터베이스에서)
+            for (ReviewFile reviewFile : reviewFiles) {
+                // 파일 삭제 로직을 추가 (예: 파일 시스템에서 삭제)
+                // 파일을 데이터베이스에서 삭제
+                reviewFileRepository.delete(reviewFile);
+            }
+
+            // 리뷰 삭제
+            reviewRepository.delete(review);
+        } else {
+            throw new RuntimeException("삭제할 리뷰를 찾을 수 없습니다.");
         }
     }
 

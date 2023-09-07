@@ -110,7 +110,7 @@ public class KakaoService {
                     .username(kakaoInfo.getEmail())
                     .nickname(kakaoInfo.getNickname())
                     .password(passwordEncoder.encode(kakaoInfo.getNickname()))
-                    .tel(01000001234)
+                    .tel(01022226666L)
                     .privacy(true)
                     .role("ROLE_VENDOR")
                     .type("local")

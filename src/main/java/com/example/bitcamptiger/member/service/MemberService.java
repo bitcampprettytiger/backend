@@ -1,5 +1,6 @@
 package com.example.bitcamptiger.member.service;
 
+import com.example.bitcamptiger.NcloudAPI.dto.UpdatePasswordDTO;
 import com.example.bitcamptiger.common.entity.BaseEntity;
 import com.example.bitcamptiger.common.exception.BaseException;
 import com.example.bitcamptiger.jwt.JwtService;
@@ -18,6 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.swing.text.html.Option;
 import java.nio.ByteBuffer;
 import java.util.Optional;
 import java.util.UUID;
@@ -173,5 +175,20 @@ public class MemberService {
 
     public Optional<Member> findByUsername(String email) {
         return memberRepository.findByUsername(email);
+    }
+
+    public boolean updatePassword(UpdatePasswordDTO updatePasswordDTO) {
+        Optional<Member> memberOptional = memberRepository.findByNameAndTel(updatePasswordDTO.getName(), Long.valueOf(updatePasswordDTO.getTel()));
+
+        if(memberOptional.isPresent()) {
+            Member member = memberOptional.get();
+            member.setPassword(passwordEncoder.encode(updatePasswordDTO.getPassword()));
+            memberRepository.save(member);
+
+            return true;
+        }
+
+        return false;
+
     }
 }

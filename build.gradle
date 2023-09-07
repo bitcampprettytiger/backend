@@ -37,6 +37,7 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
 
+
     //venderProperties
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
@@ -102,10 +103,12 @@ dependencies {
     //Ncloud API
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.13'
+//    implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.13'
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
     implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'
+    implementation 'org.apache.httpcomponents:httpclient'
+    implementation 'org.apache.httpcomponents.client5:httpclient5'
 
 }
 

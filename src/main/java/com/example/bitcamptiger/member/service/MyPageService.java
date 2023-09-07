@@ -1,15 +1,11 @@
 package com.example.bitcamptiger.member.service;
 
 import com.example.bitcamptiger.Review.dto.ReviewDto;
-import com.example.bitcamptiger.Review.entity.Review;
 import com.example.bitcamptiger.favoritePick.DTO.FavoriteVendorDTO;
 import com.example.bitcamptiger.member.dto.MemberDTO;
 import com.example.bitcamptiger.member.entity.Member;
 import com.example.bitcamptiger.order.dto.OrderDTO;
-import com.example.bitcamptiger.order.entity.Orders;
 import com.example.bitcamptiger.payments.dto.PaymentDTO;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.List;
 import java.util.Optional;
@@ -85,6 +81,12 @@ public interface MyPageService {
     List<FavoriteVendorDTO> getMyFavoriteVendorDTOs(String username);
 
     List<ReviewDto> getMyReviewDTOsWithVendorInfo(String username);
+
+    // 내 리뷰 삭제
+    void deleteReviewsByIds(List<Long> reviewIds, String username);
+
+    // 내 리뷰 삭제
+    void deleteReviewById(Long reviewId, String username);
 
 
     //내 정보 수정

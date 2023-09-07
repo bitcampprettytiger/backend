@@ -41,14 +41,14 @@
       주문 및 결제 로직 구현(I'mport), 검색창 기능 구현(타입별 검색, 가게명/메뉴명/지역명 검색, 검색 결과 정렬)
 
 ### ⚙개발 환경
-- Language : `HTML5` `CSS` `JavaScript(ES6)` `Java SE17` `React` `MUI` `Node.js(Socket)`
+- Language : `HTML5` `CSS` `JavaScript(ES6)` `Java SE17` `React` `MUI`
 - IDE : `IntelliJ IDEA` `VS Code`
-- FrameWork : `Spring-Boot (3.X)`
+- FrameWork : `Spring-Boot (3.X)` `Node.js(Socket)` `Spring Security` `JWT Token`
 - ORM : `JPA` `QueryDSL`
 - Server : `Putty` `NCP`
-- DataBase : `NCloud DB` `MY SQL` `Object` `Storage`
+- DataBase : `NCloud DB` `MY SQL` `Object Storage`
 - CI/CD : `Jenkins` `Docker`
-- 협업툴 : `GitHub` `Jira`
+- 협업툴 : `GitHub` `Jira` `Notion` `SourceTree(Version)`
 
 ## 📌주요기능
 * 로그인/회원가입

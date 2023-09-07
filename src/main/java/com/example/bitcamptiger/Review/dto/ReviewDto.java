@@ -29,6 +29,7 @@ public class ReviewDto {
     private Orders orders;
     @JsonIgnore
     private Vendor vendor;
+    private VendorDTO vendorDto;
     private Member member;
     private String reviewContent;
     private String reviewRegDate;

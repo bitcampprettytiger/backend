@@ -270,7 +270,7 @@ public class MyPageController {
         ResponseDTO<MyReviewResponse> response = new ResponseDTO<>();
 
         try {
-            List<ReviewDto> reviewList = myPageService.getMyReviewDTOs(customUserDetails.getUsername());
+            List<ReviewDto> reviewList = myPageService.getMyReviewDTOsWithVendorInfo(customUserDetails.getUsername());
             int numberOfReviews = reviewList.size();
 
             if (reviewList.isEmpty()) {
@@ -291,6 +291,7 @@ public class MyPageController {
             return ResponseEntity.badRequest().body(response);
         }
     }
+
     //내 찜 가게 내역
     @Operation(summary = "myFavoriteVendors", description = "회원 찜내역 조회")
     @ApiResponses({

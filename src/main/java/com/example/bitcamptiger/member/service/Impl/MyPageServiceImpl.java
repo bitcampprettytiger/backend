@@ -20,6 +20,7 @@ import com.example.bitcamptiger.order.dto.OrderMenuDTO;
 import com.example.bitcamptiger.order.entity.OrderMenu;
 import com.example.bitcamptiger.order.entity.Orders;
 import com.example.bitcamptiger.order.repository.OrderRepository;
+import com.example.bitcamptiger.vendor.dto.VendorDTO;
 import com.example.bitcamptiger.vendor.repository.VendorRepository;
 import com.example.bitcamptiger.payments.dto.PaymentDTO;
 import com.example.bitcamptiger.payments.entity.Payments;
@@ -186,9 +187,8 @@ public class MyPageServiceImpl implements MyPageService {
     // 내 리뷰 내역
     @Override
     @Transactional(readOnly = true)
-    public List<ReviewDto> getMyReviewDTOs(String username) {
+    public List<ReviewDto> getMyReviewDTOsWithVendorInfo(String username) {
         Optional<Member> optionalMember = memberRepository.findByUsername(username);
-
 
         if (optionalMember.isPresent()) {
             Member member = optionalMember.get();
@@ -196,14 +196,21 @@ public class MyPageServiceImpl implements MyPageService {
 
             List<ReviewDto> reviewDtoList = new ArrayList<>();
 
-            // 로그에 리뷰 내역 개수를 출력
-            System.out.println("내 리뷰 내역 개수: " + reviews.size());
-
             for (Review review : reviews) {
                 List<ReviewFile> byReview = reviewFileRepository.findByReview(review);
                 List<ReviewFileDto> reviewFileDtos = new ArrayList<>();
                 ReviewDto reviewDto = convertToReviewDto(review, reviews.size());
-                for(ReviewFile reviewFile: byReview){
+
+                // 리뷰와 연관된 가게(Vendor) 엔티티를 가져옵니다.
+                Vendor vendor = review.getVendor();
+
+                // 가게(Vendor) 엔티티를 VendorDto로 매핑합니다.
+                VendorDTO vendorDto = VendorDTO.of(vendor);
+
+                // ReviewDto에 연관된 VendorDto를 설정합니다.
+                reviewDto.setVendorDto(vendorDto);
+
+                for (ReviewFile reviewFile : byReview) {
                     String geturl = s3UploadService.geturl(reviewFile.getReviewFilePath() + reviewFile.getReviewFileName());
                     ReviewFileDto of = ReviewFileDto.of(reviewFile);
                     of.setFileUrl(geturl);
@@ -211,7 +218,6 @@ public class MyPageServiceImpl implements MyPageService {
                 }
 
                 reviewDto.setReviewFileList(reviewFileDtos);
-
 
                 reviewDtoList.add(reviewDto);
             }

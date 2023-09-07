@@ -314,6 +314,8 @@ public class MyPageServiceImpl implements MyPageService {
                 List<VendorImageDTO> vendorImageDtos = new ArrayList<>();
                 for (VendorImage vendorImage : vendorImages) {
                     VendorImageDTO vendorImageDTO = VendorImageDTO.of(vendorImage);
+                    String geturl = s3UploadService.geturl(vendorImageDTO.getUrl() + vendorImageDTO.getFileName());
+                    vendorImageDTO.setUrl(geturl);
                     vendorImageDtos.add(vendorImageDTO);
                 }
                 favoriteVendorDTO.setVendorImages(vendorImageDtos);

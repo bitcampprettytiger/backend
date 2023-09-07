@@ -79,11 +79,12 @@ public interface MyPageService {
     List<OrderDTO> getMyOrderDTOs(String username);
 
     //내 리뷰 내역
-    List<ReviewDto> getMyReviewDTOs(String username);
+//    List<ReviewDto> getMyReviewDTOs(String username);
 
     // 내 찜 가게 내역을 조회하고 DTO로 변환하여 반환
     List<FavoriteVendorDTO> getMyFavoriteVendorDTOs(String username);
 
+    List<ReviewDto> getMyReviewDTOsWithVendorInfo(String username);
 
 
     //내 정보 수정

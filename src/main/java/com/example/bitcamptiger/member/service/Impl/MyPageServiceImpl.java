@@ -15,6 +15,9 @@ import com.example.bitcamptiger.member.dto.MemberDTO;
 import com.example.bitcamptiger.member.entity.Member;
 import com.example.bitcamptiger.member.reposiitory.MemberRepository;
 import com.example.bitcamptiger.member.service.MyPageService;
+import com.example.bitcamptiger.menu.dto.MenuImageDTO;
+import com.example.bitcamptiger.menu.entity.MenuImage;
+import com.example.bitcamptiger.menu.repository.MenuImageRepository;
 import com.example.bitcamptiger.order.dto.OrderDTO;
 import com.example.bitcamptiger.order.dto.OrderMenuDTO;
 import com.example.bitcamptiger.order.entity.OrderMenu;
@@ -54,6 +57,7 @@ public class MyPageServiceImpl implements MyPageService {
     private final PaymentRepository paymentRepository;
     private final S3UploadService s3UploadService;
     private final VendorImageRepository vendorImageRepository;
+    private final MenuImageRepository menuImageRepository;
 
     //내 정보 조회
     @Override
@@ -157,6 +161,25 @@ public class MyPageServiceImpl implements MyPageService {
                 // 주문한 가게의 vendorName 가져오기
                 String vendorName = orders.getVendor().getVendorName();
                 orderDTO.setVendorName(vendorName); // vendorName 추가
+
+                // VendorImage 정보를 가져와서 VendorImageDto로 변환
+                List<VendorImage> vendorImages = vendorImageRepository.findByVendor(orders.getVendor());
+                List<VendorImageDTO> vendorImageDtos = vendorImages.stream()
+                        .map(VendorImageDTO::of)
+                        .collect(Collectors.toList());
+
+                // OrderDTO에 VendorImageDto 리스트를 설정합니다.
+                orderDTO.setVendorImageDtos(vendorImageDtos);
+
+                // MenuImage 정보를 가져와서 MenuImageDto로 변환
+                List<MenuImage> menuImages = menuImageRepository.findByMenu(orders.getOrderMenuList().get(0).getMenu());
+                List<MenuImageDTO> menuImageDtos = menuImages.stream()
+                        .map(MenuImageDTO::of)
+                        .collect(Collectors.toList());
+
+                // OrderDTO에 MenuImageDTO 리스트를 설정합니다.
+                orderDTO.setMenuImageDTOList(menuImageDtos);
+
 
                 // 주문 내역에 포함된 주문한 메뉴들을 변환하여 리스트에 추가
                 List<OrderMenuDTO> orderMenuDTOList = new ArrayList<>();

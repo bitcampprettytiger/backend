@@ -1,9 +1,11 @@
 package com.example.bitcamptiger.order.dto;
 
 import com.example.bitcamptiger.member.entity.Member;
+import com.example.bitcamptiger.menu.dto.MenuImageDTO;
 import com.example.bitcamptiger.menu.entity.Menu;
 import com.example.bitcamptiger.order.entity.OrderMenu;
 import com.example.bitcamptiger.order.entity.Orders;
+import com.example.bitcamptiger.vendor.dto.VendorImageDTO;
 import com.example.bitcamptiger.vendor.entity.Vendor;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
@@ -43,6 +45,9 @@ public class OrderDTO {
 
     private List<OrderMenuDTO> orderedMenuDTOList = new ArrayList<>();
 
+    private List<VendorImageDTO> vendorImageDtos; // 벤더 이미지
+
+    private List<MenuImageDTO> menuImageDTOList; // MenuImageDTO 리스트 추가
 
     private static ModelMapper modelMapper = new ModelMapper();
 

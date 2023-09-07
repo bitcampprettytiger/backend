@@ -23,7 +23,7 @@ public class VendorMemberDTO {
     private String password;
 
     //  휴대폰 번호
-    private int tel;
+    private Long tel;
 
     //  개인정보 동의
     private boolean privacy;

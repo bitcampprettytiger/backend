@@ -5,6 +5,7 @@ import com.example.bitcamptiger.Review.entity.ReviewFile;
 import com.example.bitcamptiger.member.entity.Member;
 import com.example.bitcamptiger.order.entity.Orders;
 import com.example.bitcamptiger.vendor.dto.VendorDTO;
+import com.example.bitcamptiger.vendor.dto.VendorImageDTO;
 import com.example.bitcamptiger.vendor.entity.Vendor;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
@@ -29,6 +30,7 @@ public class ReviewDto {
     private Orders orders;
     @JsonIgnore
     private Vendor vendor;
+    private VendorDTO vendorDto;
     private Member member;
     private String reviewContent;
     private String reviewRegDate;
@@ -36,10 +38,11 @@ public class ReviewDto {
     private long likeCount;
     private long disLikeCount;
     private Boolean isLike;
-    private List<ReviewFile> reviewFileList;
+    private List<ReviewFileDto> reviewFileList;
     private ReviewFileDto reviewFile;
 
     private int numberOfReviews;
+    private List<VendorImageDTO> vendorImageDTOs; // VendorImageDto 리스트 추가
 
 
     private static ModelMapper modelMapper = new ModelMapper();

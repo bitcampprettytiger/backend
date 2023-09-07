@@ -12,6 +12,9 @@ public interface OrderService {
     //주문내역확인
     List<OrderDTO> getOrderList(Long memberId);
 
+    //판매자 측, 주문내역확인
+    List<OrderDTO> vendorOrderList(Long vendorId);
+
     //특정 주문내역 상세 확인
     OrderDTO getOrderDetail(Long orderId);
 

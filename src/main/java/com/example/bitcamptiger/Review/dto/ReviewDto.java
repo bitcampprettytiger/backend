@@ -3,8 +3,11 @@ package com.example.bitcamptiger.Review.dto;
 import com.example.bitcamptiger.Review.entity.Review;
 import com.example.bitcamptiger.Review.entity.ReviewFile;
 import com.example.bitcamptiger.member.entity.Member;
+import com.example.bitcamptiger.menu.dto.MenuDTO;
+import com.example.bitcamptiger.menu.entity.Menu;
 import com.example.bitcamptiger.order.entity.Orders;
 import com.example.bitcamptiger.vendor.dto.VendorDTO;
+import com.example.bitcamptiger.vendor.dto.VendorImageDTO;
 import com.example.bitcamptiger.vendor.entity.Vendor;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
@@ -17,6 +20,7 @@ import org.modelmapper.Provider;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Data
 @NoArgsConstructor
@@ -29,6 +33,7 @@ public class ReviewDto {
     private Orders orders;
     @JsonIgnore
     private Vendor vendor;
+    private VendorDTO vendorDto;
     private Member member;
     private String reviewContent;
     private String reviewRegDate;
@@ -36,10 +41,11 @@ public class ReviewDto {
     private long likeCount;
     private long disLikeCount;
     private Boolean isLike;
-    private List<ReviewFile> reviewFileList;
+    private List<ReviewFileDto> reviewFileList;
     private ReviewFileDto reviewFile;
 
     private int numberOfReviews;
+    private List<VendorImageDTO> vendorImageDTOs; // VendorImageDto 리스트 추가
 
 
     private static ModelMapper modelMapper = new ModelMapper();
@@ -59,6 +65,15 @@ public class ReviewDto {
         return dateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
     }
 
+
+    private List<MenuDTO> menuDtoList;
+
+    // getMenuInfoForReview 메서드 추가
+//    public void getMenuInfoForReview(List<Menu> menus) {
+//        this.menuDtoList = menus.stream()
+//                .map(menu -> MenuDTO.of(menu))
+//                .collect(Collectors.toList());
+//    }
 }
 
 

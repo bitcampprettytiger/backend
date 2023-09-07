@@ -1,10 +1,16 @@
 package com.example.bitcamptiger.member.controller;
 
+import com.example.bitcamptiger.NcloudAPI.dto.UpdatePasswordDTO;
+import com.example.bitcamptiger.common.Constant;
+import com.example.bitcamptiger.common.Constant.SocialLoginType;
+import com.example.bitcamptiger.common.exception.BaseException;
+import com.example.bitcamptiger.common.oauth.OAuthService;
 import com.example.bitcamptiger.dto.ResponseDTO;
 import com.example.bitcamptiger.dto.TokenDTO;
 import com.example.bitcamptiger.jwt.JwtService;
 import com.example.bitcamptiger.jwt.JwtTokenProvider;
 import com.example.bitcamptiger.jwt.jwtdto.JwtDto;
+import com.example.bitcamptiger.member.dto.GetSocialMemberDto;
 import com.example.bitcamptiger.member.dto.MemberDTO;
 import com.example.bitcamptiger.member.dto.VendorMemberDTO;
 import com.example.bitcamptiger.member.entity.CustomUserDetails;
@@ -23,7 +29,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.Optional;
+
+import static com.example.bitcamptiger.Util.ValidationRegex.isjointype;
 
 @RestController
 @RequiredArgsConstructor
@@ -38,6 +47,8 @@ public class MemberController {
     private final PasswordEncoder passwordEncoder;
 
     private final JwtService jwtService;
+
+    private final OAuthService oAuthService;
 
 
 //    로컬 로그인 로직
@@ -256,6 +267,75 @@ public class MemberController {
     ) {
         return ResponseEntity.ok(memberService.logout(tokenDTO.getAccessToken(), customDetails.getUser()));
     }
+
+
+    @GetMapping("/member/info")
+    public ResponseEntity<?> memberinfo(
+            @AuthenticationPrincipal CustomUserDetails customDetails
+    ) {
+        try {
+            return ResponseEntity.ok(customDetails.getUser());
+        }
+        catch (Exception e){
+            System.out.println(e.getMessage());
+            return null;
+        }
+    }
+
+    @GetMapping("/auth2/{socialLoginType}/login")
+    public void socialLoginRedirect(@PathVariable(name="socialLoginType") String SocialLoginPath) throws IOException {
+        System.out.println(SocialLoginPath);
+        SocialLoginType socialLoginType= SocialLoginType.valueOf(SocialLoginPath.toUpperCase());
+        oAuthService.accessRequest(socialLoginType);
+    }
+
+    @ResponseBody
+    @GetMapping(value = "/app/users/auth2/{socialLoginType}/login/callback")
+    public ResponseEntity<?> socialLoginCallback(
+            @PathVariable(name = "socialLoginType") String socialLoginPath,
+            @RequestParam(name = "code") String code) throws IOException, BaseException {
+        ResponseDTO<MemberDTO> response = new ResponseDTO<>();
+
+        log.info(">> 소셜 로그인 API 서버로부터 받은 code : {}", code);
+
+        if(!isjointype(socialLoginPath)){
+            return ResponseEntity.badRequest().body("null");
+        }
+
+        SocialLoginType socialLoginType = SocialLoginType.valueOf(socialLoginPath.toUpperCase());
+        GetSocialMemberDto getSocialMemberDto = oAuthService.oAuthLoginOrJoin(socialLoginType, code);
+        return ResponseEntity.ok(getSocialMemberDto);
+    }
+
+
+    //수정된 비밀번호 저장
+    @PostMapping("/member/updatePassword")
+    public ResponseEntity<?> updatePassword(@RequestBody UpdatePasswordDTO updatePasswordDTO){
+
+        ResponseDTO<UpdatePasswordDTO> response = new ResponseDTO<>();
+
+        try{
+            boolean updatePw = memberService.updatePassword(updatePasswordDTO);
+
+            if(updatePw) {
+                response.setMessage("비밀번호 변경이 완료되었습니다.");
+                response.setStatusCode(HttpStatus.OK.value());
+
+            } else {
+                response.setErrorMessage("비밀번호 변경에 실패했습니다.");
+
+            }
+
+            return ResponseEntity.ok(response);
+        }catch  (Exception e) {
+            System.out.println(e.getMessage());
+            response.setErrorMessage(e.getMessage());
+            response.setStatusCode(HttpStatus.BAD_REQUEST.value());
+            return ResponseEntity.badRequest().body(response);
+        }
+    }
+
+
 
 }
 

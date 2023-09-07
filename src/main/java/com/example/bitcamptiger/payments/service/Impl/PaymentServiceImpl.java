@@ -6,6 +6,8 @@ import com.example.bitcamptiger.member.entity.CustomUserDetails;
 import com.example.bitcamptiger.member.entity.Member;
 import com.example.bitcamptiger.member.reposiitory.MemberRepository;
 import com.example.bitcamptiger.order.dto.OrderDTO;
+import com.example.bitcamptiger.order.dto.OrderMenuDTO;
+import com.example.bitcamptiger.order.entity.OrderMenu;
 import com.example.bitcamptiger.order.entity.OrderStatus;
 import com.example.bitcamptiger.order.entity.Orders;
 import com.example.bitcamptiger.order.repository.OrderRepository;
@@ -14,11 +16,15 @@ import com.example.bitcamptiger.payments.dto.PaymentDTO;
 import com.example.bitcamptiger.payments.entity.Payments;
 import com.example.bitcamptiger.payments.repository.PaymentRepository;
 import com.example.bitcamptiger.payments.service.PaymentService;
+import com.example.bitcamptiger.vendor.entity.Vendor;
+import com.example.bitcamptiger.vendor.repository.VendorRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
+import org.springframework.web.client.RestTemplate;
 
+import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +40,7 @@ public class PaymentServiceImpl implements PaymentService {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final OrderRepository orderRepository;
     private final OrderService orderService;
+    private final VendorRepository vendorRepository;
 
 
     //결제하기
@@ -53,10 +60,15 @@ public class PaymentServiceImpl implements PaymentService {
         //결제 전에 주문을 생성하고 예약 상태로 설정
         OrderDTO orderDTO = new OrderDTO();
         orderDTO.setMember(member);
+        orderDTO.setVendorId(paymentDTO.getVendorId());
         Orders orders = orderService.createOrder(orderDTO);
         orders.setOrderStatus(OrderStatus.RESERVATION);
-        orderRepository.save(orders);
+        Orders save = orderRepository.save(orders);
 
+        paymentDTO.setOrderId(save.getId());
+//        paymentDTO.setOrderMenu(save.getOrderMenuList());
+
+        System.out.println(save.getId() +"orderId====================================================");
         //결제 생성
         Payments payment = new Payments();
         payment.setPayMethod(paymentDTO.getPayMethod());
@@ -64,10 +76,11 @@ public class PaymentServiceImpl implements PaymentService {
         payment.setMerchantUid(paymentDTO.getMerchantUid());
         payment.setAmount(paymentDTO.getAmount());
         payment.setPayDate(LocalDateTime.now());
+        payment.setName(paymentDTO.getName());
 
         ///////////////////////// jwt //////////////////////////////////
         payment.setMember(member);
-
+        payment.setVendor(vendorRepository.findById(paymentDTO.getVendorId()).orElseThrow(EntityNotFoundException::new));
 
         paymentRepository.save(payment);
 
@@ -78,6 +91,11 @@ public class PaymentServiceImpl implements PaymentService {
             orders.setPayments(payment);
             orders.setOrderStatus(OrderStatus.CONFIRMED);
             orderRepository.save(orders);
+
+            //결제와 주문이 완료된 후, Node.js 서버에 알림 보내기
+//            RestTemplate restTemplate = new RestTemplate();
+//            restTemplate.postForObject("http://localhost:3030/new-order", orders, Orders.class);
+
         } else{
             orders.setOrderStatus(OrderStatus.CANCELED);
             orderRepository.save(orders);

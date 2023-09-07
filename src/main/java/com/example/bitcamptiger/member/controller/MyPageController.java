@@ -270,7 +270,7 @@ public class MyPageController {
         ResponseDTO<MyReviewResponse> response = new ResponseDTO<>();
 
         try {
-            List<ReviewDto> reviewList = myPageService.getMyReviewDTOs(customUserDetails.getUsername());
+            List<ReviewDto> reviewList = myPageService.getMyReviewDTOsWithVendorInfo(customUserDetails.getUsername()); // 수정된 메서드로 변경
             int numberOfReviews = reviewList.size();
 
             if (reviewList.isEmpty()) {
@@ -291,6 +291,7 @@ public class MyPageController {
             return ResponseEntity.badRequest().body(response);
         }
     }
+
     //내 찜 가게 내역
     @Operation(summary = "myFavoriteVendors", description = "회원 찜내역 조회")
     @ApiResponses({
@@ -325,5 +326,35 @@ public class MyPageController {
             return ResponseEntity.badRequest().body(response);
         }
 
+    }
+
+    // 기존 코드와 함께 추가된 컨트롤러 메서드
+    // 여러 개의 리뷰 삭제를 위한 컨트롤러
+    @DeleteMapping("/myReviews/deleteReviews")
+    public ResponseEntity<ResponseDTO<Void>> deleteReviews(
+            @RequestBody List<Long> reviewIds,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails
+    ) {
+        ResponseDTO<Void> response = new ResponseDTO<>();
+
+        try {
+            // 리뷰들을 삭제하는 비즈니스 로직 호출
+            myPageService.deleteReviewsByIds(reviewIds, customUserDetails.getUsername());
+
+            // 삭제가 성공한 경우
+            response.setStatusCode(HttpStatus.NO_CONTENT.value());
+            response.setMessage("내 리뷰 내역에서 삭제되었습니다.");
+            return ResponseEntity.noContent().build();
+        } catch (SecurityException e) {
+            // 권한이 없는 경우
+            response.setErrorMessage("리뷰를 삭제할 권한이 없습니다.");
+            response.setStatusCode(HttpStatus.FORBIDDEN.value());
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+        } catch (Exception e) {
+            // 삭제 실패 시 에러 메시지를 설정하고 BAD_REQUEST 상태로 반환
+            response.setErrorMessage("리뷰 삭제 중 오류가 발생했습니다.");
+            response.setStatusCode(HttpStatus.BAD_REQUEST.value());
+            return ResponseEntity.badRequest().body(response);
+        }
     }
 }

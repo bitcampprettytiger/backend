@@ -23,6 +23,7 @@ public class CustomUserDetails implements UserDetails, OAuth2User {
     //소셜로그인 시 사용자 정보를 담아줄 Map 선언
     Map<String, Object> attributes;
 
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> auths = new ArrayList<>();

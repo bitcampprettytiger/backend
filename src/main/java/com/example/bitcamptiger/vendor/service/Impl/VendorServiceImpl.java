@@ -64,6 +64,7 @@ public class VendorServiceImpl implements VendorService {
 //        List<NowLocationDto> nowLocationDtoList = new ArrayList<>();
 //        List<Randmark> Randmark = nowLocationRepository.findAll();
         if(nowLocationDto.getHardness().equals(null)&&nowLocationDto.getLatitude().equals(null)){
+
             JSONObject geocoding = geoService.geocoding(nowLocationDto.getAddress());
             System.out.println(geocoding.toString());
             nowLocationDto.setHardness(geocoding.get("x").toString());
@@ -92,11 +93,11 @@ public class VendorServiceImpl implements VendorService {
     @Override
     public List<VendorDTO> giveLandmarkvendor(NowLocationDto nowLocationDto) {
 
-        Optional<Randmark> byMapLocation = nowLocationRepository.findByMapLocation(nowLocationDto.getAddress());
+        Randmark byLocation = nowLocationRepository.findByLocation(nowLocationDto.getName());
 
-        if(nowLocationDto.getLatitude().equals(null)&&nowLocationDto.getHardness().equals(null)){
-            nowLocationDto.setLatitude(byMapLocation.orElseThrow(EntityNotFoundException::new).getLatitude());
-            nowLocationDto.setHardness(byMapLocation.orElseThrow(EntityNotFoundException::new).getHardness());
+        if (nowLocationDto.getLatitude() == null && nowLocationDto.getHardness() == null) {
+            nowLocationDto.setLatitude(byLocation.getLatitude());
+            nowLocationDto.setHardness(byLocation.getHardness());
         }
         List<Vendor> byrandmart = vendorRepository.findByrandmart(nowLocationDto);
         List<VendorDTO> vendorDTOList = new ArrayList<>();

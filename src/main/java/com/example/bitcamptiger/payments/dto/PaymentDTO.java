@@ -2,6 +2,8 @@ package com.example.bitcamptiger.payments.dto;
 
 import com.example.bitcamptiger.member.entity.Member;
 import com.example.bitcamptiger.order.dto.OrderDTO;
+import com.example.bitcamptiger.order.dto.OrderMenuDTO;
+import com.example.bitcamptiger.order.entity.OrderMenu;
 import com.example.bitcamptiger.payments.entity.Payments;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,6 +12,7 @@ import lombok.NoArgsConstructor;
 import org.modelmapper.ModelMapper;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -41,8 +44,11 @@ public class PaymentDTO {
 
     private int paymentCount; //총 결제 내역 개수
 
+    private Long vendorId;
+
     private String vendorName;
 
+    private Long orderId;
 
     private static ModelMapper modelMapper = new ModelMapper();
 

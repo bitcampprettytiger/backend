@@ -1,5 +1,6 @@
 package com.example.bitcamptiger.member.entity;
 
+import com.example.bitcamptiger.common.entity.BaseEntity;
 import com.example.bitcamptiger.member.dto.MemberDTO;
 import com.example.bitcamptiger.member.dto.VendorMemberDTO;
 import jakarta.persistence.*;
@@ -19,23 +20,23 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Member {
+public class Member extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-
+    @Column(nullable = false)
+    private String name;    //본명
 
     @Column(nullable = false)
     private String username;
-
 
     @Column(nullable = false)
     private String password;
 
     @Column(nullable = false)
-    private int tel;
+    private Long tel;
 //  별명
     @Column(nullable = false)
     private String nickname;
@@ -53,7 +54,6 @@ public class Member {
     @Column
 //  가입 타입
     private String type;
-
 
 
     public MemberDTO toMemberDTO() {
@@ -79,4 +79,13 @@ public class Member {
                 .NonLocked(true)
                 .build();
     }
+
+
+    public Member(Member user) {
+        this.id = user.getId();
+        this.username = user.getUsername();
+        this.nickname = user.getNickname();
+    }
+
+
 }

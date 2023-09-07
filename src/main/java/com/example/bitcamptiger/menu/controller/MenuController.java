@@ -13,6 +13,9 @@ import com.example.bitcamptiger.vendor.dto.VendorMenuDto;
 import com.example.bitcamptiger.vendor.entity.Vendor;
 import com.example.bitcamptiger.vendor.repository.VendorRepository;
 import com.example.bitcamptiger.vendor.service.VendorService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,6 +41,11 @@ public class MenuController {
 
 
     //해당 가게의 모든 메뉴 정보 리스트
+    @Operation(summary = "getMenuInfoList", description = "해당 가게의 모든 메뉴 정보")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "통과"),
+            @ApiResponse(responseCode = "400", description = "실패")
+    })
     @GetMapping("/info/{vendorId}")
     public ResponseEntity<?> getMenuInfoList(@PathVariable Long vendorId,@AuthenticationPrincipal CustomUserDetails customUserDetails){
         ResponseDTO<MenuDTO> response = new ResponseDTO<>();
@@ -59,7 +67,11 @@ public class MenuController {
 
 
     //메뉴 등록
-
+    @Operation(summary = "insertMenu", description = "메뉴 등록")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "통과"),
+            @ApiResponse(responseCode = "400", description = "실패")
+    })
     @PostMapping("/info/insertMenu")
     public ResponseEntity<?> insertMenu(@AuthenticationPrincipal CustomUserDetails customUserDetails,
                                         MenuDTO menuDTO,
@@ -89,28 +101,35 @@ public class MenuController {
 
 
 
-    @PostMapping("/UpdateVendor")
-    public ResponseEntity<?> vendorupdateMenu(VendorMenuDto vendorMenuDto,
-                                              @AuthenticationPrincipal CustomUserDetails customUserDetails){
+//    @PostMapping("/UpdateVendor")
+//    public ResponseEntity<?> vendorupdateMenu(VendorMenuDto vendorMenuDto,
+//                                              @AuthenticationPrincipal CustomUserDetails customUserDetails){
+//
+//        ResponseDTO<String> response = new ResponseDTO<>();
+//        System.out.println(vendorMenuDto);
+//
+//        try{
+//            // 로그인한 사용자의 정보에 접근
+//            Member loggedInMember = customUserDetails.getUser();
+//
+//            response.setItem("수정완료");
+//            response.setStatusCode(HttpStatus.OK.value());
+//
+//            return ResponseEntity.ok().body(response);
+//        }catch(Exception e) {
+//            response.setErrorMessage(e.getMessage());
+//            response.setStatusCode(HttpStatus.BAD_REQUEST.value());
+//            return ResponseEntity.badRequest().body(response);
+//        }
+//    }
 
-        ResponseDTO<String> response = new ResponseDTO<>();
-        System.out.println(vendorMenuDto);
 
-        try{
-            // 로그인한 사용자의 정보에 접근
-            Member loggedInMember = customUserDetails.getUser();
-
-            response.setItem("수정완료");
-            response.setStatusCode(HttpStatus.OK.value());
-
-            return ResponseEntity.ok().body(response);
-        }catch(Exception e) {
-            response.setErrorMessage(e.getMessage());
-            response.setStatusCode(HttpStatus.BAD_REQUEST.value());
-            return ResponseEntity.badRequest().body(response);
-        }
-    }
     // 메뉴 수정
+    @Operation(summary = "updateMenu", description = "메뉴 수정")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "통과"),
+            @ApiResponse(responseCode = "400", description = "실패")
+    })
     @PutMapping("/info/changeMenu")
     public ResponseEntity<?> updateMenu(
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
@@ -141,7 +160,11 @@ public class MenuController {
 
 
     // 메뉴 삭제
-
+    @Operation(summary = "deleteMenu", description = "메뉴 삭제")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "통과"),
+            @ApiResponse(responseCode = "400", description = "실패")
+    })
     @DeleteMapping("/info/deleteMenu")
     public ResponseEntity<?> deleteMenu(@AuthenticationPrincipal CustomUserDetails customUserDetails,
                                         MenuDTO menuDTO){
@@ -169,6 +192,11 @@ public class MenuController {
 
     //추천 메뉴 표출
     //조회수가 가장 많은 탑 5 메뉴를 표시할 것
+    @Operation(summary = "getRecommendedMenuTypes", description = "조회수 Top5 추천메뉴 표출")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "통과"),
+            @ApiResponse(responseCode = "400", description = "실패")
+    })
     @GetMapping("/recommendedMenus10")
     public List<String> getRecommendedMenuTypes(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
         System.out.println("recommendedMenus5==========================>");

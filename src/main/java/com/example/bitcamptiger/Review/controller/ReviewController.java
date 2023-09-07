@@ -6,6 +6,9 @@ import com.example.bitcamptiger.dto.ResponseDTO;
 import com.example.bitcamptiger.member.entity.CustomUserDetails;
 import com.example.bitcamptiger.member.entity.Member;
 import com.example.bitcamptiger.member.reposiitory.MemberRepository;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -28,7 +31,13 @@ public class ReviewController {
     private final ReviewService reviewService;
     private final MemberRepository memberRepository;
 
+
     //vendor의 리뷰 조회
+    @Operation(summary = "getReviewList", description = "리뷰 조회")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "통과"),
+            @ApiResponse(responseCode = "400", description = "실패")
+    })
     @GetMapping("/review-list/{vendorId}")
     public ResponseEntity<?> getReviewList(@PathVariable(name = "vendorId") Long vendorId) {
         ResponseDTO<ReviewDto> responseDTO = new ResponseDTO<>();
@@ -51,6 +60,11 @@ public class ReviewController {
 
     //리뷰 등록
     //multipart form 데이터 형식을 받기 위해 consumes 속성 지정
+    @Operation(summary = "createReview", description = "리뷰 작성")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "통과"),
+            @ApiResponse(responseCode = "400", description = "실패")
+    })
     @PostMapping(value = "/review", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ResponseDTO<Map<String, Object>>> createReview(
             @ModelAttribute ReviewDto reviewDto,
@@ -70,7 +84,7 @@ public class ReviewController {
     }
 
 
-
+    //xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
     //리뷰 수정
     @PutMapping("/review")
     public ResponseEntity<ResponseDTO<Map<String, Object>>> updateReview(
@@ -91,7 +105,14 @@ public class ReviewController {
         }
     }
 
+
+
     //리뷰 삭제
+    @Operation(summary = "deleteReview", description = "리뷰 삭제")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "통과"),
+            @ApiResponse(responseCode = "400", description = "실패")
+    })
     @DeleteMapping("/review")
     public ResponseEntity<?> deleteReview (@RequestParam Long reviewId,
                                            @AuthenticationPrincipal CustomUserDetails userDetails){

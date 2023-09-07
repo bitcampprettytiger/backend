@@ -3,6 +3,8 @@ package com.example.bitcamptiger.Review.dto;
 import com.example.bitcamptiger.Review.entity.Review;
 import com.example.bitcamptiger.Review.entity.ReviewFile;
 import com.example.bitcamptiger.member.entity.Member;
+import com.example.bitcamptiger.menu.dto.MenuDTO;
+import com.example.bitcamptiger.menu.entity.Menu;
 import com.example.bitcamptiger.order.entity.Orders;
 import com.example.bitcamptiger.vendor.dto.VendorDTO;
 import com.example.bitcamptiger.vendor.dto.VendorImageDTO;
@@ -18,6 +20,7 @@ import org.modelmapper.Provider;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Data
 @NoArgsConstructor
@@ -62,6 +65,15 @@ public class ReviewDto {
         return dateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
     }
 
+
+    private List<MenuDTO> menuDtoList;
+
+    // getMenuInfoForReview 메서드 추가
+//    public void getMenuInfoForReview(List<Menu> menus) {
+//        this.menuDtoList = menus.stream()
+//                .map(menu -> MenuDTO.of(menu))
+//                .collect(Collectors.toList());
+//    }
 }
 
 

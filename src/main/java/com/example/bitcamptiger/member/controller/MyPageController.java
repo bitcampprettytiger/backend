@@ -270,7 +270,7 @@ public class MyPageController {
         ResponseDTO<MyReviewResponse> response = new ResponseDTO<>();
 
         try {
-            List<ReviewDto> reviewList = myPageService.getMyReviewDTOsWithVendorInfo(customUserDetails.getUsername());
+            List<ReviewDto> reviewList = myPageService.getMyReviewDTOsWithVendorInfo(customUserDetails.getUsername()); // 수정된 메서드로 변경
             int numberOfReviews = reviewList.size();
 
             if (reviewList.isEmpty()) {

@@ -282,7 +282,7 @@ public class MemberController {
         }
     }
 
-    @GetMapping("/auth/{socialLoginType}/login")
+    @GetMapping("/auth2/{socialLoginType}/login")
     public void socialLoginRedirect(@PathVariable(name="socialLoginType") String SocialLoginPath) throws IOException {
         System.out.println(SocialLoginPath);
         SocialLoginType socialLoginType= SocialLoginType.valueOf(SocialLoginPath.toUpperCase());
@@ -290,7 +290,7 @@ public class MemberController {
     }
 
     @ResponseBody
-    @GetMapping(value = "/auth/{socialLoginType}/login/callback")
+    @GetMapping(value = "/app/users/auth2/{socialLoginType}/login/callback")
     public ResponseEntity<?> socialLoginCallback(
             @PathVariable(name = "socialLoginType") String socialLoginPath,
             @RequestParam(name = "code") String code) throws IOException, BaseException {

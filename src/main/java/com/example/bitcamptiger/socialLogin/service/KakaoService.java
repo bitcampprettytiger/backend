@@ -1,5 +1,6 @@
 package com.example.bitcamptiger.socialLogin.service;
 
+import com.example.bitcamptiger.member.dto.MemberDTO;
 import com.example.bitcamptiger.member.entity.Member;
 import com.example.bitcamptiger.member.service.MemberService;
 import com.example.bitcamptiger.socialLogin.dto.KakaoDTO;
@@ -155,4 +156,28 @@ public class KakaoService {
     }
 
 
+    public Member getKakaoMember(MemberDTO memberDTO) {
+        System.out.println(memberDTO.getUsername());
+        Optional<Member> existingMember = memberService.findByUsername(memberDTO.getUsername());
+
+        if (existingMember.isPresent()) {
+            // 기존 회원이면 업데이트
+            return existingMember.get();
+        } else {
+            // 기존 회원이 아니면 신규 회원으로 저장
+            Member newMember = Member.builder()
+                    .username(memberDTO.getUsername())
+                    .nickname(memberDTO.getNickname())
+                    .password(passwordEncoder.encode(memberDTO.getNickname()))
+                    .name(memberDTO.getName())
+                    .tel(01022226666L)
+                    .privacy(true)
+                    .role("ROLE_BASIC")
+                    .type("local")
+                    .build();
+            memberService.save(newMember);
+
+            return newMember;
+        }
+    }
 }

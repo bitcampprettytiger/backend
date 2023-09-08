@@ -93,6 +93,7 @@ public class MemberService {
 
             throw new RuntimeException("already exist username");
         }
+        joinmember.setName("정유진");
         return memberRepository.save(joinmember).toVendorMemberDTO();
     }
 

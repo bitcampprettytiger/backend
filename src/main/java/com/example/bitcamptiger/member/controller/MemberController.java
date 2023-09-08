@@ -106,6 +106,7 @@ public class MemberController {
         System.out.println(vendorMemberDTO);
         ResponseDTO<VendorMemberDTO> responseDTO = new ResponseDTO<>();
         try {
+
 //            비밀번호 암호화
             vendorMemberDTO.setPassword(passwordEncoder.encode(vendorMemberDTO.getPassword()));
 

@@ -93,6 +93,7 @@ public class MemberService {
 
             throw new RuntimeException("already exist username");
         }
+        joinmember.setName("정유진");
         return memberRepository.save(joinmember).toVendorMemberDTO();
     }
 
@@ -164,6 +165,7 @@ public class MemberService {
     }
 
     public PostUserRes createOAuthUser(Member user) {
+        user.setName("심봉교");
         Member saveUser = memberRepository.save(user);
         if (user.getState() == BaseEntity.State.INACTIVE) {
             throw new BaseException(BaseResponseStatus.POST_INACTIVE);

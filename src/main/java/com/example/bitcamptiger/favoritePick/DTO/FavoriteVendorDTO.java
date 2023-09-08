@@ -2,12 +2,15 @@ package com.example.bitcamptiger.favoritePick.DTO;
 
 import com.example.bitcamptiger.favoritePick.entity.FavoriteVendor;
 import com.example.bitcamptiger.member.entity.Member;
+import com.example.bitcamptiger.vendor.dto.VendorImageDTO;
 import com.example.bitcamptiger.vendor.entity.Vendor;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.modelmapper.ModelMapper;
+
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -37,4 +40,6 @@ public class FavoriteVendorDTO {
         favoriteVendorDTO.setVendor(favoriteVendor.getVendor());
         return favoriteVendorDTO;
     }
+
+    private List<VendorImageDTO> vendorImages;
 }

@@ -359,11 +359,16 @@ public class ReviewServiceImpl implements ReviewService {
         for (Object[] result : results) {
             Review review = (Review) result[0];
             List<ReviewFile> byReview = reviewFileRepository.findByReview(review);
+            List<ReviewFileDto> reviewFileDtos = new ArrayList<>();
             for(ReviewFile reviewFile : byReview){
                 ReviewFileDto reviewFileDto = ReviewFileDto.of(reviewFile);
+                String geturl = s3UploadService.geturl(reviewFileDto.getReviewFilePath() + reviewFileDto.getReviewFileName());
                 reviewFileDto.setReviewFilePath(s3UploadService.geturl(reviewFile.getReviewFilePath()+reviewFile.getReviewFileName()));
+                reviewFileDto.setFileUrl(geturl);
+                reviewFileDtos.add(reviewFileDto);
             }
             ReviewDto reviewDto = ReviewDto.of(review);
+            reviewDto.setReviewFileList(reviewFileDtos);
 //            reviewDto.setReviewFileList(byReview);
             // 리뷰 파일 관련 정보 추가
             ReviewFileDto reviewFileDto = null;

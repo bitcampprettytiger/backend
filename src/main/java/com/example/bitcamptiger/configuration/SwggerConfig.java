@@ -46,11 +46,15 @@ public class SwggerConfig {
 
     @Bean
     public GroupedOpenApi chatOpenApi() {
-        String[] paths = {"/member/**","/vendor/**"};
+        String[] paths = {"/**","/vendor/**"};
 
         return GroupedOpenApi.builder()
                 .group("채팅서비스 API v1")
-                .pathsToMatch(paths)
+                .pathsToMatch("/vendor/**")
+                .group("member")
+                .pathsToMatch("/member/**")
+                .group("menu")
+                .pathsToMatch("/menu/**")
                 .build();
     }
 

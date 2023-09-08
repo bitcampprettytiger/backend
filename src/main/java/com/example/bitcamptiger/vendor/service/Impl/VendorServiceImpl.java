@@ -101,8 +101,19 @@ public class VendorServiceImpl implements VendorService {
         }
         List<Vendor> byrandmart = vendorRepository.findByrandmart(nowLocationDto);
         List<VendorDTO> vendorDTOList = new ArrayList<>();
+        List<VendorImageDTO> vendorImageDTOList = new ArrayList<>();
         for(Vendor vendor:byrandmart){
+            List<VendorImage> byVendor = vendorImageRepository.findByVendor(vendor);
+            for(VendorImage vendorImage: byVendor){
+                String geturl = s3UploadService.geturl(vendorImage.getUrl() + vendorImage.getFileName());
+                VendorImageDTO vendorImageDTO = VendorImageDTO.of(vendorImage);
+                vendorImageDTO.setUrl(geturl);
+                vendorImageDTOList.add(vendorImageDTO);
+            }
+
             VendorDTO of = VendorDTO.of(vendor);
+            of.setPrimaryimgurl(vendorImageDTOList.get(0).getUrl());
+            of.setVendorImageDTOList(vendorImageDTOList);
             vendorDTOList.add(of);
         }
 

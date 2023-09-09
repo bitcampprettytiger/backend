@@ -1,6 +1,6 @@
 springdoc:
   swagger-ui:
-    path: /
+    path: /swagger-ui/
     groups-order: DESC
     operations-sorter: alpha
     disable-swagger-default-url: true
@@ -10,8 +10,7 @@ springdoc:
       enabled: true
   default-consumes-media-type: application/json;charset=UTF-8
   default-produces-media-type: application/json;charset=UTF-8
-  packages-to-scan: com.example.bitcamptiger.member.controller
-
+  packages-to-scan: com.example.bitcamptiger
   redis:
     pool:
       min-idle: 0

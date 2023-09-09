@@ -102,7 +102,18 @@ public class VendorServiceImpl implements VendorService {
         List<Vendor> byrandmart = vendorRepository.findByrandmart(nowLocationDto);
         List<VendorDTO> vendorDTOList = new ArrayList<>();
         for(Vendor vendor:byrandmart){
+            List<VendorImageDTO> vendorImageDTOList = new ArrayList<>();
+            List<VendorImage> byVendor = vendorImageRepository.findByVendor(vendor);
+            for(VendorImage vendorImage: byVendor){
+                String geturl = s3UploadService.geturl(vendorImage.getUrl() + vendorImage.getFileName());
+                VendorImageDTO vendorImageDTO = VendorImageDTO.of(vendorImage);
+                vendorImageDTO.setUrl(geturl);
+                vendorImageDTOList.add(vendorImageDTO);
+            }
+
             VendorDTO of = VendorDTO.of(vendor);
+            of.setVendorImageDTOList(vendorImageDTOList);
+            of.setPrimaryimgurl(vendorImageDTOList.get(0).getUrl());
             vendorDTOList.add(of);
         }
 
@@ -324,8 +335,17 @@ public class VendorServiceImpl implements VendorService {
         List<VendorDTO> vendorDTOList = new ArrayList<>();
 
         for(Vendor vendor : vendorList){
+            List<VendorImage> byVendor = vendorImageRepository.findByVendor(vendor);
+            List<VendorImageDTO> vendorImageDTOList = new ArrayList<>();
             VendorDTO vendorDTO = VendorDTO.of(vendor);
-
+            for(VendorImage vendor1 : byVendor){
+                VendorImageDTO vendorDTO1 = VendorImageDTO.of(vendor1);
+                String geturl = s3UploadService.geturl(vendor1.getUrl() + vendor1.getFileName());
+                vendorDTO1.setUrl(geturl);
+                vendorImageDTOList.add(vendorDTO1);
+            }
+            vendorDTO.setPrimaryimgurl(vendorImageDTOList.get(0).getUrl());
+            vendorDTO.setVendorImageDTOList(vendorImageDTOList);
             vendorDTOList.add(vendorDTO);
         }
 

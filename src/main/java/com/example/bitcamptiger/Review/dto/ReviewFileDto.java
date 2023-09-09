@@ -9,6 +9,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.modelmapper.ModelMapper;
 
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -25,6 +27,7 @@ public class ReviewFileDto {
     private String reviewFileStatus;
     @JsonIgnore
     private String newFileName;
+
 
     private String FileUrl;
 

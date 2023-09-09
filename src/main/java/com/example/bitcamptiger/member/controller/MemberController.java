@@ -89,7 +89,7 @@ public class MemberController {
     }
 
 
-    @Operation(summary = "Add member", description = "로컬 멤버 회원가입")
+    @Operation(summary = "Add vendor", description = "로컬 멤버 회원가입")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "통과"),
             @ApiResponse(responseCode = "400", description = "실패")
@@ -106,6 +106,7 @@ public class MemberController {
         System.out.println(vendorMemberDTO);
         ResponseDTO<VendorMemberDTO> responseDTO = new ResponseDTO<>();
         try {
+
 //            비밀번호 암호화
             vendorMemberDTO.setPassword(passwordEncoder.encode(vendorMemberDTO.getPassword()));
 
@@ -126,7 +127,7 @@ public class MemberController {
     }
 
 
-    @Operation(summary = "Add member", description = "멤버 정보 수정")
+    @Operation(summary = "update member", description = "멤버 정보 수정")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "통과"),
             @ApiResponse(responseCode = "400", description = "실패")

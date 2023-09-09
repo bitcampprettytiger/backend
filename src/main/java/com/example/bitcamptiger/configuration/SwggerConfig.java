@@ -46,18 +46,35 @@ public class SwggerConfig {
 
     @Bean
     public GroupedOpenApi chatOpenApi() {
-        String[] paths = {"/**","/vendor/**"};
-
         return GroupedOpenApi.builder()
                 .group("채팅서비스 API v1")
                 .pathsToMatch("/vendor/**")
+                .build();
+    }
+
+    @Bean
+    public GroupedOpenApi memberOpenApi() {
+        return GroupedOpenApi.builder()
                 .group("member")
                 .pathsToMatch("/member/**")
+                .build();
+    }
+
+    @Bean
+    public GroupedOpenApi menuOpenApi() {
+        return GroupedOpenApi.builder()
                 .group("menu")
                 .pathsToMatch("/menu/**")
                 .build();
     }
 
+    @Bean
+    public GroupedOpenApi allOpenApi() {
+        return GroupedOpenApi.builder()
+                .group("All APIs")
+                .pathsToMatch("/**")
+                .build();
+    }
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
         return web -> web.ignoring().requestMatchers("/h2-console/**",

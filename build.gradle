@@ -34,8 +34,6 @@ dependencies {
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     runtimeOnly 'com.mysql:mysql-connector-j'
     annotationProcessor 'org.projectlombok:lombok'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'org.springframework.security:spring-security-test'
 
 
     //venderProperties
@@ -82,10 +80,10 @@ dependencies {
 // https://mvnrepository.com/artifact/org.springdoc/springdoc-openapi-starter-webmvc-ui
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0'
     //구글맵 API(주소를 위도경도로 변환)
-      implementation 'com.google.code.geocoder-java:geocoder-java:0.16'
-      implementation 'com.google.maps:google-maps-services:2.2.0'
-      implementation 'com.google.code.gson:gson:2.10.1'
-      implementation 'com.googlecode.json-simple:json-simple:1.1.1'
+    implementation 'com.google.code.geocoder-java:geocoder-java:0.16'
+    implementation 'com.google.maps:google-maps-services:2.2.0'
+    implementation 'com.google.code.gson:gson:2.10.1'
+    implementation 'com.googlecode.json-simple:json-simple:1.1.1'
 // https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-aws
     implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 
@@ -110,6 +108,10 @@ dependencies {
     implementation 'org.apache.httpcomponents:httpclient'
     implementation 'org.apache.httpcomponents.client5:httpclient5'
 
+
+    
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.security:spring-security-test'
 }
 
 tasks.named('test') {

@@ -4,7 +4,7 @@
 
 # 3. 테스트 전략
 단위 테스트(Unit Test) < 통합 테스트(Integration Test) < 기능 테스트(Functional Test) 
-![Alt text](image.png)
+<img src="./img/image.png">
 ###  1. 단위 테스트 : 단위 테스트는 Spring에 Junit을 이용하여 구현하고 실행 했습니다.
 소스코드의 특정 모듈(프로그램 내 하나의 기능을 부르는 말)이 의도된 대로 정확히 작동하는지 검증하는 절차이며,
 

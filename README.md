@@ -1,4 +1,121 @@
 # 1. Project Structure
+```
+├─board
+│  ├─controller
+│  ├─dto
+│  ├─entity
+│  ├─repository
+│  └─service
+├─cart
+│  ├─controller
+│  ├─dto
+│  ├─entity
+│  ├─repository
+│  │  └─Impl
+│  └─service
+│      └─Impl
+├─common
+│  ├─controller
+│  ├─entity
+│  ├─exception
+│  ├─oauth
+│  └─service
+├─configuration
+├─dto
+├─entity
+├─favoritePick
+│  ├─controller
+│  ├─DTO
+│  ├─entity
+│  ├─repository
+│  └─service
+│      └─impl
+├─gyeongGiApi
+│  ├─controller
+│  ├─dto
+│  ├─entity
+│  ├─repository
+│  └─service
+│      ├─gyeonggiValidationService
+│      └─impl
+├─jwt
+│  ├─entity
+│  ├─jwtdto
+│  └─repository
+├─member
+│  ├─controller
+│  ├─dto
+│  ├─entity
+│  ├─model
+│  ├─reposiitory
+│  └─service
+│      └─Impl
+├─menu
+│  ├─controller
+│  ├─dto
+│  ├─entity
+│  ├─repository
+│  └─service
+│      └─Impl
+├─NcloudAPI
+│  ├─controller
+│  ├─dto
+│  └─service
+├─order
+│  ├─controller
+│  ├─dto
+│  ├─entity
+│  ├─repository
+│  └─service
+│      └─impl
+├─payments
+│  ├─config
+│  ├─controller
+│  ├─dto
+│  ├─entity
+│  ├─repository
+│  └─service
+│      └─Impl
+├─response
+├─Review
+│  ├─common
+│  ├─controller
+│  ├─dto
+│  ├─entity
+│  ├─repository
+│  └─service
+│      └─impl
+├─seoulApi
+│  ├─controller
+│  ├─dto
+│  ├─entity
+│  ├─repository
+│  └─service
+│      ├─impl
+│      └─userValidaionService
+├─socialLogin
+│  ├─controller
+│  ├─dto
+│  ├─repository
+│  └─service
+├─Util
+├─vendor
+│  ├─controller
+│  ├─dto
+│  ├─entity
+│  ├─repository
+│  │  └─Impl
+│  └─service
+│      └─Impl
+└─webSoket
+    ├─config
+    ├─controller
+    ├─dto
+    ├─entity
+    ├─handler
+    ├─repository
+    └─service
+```
 
 # 2. 개발 환경 구축
 
@@ -45,6 +162,7 @@ Then : 어떠한 결과를 기대한다.
 - 전체적인 테스트를 한번에 진행하기 때문에, 특정 계층 또는 특정 빈에서 발생하는 오류의 디버깅이 어렵습니다.
 ### PostMan 통합 테스트 
 <img src="./img/005.JPG" > 
+
 # 4. 애플리케이션 배포
 
 # 5. API 엔드 포인트 목록 및 사용법
